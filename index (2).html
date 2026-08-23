@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chosen — Leaderboard</title>
+<style>
+  :root{
+    --bg:#0A0F1C;
+    --panel:#0F1830;
+    --panel-2:#141F3B;
+    --line:#232F4D;
+    --line-bright:#33456B;
+    --accent:#9FB8DE;
+    --accent-bright:#E4ECFB;
+    --accent-soft:rgba(159,184,222,0.14);
+    --blood:#7A2020;
+    --blood-bright:#D96363;
+    --blood-soft:rgba(217,99,99,0.14);
+    --steel:#B7C1CB;
+    --text:#F5F7FB;
+    --muted:#8C96AE;
+    --radius:8px;
+    --shadow:0 1px 2px rgba(0,0,0,0.25);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Times New Roman', Times, Georgia, 'Liberation Serif', serif;
+    font-size:14.5px;
+    line-height:1.5;
+    min-height:100vh;
+  }
+  ::-webkit-scrollbar{width:10px;height:10px;}
+  ::-webkit-scrollbar-thumb{background:#1C2740;border-radius:10px;}
+  .hidden{display:none !important;}
+  a{color:inherit;}
+  /* ---------- Brand header ---------- */
+  .brandband{
+    text-align:center;
+    padding:46px 20px 28px;
+    border-bottom:1px solid var(--line);
+  }
+  .wordmark{
+    font-family:'Times New Roman', Times, Georgia, serif;
+    font-weight:700;
+    font-size:clamp(30px,5.5vw,46px);
+    letter-spacing:6px;
+    color:var(--text);
+    margin:0;
+    text-transform:uppercase;
+  }
+  .tagline{
+    font-size:11px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin:10px 0 0;
+    font-weight:600;
+  }
+  .divider{
+    max-width:120px;height:1px;
+    margin:22px auto 0;
+    background:var(--line-bright);
+  }
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;
+    max-width:1040px;margin:0 auto;padding:14px 20px;
+    flex-wrap:wrap;gap:10px;
+  }
+  .who{font-size:12.5px;color:var(--muted);}
+  .who b{color:var(--text);font-weight:600;}
+  .topbar-actions{display:flex;gap:8px;align-items:center;}
+  /* ---------- Nav ---------- */
+  nav.tabs{
+    display:flex;justify-content:center;gap:4px;
+    max-width:1040px;margin:0 auto;padding:0 20px;
+    border-bottom:1px solid var(--line);
+    flex-wrap:wrap;
+  }
+  nav.tabs button{
+    all:unset;cursor:pointer;
+    padding:13px 18px;
+    font-size:13px;font-weight:600;
+    color:var(--muted);
+    border-bottom:2px solid transparent;
+    letter-spacing:0.3px;
+    transition:color .15s, border-color .15s;
+  }
+  nav.tabs button:hover{color:var(--text);}
+  nav.tabs button.active{color:var(--accent-bright);border-bottom-color:var(--accent);}
+  main{max-width:1040px;margin:0 auto;padding:26px 20px 70px;}
+  .page-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:18px;flex-wrap:wrap;gap:12px;}
+  .page-head h1{
+    font-family:'Times New Roman', Times, Georgia, serif;
+    font-weight:700;
+    font-size:22px;
+    letter-spacing:1px;
+    margin:0 0 4px;
+    color:var(--text);
+  }
+  .page-head p{margin:0;color:var(--muted);font-size:13px;}
+  /* ---------- Panels ---------- */
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:22px 24px;
+    margin-bottom:18px;
+  }
+  .panel h2{
+    font-family:'Times New Roman', Times, Georgia, serif;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:0.5px;
+    margin:0 0 4px;
+    color:var(--text);
+  }
+  .panel .desc{font-size:12.5px;color:var(--muted);margin:0 0 16px;}
+  /* ---------- Period tabs ---------- */
+  .period-tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
+  .period-tab{
+    all:unset;cursor:pointer;padding:7px 15px;border-radius:6px;
+    background:var(--panel-2);border:1px solid var(--line);color:var(--muted);
+    font-size:12px;font-weight:600;letter-spacing:0.3px;
+    transition:background .15s, color .15s, border-color .15s;
+  }
+  .period-tab:hover{border-color:var(--accent);}
+  .period-tab.active{background:var(--accent);color:#0A0F1C;border-color:var(--accent);}
+  /* ---------- Calendar ---------- */
+  .cal-year-nav{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .cal-year-nav .yr-btn{
+    all:unset;cursor:pointer;width:32px;height:32px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--panel-2);border:1px solid var(--line);color:var(--text);
+  }
+  .cal-year-nav .yr-btn:hover{border-color:var(--accent);}
+  .cal-year-nav .yr-label{font-family:'Times New Roman', Times, Georgia, serif;font-weight:700;font-size:18px;color:var(--text);min-width:64px;text-align:center;}
+  .cal-month-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .cal-month{
+    border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--panel-2);
+    cursor:pointer;transition:border-color .15s, background .15s;
+  }
+  .cal-month:hover{border-color:var(--accent);}
+  .cal-month.active{border-color:var(--accent);background:var(--accent-soft);}
+  .cal-month-name{font-family:'Times New Roman', Times, Georgia, serif;font-weight:700;font-size:14px;color:var(--text);margin-bottom:6px;}
+  .cal-month-count{font-size:11.5px;color:var(--muted);}
+  .cal-month-ap{font-family:'Times New Roman', Times, Georgia, serif;font-size:15px;font-weight:700;color:var(--text);margin-top:4px;}
+  /* ---------- Team stat tiles ---------- */
+  .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+  .tile{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px 18px;box-shadow:var(--shadow);
+  }
+  .tile .label{font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:600;}
+  .tile .value{font-family:'Times New Roman', Times, Georgia, serif;font-size:24px;font-weight:700;color:var(--text);margin-top:6px;}
+  .tile .sub{font-size:11.5px;color:var(--muted);margin-top:3px;}
+  /* ---------- Leaderboard rows (signature element: blade bars) ---------- */
+  .board{display:flex;flex-direction:column;gap:10px;}
+  .row{
+    display:flex;align-items:center;gap:14px;
+    padding:12px 14px;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:10px;
+    position:relative;
+    transition:border-color .15s;
+  }
+  .row.me{border-color:var(--accent);background:var(--accent-soft);}
+  .rank{
+    width:34px;height:34px;border-radius:50%;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Times New Roman', Times, Georgia, serif;font-weight:700;font-size:13px;
+    background:#16213A;color:var(--muted);border:1px solid var(--line-bright);
+  }
+  .rank.r1,.rank.r2,.rank.r3{background:var(--panel-2);border-color:var(--line-bright);color:var(--text);}
+  .row-main{flex:1;min-width:0;}
+  .row-name{font-weight:700;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .row-sub{font-size:11.5px;color:var(--muted);margin-top:2px;}
+  .blade-track{height:4px;background:#101A30;border-radius:2px;margin-top:8px;overflow:hidden;}
+  .blade{
+    height:100%;
+    background:var(--accent);
+    min-width:4px;
+  }
+  .row-amt{text-align:right;flex-shrink:0;}
+  .row-amt .ap{font-family:'Times New Roman', Times, Georgia, serif;font-weight:700;font-size:16px;color:var(--accent-bright);}
+  .row-amt .cnt{font-size:11px;color:var(--muted);margin-top:2px;}
+  .empty-state{padding:44px 20px;text-align:center;color:var(--muted);}
+  .empty-state .big{font-size:32px;margin-bottom:10px;}
+  /* ---------- Forms ---------- */
+  .form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field.span-2{grid-column:span 2;}
+  .field label{font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:0.5px;}
+  .field .hint{font-size:11px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;}
+  input,select,textarea{
+    font-family:'Times New Roman', Times, Georgia, serif;
+    font-size:14px;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:#090E1A;
+    color:var(--text);
+    outline:none;
+    transition:border-color .15s, box-shadow .15s;
+    width:100%;
+  }
+  input:focus,select:focus,textarea:focus{
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  textarea{resize:vertical;min-height:44px;}
+  .btn{
+    all:unset;cursor:pointer;
+    font-family:'Times New Roman', Times, Georgia, serif;
+    font-weight:700;
+    font-size:13px;
+    padding:11px 20px;
+    border-radius:9px;
+    text-align:center;
+    letter-spacing:0.2px;
+    transition:opacity .15s, transform .1s;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-gold{background:var(--accent);color:#0A0F1C;}
+  .btn-gold:hover{background:var(--accent-bright);}
+  .btn-outline{background:transparent;color:var(--text);border:1px solid var(--line-bright) !important;}
+  .btn-outline:hover{background:#111B33;}
+  .btn-danger{background:transparent;color:var(--blood-bright);border:1px solid var(--blood) !important;}
+  .btn-danger:hover{background:var(--blood-soft);}
+  .btn-row{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;flex-wrap:wrap;}
+  /* ---------- Activity feed / list ---------- */
+  .feed-item{
+    display:flex;justify-content:space-between;align-items:center;gap:12px;
+    padding:12px 0;border-bottom:1px solid var(--line);
+  }
+  .feed-item:last-child{border-bottom:none;}
+  .feed-name{font-weight:600;font-size:13.5px;}
+  .feed-meta{font-size:11.5px;color:var(--muted);margin-top:2px;}
+  .feed-amt{font-family:'Times New Roman', Times, Georgia, serif;font-weight:700;color:var(--accent-bright);font-size:14px;flex-shrink:0;}
+  .icon-btn{
+    all:unset;cursor:pointer;width:26px;height:26px;border-radius:6px;
+    display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;
+  }
+  .icon-btn:hover{background:#16213A;color:var(--blood-bright);}
+  /* ---------- Status strip ---------- */
+  .status-strip{
+    display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted);
+    padding:4px 2px;
+  }
+  .status-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0;}
+  .status-dot.ok{background:var(--accent);}
+  .status-dot.err{background:var(--blood-bright);}
+  /* ---------- Auth overlay ---------- */
+  #authOverlay{
+    position:fixed;inset:0;background:var(--bg);
+    display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px;
+  }
+  .auth-card{
+    width:100%;max-width:300px;
+  }
+  .auth-card h1{
+    font-family:'Times New Roman', Times, Georgia, serif;font-weight:700;font-size:30px;letter-spacing:7px;
+    text-align:center;margin:0 0 8px;color:var(--text);text-transform:uppercase;
+  }
+  .auth-card p.sub{text-align:center;color:var(--muted);font-size:11.5px;letter-spacing:2px;text-transform:uppercase;margin:0 0 44px;}
+  .auth-card label{font-size:10.5px;color:var(--muted);}
+  .auth-card input{
+    background:transparent;border:none;border-bottom:1px solid var(--line-bright);
+    border-radius:0;padding:8px 0;font-size:14px;
+  }
+  .auth-card input:focus{border-bottom-color:var(--accent);box-shadow:none;}
+  .auth-card .btn-gold{
+    display:block;margin:28px auto 0;min-width:0;width:auto;
+    padding:9px 30px;font-size:12px;letter-spacing:1px;
+  }
+  .auth-card p{text-align:center;}
+  .auth-link{color:var(--accent-bright);text-decoration:none;font-weight:600;cursor:pointer;}
+  .auth-link:hover{text-decoration:underline;}
+  .auth-error{color:var(--blood-bright);font-size:12px;min-height:16px;margin:6px 0 4px;text-align:center;}
+  /* ---------- Toast ---------- */
+  #savedToast{
+    position:fixed;bottom:22px;right:22px;
+    background:var(--panel);border:1px solid var(--accent);color:var(--accent-bright);
+    padding:10px 16px;border-radius:10px;font-weight:700;font-size:12.5px;
+    box-shadow:var(--shadow);z-index:2000;opacity:0;transition:opacity .2s;pointer-events:none;
+  }
+  code{background:#090E1A;border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-family:'Courier New', Courier, monospace;font-size:12px;}
+  @media (max-width:640px){
+    .tiles{grid-template-columns:1fr;}
+    .form-grid{grid-template-columns:1fr;}
+    .field.span-2{grid-column:span 1;}
+    .row-name{white-space:normal;}
+    .cal-month-grid{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+<div id="authOverlay">
+  <div class="auth-card">
+    <h1>CHOSEN</h1>
+    <p class="sub">WHY NOT YOU?</p>
+    <div id="authModeLogin">
+      <div class="field" style="margin-bottom:20px;">
+        <label>Email</label>
+        <input id="auth_login_email" type="email" placeholder="you@email.com" autocomplete="username">
+      </div>
+      <div class="field" style="margin-bottom:8px;">
+        <label>Password</label>
+        <input id="auth_login_pass" type="password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <div class="auth-error" id="authLoginError"></div>
+      <button class="btn btn-gold" id="authLoginBtn">Enter the Board</button>
+      <p style="text-align:center;font-size:12.5px;color:var(--muted);margin-top:16px;">
+        New to the team? <a class="auth-link" id="showSignupLink">Create an account</a>
+      </p>
+    </div>
+    <div id="authModeSignup" class="hidden">
+      <div class="field" style="margin-bottom:20px;">
+        <label>Display name <span class="hint">shown on the leaderboard</span></label>
+        <input id="auth_signup_name" type="text" placeholder="Jane Smith" autocomplete="name">
+      </div>
+      <div class="field" style="margin-bottom:20px;">
+        <label>Email</label>
+        <input id="auth_signup_email" type="email" placeholder="you@email.com" autocomplete="username">
+      </div>
+      <div class="field" style="margin-bottom:20px;">
+        <label>Password <span class="hint">at least 8 characters</span></label>
+        <input id="auth_signup_pass" type="password" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <div class="field" style="margin-bottom:8px;">
+        <label>Confirm password</label>
+        <input id="auth_signup_pass2" type="password" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <div class="auth-error" id="authSignupError"></div>
+      <button class="btn btn-gold" id="authSignupBtn">Join the team</button>
+      <p style="text-align:center;font-size:12.5px;color:var(--muted);margin-top:16px;">
+        Already have an account? <a class="auth-link" id="showLoginLink">Sign in</a>
+      </p>
+    </div>
+    <div id="authNotConfigured" class="hidden" style="text-align:center;color:var(--muted);font-size:12.5px;line-height:1.7;">
+      This leaderboard isn't connected to your team's shared sheet yet.
+      Whoever's setting this up needs to open the <strong>Setup</strong> steps below and paste in the Apps Script URL.
+      <div style="margin-top:16px;text-align:left;">
+        <details>
+          <summary style="cursor:pointer;color:var(--accent-bright);font-size:12.5px;">Show setup instructions</summary>
+          <div id="setupInstructionsInline" style="margin-top:10px;"></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="brandband">
+  <h1 class="wordmark">CHOSEN</h1>
+  <p class="tagline">Why not you?</p>
+  <div class="divider"></div>
+</div>
+<div class="topbar">
+  <div class="who">Signed in as <b id="whoName">—</b></div>
+  <div class="topbar-actions">
+    <div class="status-strip"><span class="status-dot" id="syncDot"></span><span id="syncText">—</span></div>
+    <button class="btn btn-outline" id="logoutBtn" style="padding:7px 14px;font-size:12px;">Log out</button>
+  </div>
+</div>
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="leaderboard">Leaderboard</button>
+  <button class="tab-btn" data-tab="calendar">Calendar</button>
+  <button class="tab-btn" data-tab="logsale">Log a Sale</button>
+  <button class="tab-btn" data-tab="activity">My Activity</button>
+  <button class="tab-btn" data-tab="settings">Settings</button>
+  <button class="tab-btn hidden" data-tab="admin" id="adminTabBtn">Admin</button>
+</nav>
+<main>
+  <!-- ============ LEADERBOARD ============ -->
+  <section id="tab-leaderboard" class="tab-content">
+    <div class="page-head">
+      <div>
+        <h1>The Roll of Honor</h1>
+        <p>Ranked by AP submitted across the whole team.</p>
+      </div>
+      <button class="btn btn-outline" id="refreshBoardBtn" style="padding:8px 14px;font-size:12px;">↻ Refresh</button>
+    </div>
+    <div class="period-tabs" id="periodTabs">
+      <button class="period-tab" data-period="day">Today</button>
+      <button class="period-tab" data-period="week">This Week</button>
+      <button class="period-tab active" data-period="month">This Month</button>
+      <button class="period-tab" data-period="all">All Time</button>
+      <button class="period-tab" data-period="custom">Custom Range</button>
+    </div>
+    <div class="panel hidden" id="customRangeRow" style="padding:16px 18px;">
+      <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+        <div class="field" style="min-width:150px;">
+          <label>From</label>
+          <input id="customRangeFrom" type="date">
+        </div>
+        <div class="field" style="min-width:150px;">
+          <label>To</label>
+          <input id="customRangeTo" type="date">
+        </div>
+        <button class="btn btn-gold" id="applyCustomRangeBtn" style="margin-bottom:0;">Apply</button>
+      </div>
+    </div>
+    <div class="tiles">
+      <div class="tile">
+        <div class="label">Team AP Submitted</div>
+        <div class="value" id="teamTotalAP">$0</div>
+        <div class="sub" id="teamTotalCount">0 sales</div>
+      </div>
+      <div class="tile">
+        <div class="label">Team Members</div>
+        <div class="value" id="teamMemberCount">0</div>
+        <div class="sub">Active on the board</div>
+      </div>
+      <div class="tile">
+        <div class="label">Your Rank</div>
+        <div class="value" id="myRank">—</div>
+        <div class="sub" id="myRankSub">Log a sale to appear</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="board" id="leaderboardList"></div>
+      <div id="leaderboardEmpty" class="empty-state hidden">
+        <div class="big">🏆</div>
+        <div>No sales logged for this period yet. Be the first to take the field.</div>
+      </div>
+    </div>
+  </section>
+  <!-- ============ CALENDAR ============ -->
+  <section id="tab-calendar" class="tab-content hidden">
+    <div class="page-head">
+      <div>
+        <h1>Calendar</h1>
+        <p>Click a month to see the team's numbers for it.</p>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="cal-year-nav">
+        <button class="yr-btn" id="calPrevYear">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="yr-label" id="calYearLabel">2026</div>
+        <button class="yr-btn" id="calNextYear">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+      <div class="cal-month-grid" id="calMonthGrid"></div>
+    </div>
+    <div class="panel">
+      <h2 id="calDetailTitle">Month detail</h2>
+      <p class="desc">Team AP and rankings for the selected month.</p>
+      <div class="tiles" style="margin-bottom:14px;">
+        <div class="tile">
+          <div class="label">Team AP</div>
+          <div class="value" id="calAP">$0</div>
+          <div class="sub" id="calCount">0 sales</div>
+        </div>
+        <div class="tile">
+          <div class="label">Team Members</div>
+          <div class="value" id="calMembers">0</div>
+          <div class="sub">Submitted this month</div>
+        </div>
+        <div class="tile">
+          <div class="label">Top Performer</div>
+          <div class="value" id="calTop" style="font-size:17px;">—</div>
+          <div class="sub" id="calTopAmt"></div>
+        </div>
+      </div>
+      <div class="board" id="calBoard"></div>
+      <div id="calEmpty" class="empty-state hidden">
+        <div class="big">🗓️</div>
+        <div>No sales logged for this month.</div>
+      </div>
+    </div>
+  </section>
+  <!-- ============ LOG A SALE ============ -->
+  <section id="tab-logsale" class="tab-content hidden">
+    <div class="page-head">
+      <div>
+        <h1>Log a Sale</h1>
+        <p>Every submission counts toward the team board instantly.</p>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="form-grid">
+        <div class="field">
+          <label>Date submitted</label>
+          <input id="ls_date" type="date">
+        </div>
+        <div class="field">
+          <label>Annual Premium ($)</label>
+          <input id="ls_amount" type="number" min="0" step="0.01" placeholder="1200.00">
+        </div>
+        <div class="field span-2">
+          <label>Note <span class="hint">optional — carrier, client initials, etc.</span></label>
+          <input id="ls_note" type="text" placeholder="Optional note">
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-gold" id="submitEntryBtn">Submit to the board</button>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Recent team activity</h2>
+      <p class="desc">The last 10 submissions from anyone on the team.</p>
+      <div id="recentFeed"></div>
+      <div id="recentFeedEmpty" class="empty-state hidden">
+        <div class="big">📋</div>
+        <div>Nothing submitted yet.</div>
+      </div>
+    </div>
+  </section>
+  <!-- ============ MY ACTIVITY ============ -->
+  <section id="tab-activity" class="tab-content hidden">
+    <div class="page-head">
+      <div>
+        <h1>My Activity</h1>
+        <p>Everything you've personally submitted.</p>
+      </div>
+    </div>
+    <div class="panel">
+      <div id="myActivityList"></div>
+      <div id="myActivityEmpty" class="empty-state hidden">
+        <div class="big">🎯</div>
+        <div>You haven't logged a sale yet — head to <strong>Log a Sale</strong>.</div>
+      </div>
+    </div>
+  </section>
+  <!-- ============ SETTINGS ============ -->
+  <section id="tab-settings" class="tab-content hidden">
+    <div class="page-head">
+      <div>
+        <h1>Settings</h1>
+        <p>Your account, and the team sheet setup.</p>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Account</h2>
+      <p class="desc" id="settingsAcctDesc">—</p>
+      <div class="form-grid">
+        <div class="field span-2">
+          <label>Current password</label>
+          <input id="cp_current" type="password" placeholder="••••••••">
+        </div>
+        <div class="field span-2">
+          <label>New password <span class="hint">at least 8 characters</span></label>
+          <input id="cp_new" type="password" placeholder="••••••••">
+        </div>
+      </div>
+      <div id="changePasswordMsg" style="font-size:12px;min-height:16px;margin-top:8px;"></div>
+      <div class="btn-row">
+        <button class="btn btn-outline" id="changePasswordBtn">Update password</button>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>☁ Team Sheet Sync</h2>
+      <p class="desc" id="cloudSyncDesc">Checking configuration...</p>
+      <div class="btn-row" style="justify-content:flex-start;margin-top:0;">
+        <button class="btn btn-outline" id="testBackendBtn">🔧 Test connection</button>
+      </div>
+      <details style="margin-top:18px;">
+        <summary style="cursor:pointer;color:var(--accent-bright);font-size:12.5px;">Setup instructions + script (do this once, for the whole team)</summary>
+        <div id="setupInstructions" style="margin-top:12px;font-size:12.5px;color:var(--muted);line-height:1.8;">
+          1. Go to <strong>sheets.google.com</strong> → create a blank spreadsheet (name it e.g. "Chosen Leaderboard").<br>
+          2. <strong>Extensions → Apps Script</strong> → delete the default code, paste in the script below.<br>
+          3. <strong>Deploy → New deployment → Web app</strong> → Execute as <strong>Me</strong>, Access <strong>Anyone</strong> → Deploy → authorize it.<br>
+          4. Copy the Web app URL (ends in <code>/exec</code>).<br>
+          5. Paste that URL into the <code>SHEET_API_URL</code> constant near the top of this file's <code>&lt;script&gt;</code> tag, replacing the empty quotes.<br>
+          6. Save the file and send it to your whole team — everyone who opens it will create their own login, and every submission syncs to the same sheet automatically.<br>
+          7. If you ever update the script's code, redeploy via <strong>Deploy → Manage deployments → edit → Version: New version</strong> to keep the same URL.
+        </div>
+        <textarea readonly style="margin-top:10px;height:300px;font-family:'Courier New', Courier, monospace;font-size:11px;width:100%;background:#090E1A;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:12px;" onclick="this.select()">// ====== CHOSEN LEADERBOARD BACKEND ======
+var USERS_SHEET = "Users";       // email | passwordHash | displayName | createdAt
+var SESSIONS_SHEET = "Sessions"; // token | email | createdAt
+var ENTRIES_SHEET = "Entries";   // id | email | displayName | amount | date | notes | createdAt
+var ADMIN_EMAILS = ["kian.dolezal1@gmail.com", "toddhenningjr@gmail.com"]; // must match ADMIN_EMAILS in the website file exactly (lowercase-insensitive)
+function doGet(e) {
+  try {
+    var action = e.parameter.action;
+    if (action === "getEntries") {
+      var email = emailForToken_(e.parameter.token);
+      if (!email) return json_({ok:false, error:"invalid_session"});
+      return json_({ok:true, entries: getAllEntries_()});
+    }
+    return json_({ok:false, error:"unknown_action"});
+  } catch (err) {
+    return json_({ok:false, error:String(err)});
+  }
+}
+function doPost(e) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    var body = JSON.parse(e.postData.contents);
+    var action = body.action;
+    if (action === "signup") {
+      var email = normalizeEmail_(body.email);
+      var displayName = (body.displayName || email).toString().trim();
+      if (!email || !body.hash) return json_({ok:false, error:"missing_fields"});
+      if (findUserRow_(email) > -1) return json_({ok:false, error:"email_taken"});
+      getSheet_(USERS_SHEET).appendRow([email, body.hash, displayName, new Date()]);
+      var token = createSession_(email);
+      return json_({ok:true, token: token, email: email, displayName: displayName});
+    }
+    if (action === "login") {
+      var email = normalizeEmail_(body.email);
+      var row = findUserRow_(email);
+      if (row === -1) return json_({ok:false, error:"invalid_credentials"});
+      var users = getSheet_(USERS_SHEET);
+      var storedHash = users.getRange(row, 2).getValue();
+      if (storedHash !== body.hash) return json_({ok:false, error:"invalid_credentials"});
+      var displayName = users.getRange(row, 3).getValue();
+      var token = createSession_(email);
+      return json_({ok:true, token: token, email: email, displayName: displayName});
+    }
+    if (action === "logout") {
+      var row = findSessionRow_(body.token);
+      if (row > -1) getSheet_(SESSIONS_SHEET).deleteRow(row);
+      return json_({ok:true});
+    }
+    if (action === "addEntry") {
+      var email = emailForToken_(body.token);
+      if (!email) return json_({ok:false, error:"invalid_session"});
+      var displayName = displayNameForEmail_(email);
+      var id = Utilities.getUuid();
+      getSheet_(ENTRIES_SHEET).appendRow([id, email, displayName, Number(body.amount)||0, body.date || "", body.notes || "", new Date()]);
+      return json_({ok:true, id: id});
+    }
+    if (action === "deleteEntry") {
+      var email = emailForToken_(body.token);
+      if (!email) return json_({ok:false, error:"invalid_session"});
+      var isAdmin = isAdminEmail_(email);
+      var sheet = getSheet_(ENTRIES_SHEET);
+      var values = sheet.getDataRange().getValues();
+      for (var i = 0; i < values.length; i++) {
+        if (values[i][0] === body.id && (values[i][1] === email || isAdmin)) {
+          sheet.deleteRow(i + 1);
+          return json_({ok:true});
+        }
+      }
+      return json_({ok:false, error:"not_found_or_not_yours"});
+    }
+    if (action === "editEntry") {
+      var email = emailForToken_(body.token);
+      if (!email) return json_({ok:false, error:"invalid_session"});
+      if (!isAdminEmail_(email)) return json_({ok:false, error:"admin_only"});
+      var sheet = getSheet_(ENTRIES_SHEET);
+      var values = sheet.getDataRange().getValues();
+      for (var i = 0; i < values.length; i++) {
+        if (values[i][0] === body.id) {
+          sheet.getRange(i + 1, 4).setValue(Number(body.amount) || 0); // amount
+          sheet.getRange(i + 1, 5).setValue(body.date || "");          // date
+          sheet.getRange(i + 1, 6).setValue(body.notes || "");         // notes
+          return json_({ok:true});
+        }
+      }
+      return json_({ok:false, error:"not_found"});
+    }
+    if (action === "changePassword") {
+      var email = emailForToken_(body.token);
+      if (!email) return json_({ok:false, error:"invalid_session"});
+      var row = findUserRow_(email);
+      getSheet_(USERS_SHEET).getRange(row, 2).setValue(body.newHash);
+      return json_({ok:true});
+    }
+    return json_({ok:false, error:"unknown_action"});
+  } catch (err) {
+    return json_({ok:false, error:String(err)});
+  } finally {
+    lock.releaseLock();
+  }
+}
+function json_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+function normalizeEmail_(email) { return (email || "").toString().trim().toLowerCase(); }
+function isAdminEmail_(email) {
+  var n = normalizeEmail_(email);
+  for (var i = 0; i < ADMIN_EMAILS.length; i++) {
+    if (normalizeEmail_(ADMIN_EMAILS[i]) === n) return true;
+  }
+  return false;
+}
+function getSheet_(name) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(name);
+  if (!sheet) sheet = ss.insertSheet(name);
+  return sheet;
+}
+function findUserRow_(email) {
+  var values = getSheet_(USERS_SHEET).getDataRange().getValues();
+  for (var i = 0; i < values.length; i++) {
+    if (normalizeEmail_(values[i][0]) === email) return i + 1;
+  }
+  return -1;
+}
+function findSessionRow_(token) {
+  var values = getSheet_(SESSIONS_SHEET).getDataRange().getValues();
+  for (var i = 0; i < values.length; i++) {
+    if (values[i][0] === token) return i + 1;
+  }
+  return -1;
+}
+function emailForToken_(token) {
+  if (!token) return null;
+  var row = findSessionRow_(token);
+  if (row === -1) return null;
+  return getSheet_(SESSIONS_SHEET).getRange(row, 2).getValue();
+}
+function displayNameForEmail_(email) {
+  var row = findUserRow_(email);
+  if (row === -1) return email;
+  var name = getSheet_(USERS_SHEET).getRange(row, 3).getValue();
+  return name || email;
+}
+function createSession_(email) {
+  var token = Utilities.getUuid();
+  getSheet_(SESSIONS_SHEET).appendRow([token, email, new Date()]);
+  return token;
+}
+function getAllEntries_() {
+  var values = getSheet_(ENTRIES_SHEET).getDataRange().getValues();
+  var out = [];
+  for (var i = 0; i < values.length; i++) {
+    var r = values[i];
+    if (!r[0]) continue;
+    out.push({id: r[0], email: r[1], displayName: r[2], amount: Number(r[3])||0, date: formatDate_(r[4]), notes: r[5] || ""});
+  }
+  return out;
+}
+function formatDate_(v) {
+  if (!v) return "";
+  if (Object.prototype.toString.call(v) === "[object Date]") {
+    return Utilities.formatDate(v, Session.getScriptTimeZone(), "yyyy-MM-dd");
+  }
+  return String(v);
+}</textarea>
+      </details>
+    </div>
+    <div class="panel">
+      <h2 style="color:var(--blood-bright);">Danger zone</h2>
+      <p class="desc">Sign out of this device. Your submissions stay on the team sheet.</p>
+      <div class="btn-row" style="justify-content:flex-start;">
+        <button class="btn btn-danger" id="logoutBtnSettings">Log out</button>
+      </div>
+    </div>
+  </section>
+  <!-- ============ ADMIN ============ -->
+  <section id="tab-admin" class="tab-content hidden">
+    <div class="page-head">
+      <div>
+        <h1>Admin</h1>
+        <p>Every submission on the board. Only you can see or edit this.</p>
+      </div>
+    </div>
+    <div class="panel">
+      <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead>
+          <tr style="text-align:left;border-bottom:1px solid var(--line);">
+            <th style="padding:0 10px 10px;font-size:11px;text-transform:uppercase;color:var(--muted);">Date</th>
+            <th style="padding:0 10px 10px;font-size:11px;text-transform:uppercase;color:var(--muted);">Person</th>
+            <th style="padding:0 10px 10px;font-size:11px;text-transform:uppercase;color:var(--muted);">Amount</th>
+            <th style="padding:0 10px 10px;font-size:11px;text-transform:uppercase;color:var(--muted);">Note</th>
+            <th style="padding:0 10px 10px;"></th>
+          </tr>
+        </thead>
+        <tbody id="adminEntriesBody"></tbody>
+      </table>
+      </div>
+      <div id="adminEntriesEmpty" class="empty-state hidden">
+        <div class="big">🛡️</div>
+        <div>No submissions yet.</div>
+      </div>
+    </div>
+  </section>
+</main>
+<div id="savedToast"></div>
+<script>
+(function(){
+  "use strict";
+  /* ============================================================
+     TEAM SHEET CONFIG
+     Paste your Google Apps Script Web App URL between the quotes
+     below (see Settings → Setup instructions). This tracker will
+     not work for anyone until this is filled in and the file is
+     shared with the team.
+     ============================================================ */
+  const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbzZGM5KV8gX0PnGIvE41Ty_gh9FhswH2rtxpKUu9ZNbVWsEegONoTAGXZ8BLFUpIvnk/exec";
+  const AUTH_TOKEN_KEY = "cf_auth_token_v1";
+  const AUTH_EMAIL_KEY = "cf_auth_email_v1";
+  const AUTH_NAME_KEY = "cf_auth_name_v1";
+  const PEPPER = "capitalforge-lb-v1-pepper";
+  // Only this email address gets the Admin tab and can edit/delete anyone's entries.
+  // Everyone else can only add and delete their own submissions.
+  const ADMIN_EMAILS = ["kian.dolezal1@gmail.com", "toddhenningjr@gmail.com"];
+  function isAdmin(){ return currentAuth.email && ADMIN_EMAILS.some(a=>a.toLowerCase()===currentAuth.email.toLowerCase()); }
+  const cloudConfigured = !!SHEET_API_URL && SHEET_API_URL.indexOf("http") === 0;
+  let currentAuth = { token: null, email: null, displayName: null };
+  let entries = []; // {id, email, displayName, amount, date, notes}
+  let currentPeriod = "month";
+  let calYear = new Date().getFullYear();
+  let calSelectedMonth = new Date().getMonth();
+  let calSelectedYear = calYear;
+  const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  let lastSyncOk = null;
+  let pollTimer = null;
+  function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+  function fmtMoney(n){
+    n = isFinite(n) ? n : 0;
+    return "$" + n.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0});
+  }
+  function todayISO(){ return new Date().toISOString().slice(0,10); }
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+  function initials(name){
+    return (name||"?").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase();
+  }
+  async function hashPassword(password, email){
+    const enc = new TextEncoder().encode(password + ":" + email.trim().toLowerCase() + ":" + PEPPER);
+    const buf = await crypto.subtle.digest("SHA-256", enc);
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+  }
+  let toastTimer = null;
+  function showToast(msg){
+    const el = document.getElementById("savedToast");
+    el.textContent = "✓ " + msg;
+    el.style.opacity = "1";
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>{ el.style.opacity = "0"; }, 2200);
+  }
+  function setSyncStatus(status){
+    const dot = document.getElementById("syncDot");
+    const text = document.getElementById("syncText");
+    const t = new Date().toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
+    if(status==="syncing"){ dot.className="status-dot"; text.textContent="Syncing..."; return; }
+    if(status==="ok"){ dot.className="status-dot ok"; text.textContent="Synced " + t; return; }
+    if(status==="error"){ dot.className="status-dot err"; text.textContent="Sync failed — retrying"; return; }
+    dot.className="status-dot"; text.textContent="Not connected";
+  }
+  /* ---------------- Auth ---------------- */
+  function showAuthOverlay(){ document.getElementById("authOverlay").classList.remove("hidden"); }
+  function hideAuthOverlay(){ document.getElementById("authOverlay").classList.add("hidden"); }
+  function persistAuth(token, email, displayName){
+    currentAuth = {token, email, displayName};
+    try{
+      localStorage.setItem(AUTH_TOKEN_KEY, token);
+      localStorage.setItem(AUTH_EMAIL_KEY, email);
+      localStorage.setItem(AUTH_NAME_KEY, displayName || email);
+    }catch(e){}
+  }
+  function clearPersistedAuth(){
+    currentAuth = {token:null, email:null, displayName:null};
+    try{
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+      localStorage.removeItem(AUTH_EMAIL_KEY);
+      localStorage.removeItem(AUTH_NAME_KEY);
+    }catch(e){}
+  }
+  async function apiPost(action, payload){
+    const res = await fetch(SHEET_API_URL, {
+      method:"POST",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body: JSON.stringify(Object.assign({action}, payload))
+    });
+    return res.json();
+  }
+  async function apiGetEntries(){
+    const res = await fetch(SHEET_API_URL + "?action=getEntries&token=" + encodeURIComponent(currentAuth.token), {cache:"no-store"});
+    return res.json();
+  }
+  async function doSignup(){
+    const name = document.getElementById("auth_signup_name").value.trim();
+    const email = document.getElementById("auth_signup_email").value.trim();
+    const pass = document.getElementById("auth_signup_pass").value;
+    const pass2 = document.getElementById("auth_signup_pass2").value;
+    const errEl = document.getElementById("authSignupError");
+    errEl.textContent = "";
+    if(!name){ errEl.textContent = "Enter a display name."; return; }
+    if(!email || !pass){ errEl.textContent = "Enter an email and password."; return; }
+    if(pass.length < 8){ errEl.textContent = "Password must be at least 8 characters."; return; }
+    if(pass !== pass2){ errEl.textContent = "Passwords don't match."; return; }
+    const btn = document.getElementById("authSignupBtn");
+    btn.textContent = "Creating account..."; btn.disabled = true;
+    try{
+      const hash = await hashPassword(pass, email);
+      const json = await apiPost("signup", {email, hash, displayName: name});
+      if(!json.ok){
+        errEl.textContent = json.error === "email_taken" ? "An account with that email already exists." : "Something went wrong. Try again.";
+        return;
+      }
+      persistAuth(json.token, json.email || email, json.displayName || name);
+      hideAuthOverlay();
+      await initAfterAuth();
+    }catch(e){
+      errEl.textContent = "Couldn't reach the team sheet. Check your connection.";
+    }finally{
+      btn.textContent = "Join the team"; btn.disabled = false;
+    }
+  }
+  async function doLogin(){
+    const email = document.getElementById("auth_login_email").value.trim();
+    const pass = document.getElementById("auth_login_pass").value;
+    const errEl = document.getElementById("authLoginError");
+    errEl.textContent = "";
+    if(!email || !pass){ errEl.textContent = "Enter your email and password."; return; }
+    const btn = document.getElementById("authLoginBtn");
+    btn.textContent = "Entering..."; btn.disabled = true;
+    try{
+      const hash = await hashPassword(pass, email);
+      const json = await apiPost("login", {email, hash});
+      if(!json.ok){ errEl.textContent = "Incorrect email or password."; return; }
+      persistAuth(json.token, json.email || email, json.displayName || email);
+      hideAuthOverlay();
+      await initAfterAuth();
+    }catch(e){
+      errEl.textContent = "Couldn't reach the team sheet. Check your connection.";
+    }finally{
+      btn.textContent = "Enter the Board"; btn.disabled = false;
+    }
+  }
+  async function doLogout(){
+    const token = currentAuth.token;
+    clearPersistedAuth();
+    if(pollTimer) clearInterval(pollTimer);
+    if(token){
+      apiPost("logout", {token}).catch(()=>{});
+    }
+    entries = [];
+    showAuthOverlay();
+  }
+  /* ---------------- Data fetch / submit ---------------- */
+  async function refreshEntries(showSyncing){
+    if(!cloudConfigured || !currentAuth.token) return false;
+    if(showSyncing) setSyncStatus("syncing");
+    try{
+      const json = await apiGetEntries();
+      if(!json.ok){
+        if(json.error === "invalid_session"){ doLogout(); }
+        throw new Error(json.error || "load_failed");
+      }
+      entries = json.entries || [];
+      lastSyncOk = true;
+      setSyncStatus("ok");
+      return true;
+    }catch(e){
+      lastSyncOk = false;
+      setSyncStatus("error");
+      console.warn("Refresh failed", e);
+      return false;
+    }
+  }
+  async function submitEntry(){
+    const date = document.getElementById("ls_date").value || todayISO();
+    const amount = parseFloat(document.getElementById("ls_amount").value);
+    const notes = document.getElementById("ls_note").value.trim();
+    if(isNaN(amount) || amount<=0){ alert("Enter an annual premium amount."); return; }
+    const btn = document.getElementById("submitEntryBtn");
+    btn.textContent = "Submitting..."; btn.disabled = true;
+    try{
+      const json = await apiPost("addEntry", {token: currentAuth.token, amount, date, notes});
+      if(!json.ok){ alert("Couldn't submit — try again."); return; }
+      document.getElementById("ls_amount").value = "";
+      document.getElementById("ls_note").value = "";
+      document.getElementById("ls_date").value = todayISO();
+      showToast("Submitted to the board");
+      await refreshEntries(true);
+      renderAll();
+    }catch(e){
+      alert("Couldn't reach the team sheet. Check your connection and try again.");
+    }finally{
+      btn.textContent = "Submit to the board"; btn.disabled = false;
+    }
+  }
+  async function deleteEntry(id){
+    if(!confirm("Remove this submission from the board?")) return;
+    try{
+      const json = await apiPost("deleteEntry", {token: currentAuth.token, id});
+      if(!json.ok){ alert("Couldn't remove that entry."); return; }
+      await refreshEntries(true);
+      renderAll();
+      showToast("Entry removed");
+    }catch(e){
+      alert("Couldn't reach the team sheet.");
+    }
+  }
+  async function editEntry(id, amount, date, notes){
+    try{
+      const json = await apiPost("editEntry", {token: currentAuth.token, id, amount, date, notes});
+      if(!json.ok){ alert("Couldn't save that edit — " + (json.error||"try again")); return false; }
+      await refreshEntries(true);
+      renderAll();
+      showToast("Entry updated");
+      return true;
+    }catch(e){
+      alert("Couldn't reach the team sheet.");
+      return false;
+    }
+  }
+  /* ---------------- Period helpers ---------------- */
+  let customRangeStart = null; // ISO string
+  let customRangeEnd = null;   // ISO string (inclusive)
+  function getPeriodRange(period){
+    const d = new Date();
+    let start, end;
+    if(period==="day"){
+      start = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      end = new Date(d.getFullYear(), d.getMonth(), d.getDate()+1);
+    } else if(period==="week"){
+      const day = d.getDay();
+      start = new Date(d.getFullYear(), d.getMonth(), d.getDate()-day);
+      end = new Date(start.getFullYear(), start.getMonth(), start.getDate()+7);
+    } else if(period==="month"){
+      start = new Date(d.getFullYear(), d.getMonth(), 1);
+      end = new Date(d.getFullYear(), d.getMonth()+1, 1);
+    } else if(period==="custom" && customRangeStart){
+      start = new Date(customRangeStart+"T00:00:00");
+      const endBase = customRangeEnd ? new Date(customRangeEnd+"T00:00:00") : new Date(customRangeStart+"T00:00:00");
+      end = new Date(endBase.getFullYear(), endBase.getMonth(), endBase.getDate()+1);
+    } else {
+      start = new Date(1970,0,1);
+      end = new Date(2999,0,1);
+    }
+    return {start, end};
+  }
+  function dateInRange(dateStr, start, end){
+    if(!dateStr) return false;
+    const d = new Date(dateStr+"T00:00:00");
+    if(isNaN(d)) return false;
+    return d>=start && d<end;
+  }
+  /* ---------------- Tabs ---------------- */
+  document.querySelectorAll(".tab-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      document.querySelectorAll(".tab-content").forEach(s=>s.classList.add("hidden"));
+      document.getElementById("tab-"+btn.dataset.tab).classList.remove("hidden");
+      renderAll();
+    });
+  });
+  document.querySelectorAll(".period-tab").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      document.querySelectorAll(".period-tab").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      currentPeriod = btn.dataset.period;
+      const customRow = document.getElementById("customRangeRow");
+      if(currentPeriod==="custom"){
+        customRow.classList.remove("hidden");
+        if(!customRangeStart){
+          const now = new Date();
+          document.getElementById("customRangeFrom").value = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0,10);
+          document.getElementById("customRangeTo").value = todayISO();
+        }
+      } else {
+        customRow.classList.add("hidden");
+      }
+      renderLeaderboard();
+    });
+  });
+  document.getElementById("applyCustomRangeBtn").addEventListener("click", ()=>{
+    const from = document.getElementById("customRangeFrom").value;
+    const to = document.getElementById("customRangeTo").value;
+    if(!from){ alert("Pick a start date."); return; }
+    customRangeStart = from;
+    customRangeEnd = to || from;
+    renderLeaderboard();
+  });
+  /* ---------------- Rendering ---------------- */
+  function renderAll(){
+    document.getElementById("whoName").textContent = currentAuth.displayName || currentAuth.email || "—";
+    document.getElementById("settingsAcctDesc").textContent = "Signed in as " + (currentAuth.displayName||"") + " (" + (currentAuth.email||"") + ").";
+    document.getElementById("adminTabBtn").classList.toggle("hidden", !isAdmin());
+    if(!isAdmin() && !document.getElementById("tab-admin").classList.contains("hidden")){
+      // Safety net: if somehow on the admin tab without being admin, bounce back to the leaderboard.
+      document.querySelector('.tab-btn[data-tab="leaderboard"]').click();
+      return;
+    }
+    renderLeaderboard();
+    renderRecentFeed();
+    renderMyActivity();
+    renderCalendar();
+    renderCalendarDetail();
+    if(isAdmin()) renderAdmin();
+  }
+  document.getElementById("calPrevYear").addEventListener("click", ()=>{ calYear--; renderCalendar(); });
+  document.getElementById("calNextYear").addEventListener("click", ()=>{ calYear++; renderCalendar(); });
+  function renderCalendar(){
+    document.getElementById("calYearLabel").textContent = calYear;
+    const grid = document.getElementById("calMonthGrid");
+    grid.innerHTML = "";
+    for(let m=0; m<12; m++){
+      const start = new Date(calYear, m, 1);
+      const end = new Date(calYear, m+1, 1);
+      const inRange = entries.filter(e=>dateInRange(e.date, start, end));
+      const ap = inRange.reduce((a,e)=>a+e.amount,0);
+      const div = document.createElement("div");
+      div.className = "cal-month" + (m===calSelectedMonth && calYear===calSelectedYear ? " active" : "");
+      div.innerHTML = `
+        <div class="cal-month-name">${MONTH_NAMES[m]}</div>
+        <div class="cal-month-count">${inRange.length} sale${inRange.length===1?"":"s"}</div>
+        <div class="cal-month-ap">${fmtMoney(ap)}</div>
+      `;
+      div.addEventListener("click", ()=>{
+        calSelectedMonth = m;
+        calSelectedYear = calYear;
+        renderCalendar();
+        renderCalendarDetail();
+      });
+      grid.appendChild(div);
+    }
+  }
+  function renderCalendarDetail(){
+    const start = new Date(calSelectedYear, calSelectedMonth, 1);
+    const end = new Date(calSelectedYear, calSelectedMonth+1, 1);
+    const inRange = entries.filter(e=>dateInRange(e.date, start, end));
+    document.getElementById("calDetailTitle").textContent = MONTH_NAMES[calSelectedMonth] + " " + calSelectedYear;
+    const byPerson = {};
+    inRange.forEach(e=>{
+      const key = e.email;
+      if(!byPerson[key]) byPerson[key] = {displayName: e.displayName || e.email, total:0, count:0};
+      byPerson[key].total += e.amount;
+      byPerson[key].count += 1;
+    });
+    const ranked = Object.entries(byPerson).map(([email, v])=>({email, ...v})).sort((a,b)=> b.total - a.total);
+    const teamTotal = ranked.reduce((a,r)=>a+r.total,0);
+    document.getElementById("calAP").textContent = fmtMoney(teamTotal);
+    document.getElementById("calCount").textContent = inRange.length + " sale" + (inRange.length===1?"":"s");
+    document.getElementById("calMembers").textContent = ranked.length;
+    document.getElementById("calTop").textContent = ranked.length ? ranked[0].displayName : "—";
+    document.getElementById("calTopAmt").textContent = ranked.length ? fmtMoney(ranked[0].total) : "";
+    const board = document.getElementById("calBoard");
+    const empty = document.getElementById("calEmpty");
+    board.innerHTML = "";
+    if(ranked.length===0){ empty.classList.remove("hidden"); return; }
+    empty.classList.add("hidden");
+    const maxTotal = ranked[0].total || 1;
+    ranked.forEach((r, i)=>{
+      const rank = i+1;
+      const rankClass = rank===1?"r1":rank===2?"r2":rank===3?"r3":"";
+      const pct = Math.max(6, Math.round((r.total/maxTotal)*100));
+      const div = document.createElement("div");
+      div.className = "row" + (r.email===currentAuth.email ? " me" : "");
+      div.innerHTML = `
+        <div class="rank ${rankClass}">${rank<=3 ? ["🥇","🥈","🥉"][rank-1] : rank}</div>
+        <div class="row-main">
+          <div class="row-name">${escapeHtml(r.displayName)}</div>
+          <div class="row-sub">${r.count} sale${r.count===1?"":"s"}</div>
+          <div class="blade-track"><div class="blade" style="width:${pct}%;"></div></div>
+        </div>
+        <div class="row-amt">
+          <div class="ap">${fmtMoney(r.total)}</div>
+          <div class="cnt">AP</div>
+        </div>
+      `;
+      board.appendChild(div);
+    });
+  }
+  function renderAdmin(){
+    const body = document.getElementById("adminEntriesBody");
+    const empty = document.getElementById("adminEntriesEmpty");
+    const all = entries.slice().sort((a,b)=> (b.date||"").localeCompare(a.date||""));
+    body.innerHTML = "";
+    if(all.length===0){ empty.classList.remove("hidden"); return; }
+    empty.classList.add("hidden");
+    all.forEach(e=>{
+      const tr = document.createElement("tr");
+      tr.style.borderBottom = "1px solid var(--line)";
+      tr.innerHTML = `
+        <td style="padding:9px 10px;"><input type="date" value="${e.date||''}" data-field="date" style="padding:5px 8px;font-size:12px;width:auto;"></td>
+        <td style="padding:9px 10px;">${escapeHtml(e.displayName||e.email)}</td>
+        <td style="padding:9px 10px;"><input type="number" step="0.01" value="${e.amount}" data-field="amount" style="padding:5px 8px;font-size:12px;width:100px;"></td>
+        <td style="padding:9px 10px;"><input type="text" value="${escapeHtml(e.notes||'')}" data-field="notes" style="padding:5px 8px;font-size:12px;width:150px;"></td>
+        <td style="padding:9px 10px;white-space:nowrap;">
+          <button class="btn btn-outline admin-save" data-id="${e.id}" style="padding:5px 10px;font-size:11px;">Save</button>
+          <button class="btn btn-danger admin-del" data-id="${e.id}" style="padding:5px 10px;font-size:11px;">Delete</button>
+        </td>
+      `;
+      body.appendChild(tr);
+    });
+    body.querySelectorAll(".admin-save").forEach(btn=>{
+      btn.addEventListener("click", async ()=>{
+        const tr = btn.closest("tr");
+        const date = tr.querySelector('[data-field="date"]').value;
+        const amount = parseFloat(tr.querySelector('[data-field="amount"]').value);
+        const notes = tr.querySelector('[data-field="notes"]').value.trim();
+        if(isNaN(amount) || amount<=0){ alert("Enter a valid amount."); return; }
+        await editEntry(btn.dataset.id, amount, date, notes);
+      });
+    });
+    body.querySelectorAll(".admin-del").forEach(btn=>{
+      btn.addEventListener("click", ()=> deleteEntry(btn.dataset.id));
+    });
+  }
+  function renderLeaderboard(){
+    const {start, end} = getPeriodRange(currentPeriod);
+    const inRange = entries.filter(e=>dateInRange(e.date, start, end));
+    const byPerson = {};
+    inRange.forEach(e=>{
+      const key = e.email;
+      if(!byPerson[key]) byPerson[key] = {displayName: e.displayName || e.email, total:0, count:0};
+      byPerson[key].total += e.amount;
+      byPerson[key].count += 1;
+    });
+    const ranked = Object.entries(byPerson).map(([email, v])=>({email, ...v})).sort((a,b)=> b.total - a.total);
+    const teamTotal = ranked.reduce((a,r)=>a+r.total,0);
+    document.getElementById("teamTotalAP").textContent = fmtMoney(teamTotal);
+    document.getElementById("teamTotalCount").textContent = inRange.length + " sale" + (inRange.length===1?"":"s");
+    document.getElementById("teamMemberCount").textContent = ranked.length;
+    const myIdx = ranked.findIndex(r=>r.email===currentAuth.email);
+    document.getElementById("myRank").textContent = myIdx>-1 ? ("#"+(myIdx+1)) : "—";
+    document.getElementById("myRankSub").textContent = myIdx>-1 ? fmtMoney(ranked[myIdx].total) + " this period" : "Log a sale to appear";
+    const list = document.getElementById("leaderboardList");
+    const empty = document.getElementById("leaderboardEmpty");
+    list.innerHTML = "";
+    if(ranked.length===0){ empty.classList.remove("hidden"); return; }
+    empty.classList.add("hidden");
+    const maxTotal = ranked[0].total || 1;
+    ranked.forEach((r, i)=>{
+      const rank = i+1;
+      const rankClass = rank===1?"r1":rank===2?"r2":rank===3?"r3":"";
+      const pct = Math.max(6, Math.round((r.total/maxTotal)*100));
+      const div = document.createElement("div");
+      div.className = "row" + (r.email===currentAuth.email ? " me" : "");
+      div.innerHTML = `
+        <div class="rank ${rankClass}">${rank<=3 ? ["🥇","🥈","🥉"][rank-1] : rank}</div>
+        <div class="row-main">
+          <div class="row-name">${escapeHtml(r.displayName)}${r.email===currentAuth.email?' <span style="color:var(--accent-bright);font-size:11px;">(you)</span>':''}</div>
+          <div class="row-sub">${r.count} sale${r.count===1?"":"s"}</div>
+          <div class="blade-track"><div class="blade" style="width:${pct}%;"></div></div>
+        </div>
+        <div class="row-amt">
+          <div class="ap">${fmtMoney(r.total)}</div>
+          <div class="cnt">AP</div>
+        </div>
+      `;
+      list.appendChild(div);
+    });
+  }
+  function renderRecentFeed(){
+    const recent = entries.slice().sort((a,b)=> (b.date||"").localeCompare(a.date||"")).slice(0,10);
+    const list = document.getElementById("recentFeed");
+    const empty = document.getElementById("recentFeedEmpty");
+    list.innerHTML = "";
+    if(recent.length===0){ empty.classList.remove("hidden"); return; }
+    empty.classList.add("hidden");
+    recent.forEach(e=>{
+      const div = document.createElement("div");
+      div.className = "feed-item";
+      div.innerHTML = `
+        <div>
+          <div class="feed-name">${escapeHtml(e.displayName||e.email)}</div>
+          <div class="feed-meta">${e.date}${e.notes ? " · " + escapeHtml(e.notes) : ""}</div>
+        </div>
+        <div class="feed-amt">${fmtMoney(e.amount)}</div>
+      `;
+      list.appendChild(div);
+    });
+  }
+  function renderMyActivity(){
+    const mine = entries.filter(e=>e.email===currentAuth.email).sort((a,b)=> (b.date||"").localeCompare(a.date||""));
+    const list = document.getElementById("myActivityList");
+    const empty = document.getElementById("myActivityEmpty");
+    list.innerHTML = "";
+    if(mine.length===0){ empty.classList.remove("hidden"); return; }
+    empty.classList.add("hidden");
+    mine.forEach(e=>{
+      const div = document.createElement("div");
+      div.className = "feed-item";
+      div.innerHTML = `
+        <div>
+          <div class="feed-name">${e.date}</div>
+          <div class="feed-meta">${e.notes ? escapeHtml(e.notes) : "No note"}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="feed-amt">${fmtMoney(e.amount)}</div>
+          <button class="icon-btn del-entry" data-id="${e.id}" title="Remove">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"/></svg>
+          </button>
+        </div>
+      `;
+      list.appendChild(div);
+    });
+    list.querySelectorAll(".del-entry").forEach(btn=>{
+      btn.addEventListener("click", ()=> deleteEntry(btn.dataset.id));
+    });
+  }
+  /* ---------------- Wiring ---------------- */
+  document.getElementById("submitEntryBtn").addEventListener("click", submitEntry);
+  document.getElementById("refreshBoardBtn").addEventListener("click", async ()=>{
+    await refreshEntries(true);
+    renderAll();
+  });
+  document.getElementById("logoutBtn").addEventListener("click", doLogout);
+  document.getElementById("logoutBtnSettings").addEventListener("click", doLogout);
+  document.getElementById("showSignupLink").addEventListener("click", ()=>{
+    document.getElementById("authModeLogin").classList.add("hidden");
+    document.getElementById("authModeSignup").classList.remove("hidden");
+  });
+  document.getElementById("showLoginLink").addEventListener("click", ()=>{
+    document.getElementById("authModeSignup").classList.add("hidden");
+    document.getElementById("authModeLogin").classList.remove("hidden");
+  });
+  document.getElementById("authLoginBtn").addEventListener("click", doLogin);
+  document.getElementById("authSignupBtn").addEventListener("click", doSignup);
+  document.getElementById("auth_login_pass").addEventListener("keydown", e=>{ if(e.key==="Enter") doLogin(); });
+  document.getElementById("auth_signup_pass2").addEventListener("keydown", e=>{ if(e.key==="Enter") doSignup(); });
+  document.getElementById("changePasswordBtn").addEventListener("click", async ()=>{
+    const cur = document.getElementById("cp_current").value;
+    const next = document.getElementById("cp_new").value;
+    const msg = document.getElementById("changePasswordMsg");
+    msg.textContent = ""; msg.style.color = "var(--blood-bright)";
+    if(!cur || !next){ msg.textContent = "Fill in both fields."; return; }
+    if(next.length < 8){ msg.textContent = "New password must be at least 8 characters."; return; }
+    try{
+      const curHash = await hashPassword(cur, currentAuth.email);
+      const loginJson = await apiPost("login", {email: currentAuth.email, hash: curHash});
+      if(!loginJson.ok){ msg.textContent = "Current password is incorrect."; return; }
+      const newHash = await hashPassword(next, currentAuth.email);
+      const json = await apiPost("changePassword", {token: currentAuth.token, newHash});
+      if(json.ok){
+        msg.style.color = "var(--accent-bright)";
+        msg.textContent = "Password updated.";
+        document.getElementById("cp_current").value = "";
+        document.getElementById("cp_new").value = "";
+      } else {
+        msg.textContent = "Couldn't update password. Try again.";
+      }
+    }catch(e){
+      msg.textContent = "Couldn't reach the team sheet.";
+    }
+  });
+  document.getElementById("testBackendBtn").addEventListener("click", async ()=>{
+    if(!cloudConfigured){
+      alert("Paste your Apps Script URL into SHEET_API_URL first (see setup instructions above).");
+      return;
+    }
+    const btn = document.getElementById("testBackendBtn");
+    btn.textContent = "Testing..."; btn.disabled = true;
+    try{
+      const res = await fetch(SHEET_API_URL + "?action=getEntries&token=__probe__", {cache:"no-store"});
+      const json = await res.json();
+      if(json && json.ok === false && json.error === "invalid_session"){
+        alert("✅ Backend is reachable and responding correctly.");
+      } else {
+        alert("⚠️ Got an unexpected response — double-check the deployment. Raw: " + JSON.stringify(json).slice(0,300));
+      }
+    }catch(e){
+      alert("❌ Couldn't reach that URL. Check SHEET_API_URL and make sure deployment access is set to 'Anyone'.");
+    }finally{
+      btn.textContent = "🔧 Test connection"; btn.disabled = false;
+    }
+  });
+  /* ---------------- Init ---------------- */
+  function setDateDefault(){ document.getElementById("ls_date").value = todayISO(); }
+  async function initAfterAuth(){
+    await refreshEntries(true);
+    renderAll();
+    if(pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(async ()=>{
+      const ok = await refreshEntries(false);
+      if(ok) renderAll();
+    }, 15000);
+  }
+  (async function init(){
+    setDateDefault();
+    const cloudDesc = document.getElementById("cloudSyncDesc");
+    const instrEl = document.getElementById("setupInstructions").outerHTML;
+    if(!cloudConfigured){
+      cloudDesc.textContent = "Not connected yet. Follow the setup steps below, then paste the Web App URL into SHEET_API_URL in this file.";
+      document.getElementById("authNotConfigured").classList.remove("hidden");
+      document.getElementById("authModeLogin").classList.add("hidden");
+      document.getElementById("setupInstructionsInline").innerHTML = document.getElementById("setupInstructions").innerHTML;
+      showAuthOverlay();
+      return;
+    }
+    cloudDesc.textContent = "Connected to your team's shared sheet.";
+    try{
+      const savedToken = localStorage.getItem(AUTH_TOKEN_KEY);
+      const savedEmail = localStorage.getItem(AUTH_EMAIL_KEY);
+      const savedName = localStorage.getItem(AUTH_NAME_KEY);
+      if(savedToken && savedEmail) currentAuth = {token: savedToken, email: savedEmail, displayName: savedName};
+    }catch(e){}
+    if(currentAuth.token){
+      hideAuthOverlay();
+      await initAfterAuth();
+    } else {
+      showAuthOverlay();
+    }
+  })();
+  window.addEventListener("beforeunload", ()=>{ if(pollTimer) clearInterval(pollTimer); });
+})();
+</script>
+</body>
+</html>
