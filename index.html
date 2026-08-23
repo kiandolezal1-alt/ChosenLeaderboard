@@ -1149,7 +1149,7 @@ function formatDate_(v) {
         <div class="rank ${rankClass}">${rank<=3 ? ["🥇","🥈","🥉"][rank-1] : rank}</div>
         <div class="row-main">
           <div class="row-name">${escapeHtml(r.displayName)}</div>
-          <div class="row-sub">${r.count} sale${r.count===1?"":"s"}</div>
+          <div class="row-sub">${r.count} sale${r.count===1?"":"s"} · ${fmtMoney(r.total/r.count)} avg AP</div>
           <div class="blade-track"><div class="blade" style="width:${pct}%;"></div></div>
         </div>
         <div class="row-amt">
@@ -1230,7 +1230,7 @@ function formatDate_(v) {
         <div class="rank ${rankClass}">${rank<=3 ? ["🥇","🥈","🥉"][rank-1] : rank}</div>
         <div class="row-main">
           <div class="row-name">${escapeHtml(r.displayName)}${r.email===currentAuth.email?' <span style="color:var(--accent-bright);font-size:11px;">(you)</span>':''}</div>
-          <div class="row-sub">${r.count} sale${r.count===1?"":"s"}</div>
+          <div class="row-sub">${r.count} sale${r.count===1?"":"s"} · ${fmtMoney(r.total/r.count)} avg AP</div>
           <div class="blade-track"><div class="blade" style="width:${pct}%;"></div></div>
         </div>
         <div class="row-amt">
