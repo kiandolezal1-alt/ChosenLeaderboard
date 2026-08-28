@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+\<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -532,20 +532,6 @@
           <input id="ls_effective_date" type="date">
         </div>
         <div class="field">
-          <label>Referrals Collected</label>
-          <select id="ls_referrals">
-            <option value="No">❌ No</option>
-            <option value="Yes">✅ Yes</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Reset</label>
-          <select id="ls_reset">
-            <option value="No">❌ No</option>
-            <option value="Yes">✅ Yes</option>
-          </select>
-        </div>
-        <div class="field">
           <label>First Time Submitting Business</label>
           <select id="ls_first_time">
             <option value="No">❌ No</option>
@@ -882,8 +868,6 @@ function formatDate_(v) {
             <th style="padding:0 10px 10px;font-size:11px;text-transform:uppercase;color:var(--muted);">Amount</th>
             <th style="padding:0 10px 10px;font-size:11px;text-transform:uppercase;color:var(--muted);">Carrier</th>
             <th style="padding:0 10px 10px;font-size:11px;text-transform:uppercase;color:var(--muted);">Effective</th>
-            <th style="padding:0 10px 10px;font-size:11px;text-transform:uppercase;color:var(--muted);">Referrals</th>
-            <th style="padding:0 10px 10px;font-size:11px;text-transform:uppercase;color:var(--muted);">Reset</th>
             <th style="padding:0 10px 10px;font-size:11px;text-transform:uppercase;color:var(--muted);">1st Time</th>
             <th style="padding:0 10px 10px;font-size:11px;text-transform:uppercase;color:var(--muted);">Note</th>
             <th style="padding:0 10px 10px;"></th>
@@ -1086,22 +1070,18 @@ function formatDate_(v) {
     const notes = document.getElementById("ls_note").value.trim();
     const carrier = document.getElementById("ls_carrier").value.trim();
     const effectiveDate = document.getElementById("ls_effective_date").value || date;
-    const referrals = document.getElementById("ls_referrals").value;
-    const reset = document.getElementById("ls_reset").value;
     const firstTime = document.getElementById("ls_first_time").value;
     if(isNaN(amount) || amount<=0){ alert("Enter an annual premium amount."); return; }
     const btn = document.getElementById("submitEntryBtn");
     btn.textContent = "Submitting..."; btn.disabled = true;
     try{
-      const json = await apiPost("addEntry", {token: currentAuth.token, amount, date, notes, carrier, effectiveDate, referrals, reset, firstTime});
+      const json = await apiPost("addEntry", {token: currentAuth.token, amount, date, notes, carrier, effectiveDate, firstTime});
       if(!json.ok){ alert("Couldn't submit — try again."); return; }
       document.getElementById("ls_amount").value = "";
       document.getElementById("ls_note").value = "";
       document.getElementById("ls_carrier").value = "";
       document.getElementById("ls_date").value = todayISO();
       document.getElementById("ls_effective_date").value = "";
-      document.getElementById("ls_referrals").value = "No";
-      document.getElementById("ls_reset").value = "No";
       document.getElementById("ls_first_time").value = "No";
       showToast("Submitted to the board + Slack");
       await refreshEntries(true);
@@ -1124,9 +1104,9 @@ function formatDate_(v) {
       alert("Couldn't reach the team sheet.");
     }
   }
-  async function editEntry(id, amount, date, notes, carrier, effectiveDate, referrals, reset, firstTime){
+  async function editEntry(id, amount, date, notes, carrier, effectiveDate, firstTime){
     try{
-      const json = await apiPost("editEntry", {token: currentAuth.token, id, amount, date, notes, carrier, effectiveDate, referrals, reset, firstTime});
+      const json = await apiPost("editEntry", {token: currentAuth.token, id, amount, date, notes, carrier, effectiveDate, firstTime});
       if(!json.ok){ alert("Couldn't save that edit — " + (json.error||"try again")); return false; }
       await refreshEntries(true);
       renderAll();
@@ -1313,18 +1293,6 @@ function formatDate_(v) {
         <td style="padding:9px 10px;"><input type="text" value="${escapeHtml(e.carrier||'')}" data-field="carrier" style="padding:5px 8px;font-size:12px;width:110px;"></td>
         <td style="padding:9px 10px;"><input type="date" value="${e.effectiveDate||''}" data-field="effectiveDate" style="padding:5px 8px;font-size:12px;width:auto;"></td>
         <td style="padding:9px 10px;">
-          <select data-field="referrals" style="padding:5px 8px;font-size:12px;width:auto;">
-            <option value="No" ${e.referrals!=="Yes"?"selected":""}>❌</option>
-            <option value="Yes" ${e.referrals==="Yes"?"selected":""}>✅</option>
-          </select>
-        </td>
-        <td style="padding:9px 10px;">
-          <select data-field="reset" style="padding:5px 8px;font-size:12px;width:auto;">
-            <option value="No" ${e.reset!=="Yes"?"selected":""}>❌</option>
-            <option value="Yes" ${e.reset==="Yes"?"selected":""}>✅</option>
-          </select>
-        </td>
-        <td style="padding:9px 10px;">
           <select data-field="firstTime" style="padding:5px 8px;font-size:12px;width:auto;">
             <option value="No" ${e.firstTime!=="Yes"?"selected":""}>❌</option>
             <option value="Yes" ${e.firstTime==="Yes"?"selected":""}>✅</option>
@@ -1346,11 +1314,9 @@ function formatDate_(v) {
         const notes = tr.querySelector('[data-field="notes"]').value.trim();
         const carrier = tr.querySelector('[data-field="carrier"]').value.trim();
         const effectiveDate = tr.querySelector('[data-field="effectiveDate"]').value;
-        const referrals = tr.querySelector('[data-field="referrals"]').value;
-        const reset = tr.querySelector('[data-field="reset"]').value;
         const firstTime = tr.querySelector('[data-field="firstTime"]').value;
         if(isNaN(amount) || amount<=0){ alert("Enter a valid amount."); return; }
-        await editEntry(btn.dataset.id, amount, date, notes, carrier, effectiveDate, referrals, reset, firstTime);
+        await editEntry(btn.dataset.id, amount, date, notes, carrier, effectiveDate, firstTime);
       });
     });
     body.querySelectorAll(".admin-del").forEach(btn=>{
@@ -1437,8 +1403,6 @@ function formatDate_(v) {
       div.className = "feed-item";
       const metaBits = [];
       if(e.carrier) metaBits.push(e.carrier);
-      metaBits.push("Referrals " + badge(e.referrals));
-      metaBits.push("Reset " + badge(e.reset));
       metaBits.push("1st time " + badge(e.firstTime));
       div.innerHTML = `
         <div>
@@ -1529,11 +1493,23 @@ function formatDate_(v) {
   async function initAfterAuth(){
     await refreshEntries(true);
     renderAll();
+    applyDeepLinkTab();
     if(pollTimer) clearInterval(pollTimer);
     pollTimer = setInterval(async ()=>{
       const ok = await refreshEntries(false);
       if(ok) renderAll();
     }, 15000);
+  }
+  // Opens straight to a given tab when the page URL includes ?tab=logsale (or any other tab id).
+  // Runs once, right after login, so a link from Slack lands where it should.
+  function applyDeepLinkTab(){
+    try{
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get("tab");
+      if(!tab) return;
+      const btn = document.querySelector('.tab-btn[data-tab="'+tab+'"]');
+      if(btn && !btn.classList.contains("hidden")) btn.click();
+    }catch(e){}
   }
   (async function init(){
     setDateDefault();
