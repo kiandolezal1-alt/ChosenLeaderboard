@@ -1316,6 +1316,12 @@
   const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   let lastSyncOk = null;
   let pollTimer = null;
+  // Lets the Production Tracker (a separate script below) read this agent's own leaderboard
+  // history so it can backfill anything logged before Production Tracker existed, or logged
+  // from another device/session — always reads the live `entries`/`currentAuth`, not a snapshot.
+  window.__chosenGetMyEntries = function(){
+    return entries.filter(e => currentAuth.email && e.email === currentAuth.email);
+  };
   function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
   function fmtMoney(n){
     n = isFinite(n) ? n : 0;
@@ -1455,6 +1461,9 @@
       entries = json.entries || [];
       lastSyncOk = true;
       setSyncStatus("ok");
+      // Give the Production Tracker a chance to pull in anything from this agent's leaderboard
+      // history that isn't in their tracker yet (new entries, or a backfill on first load).
+      if(window.__onChosenEntriesRefreshed) window.__onChosenEntriesRefreshed();
       return true;
     }catch(e){
       lastSyncOk = false;
@@ -3116,6 +3125,54 @@
     renderPtCalendar();
     renderPtCalendarDetail();
   }
+  /* ---------------- Backfill: pull this agent's leaderboard history into the tracker ----------------
+     Runs automatically (see PT.setAuth and window.__onChosenEntriesRefreshed below) so entries
+     logged before Production Tracker existed — or logged from another device/session — still
+     show up here. Idempotent: skips any leaderboard entry already linked via sale.entryId, so
+     it's safe to call repeatedly (every login, every entries refresh). */
+  function reconcileFromLeaderboard(){
+    if(!currentAuth || typeof window.__chosenGetMyEntries !== "function") return 0;
+    const myEntries = window.__chosenGetMyEntries() || [];
+    if(!myEntries.length) return 0;
+    const linkedIds = new Set(state.sales.map(s=>s.entryId).filter(Boolean));
+    let added = 0;
+    myEntries.forEach(entry=>{
+      if(linkedIds.has(entry.id)) return;
+      const carrierName = (entry.carrier || "Unknown").trim() || "Unknown";
+      let carrier = carrierByName(carrierName);
+      if(!carrier){
+        // Comp rate isn't known for backfilled history — defaults to 0% until you set it on
+        // the carrier (Carriers tab), then "Sync all sales to current carrier rates" fixes
+        // the math for every sale under it in one click.
+        carrier = { id: uid(), name: carrierName, comp: 0, advance: ADVANCE_RATE, cap: 0, months: 0, color: PALETTE[state.carriers.length % PALETTE.length] };
+        state.carriers.push(carrier);
+      }
+      const premium = Number(entry.amount) || 0;
+      const calc = computeCalc(premium, "annual", carrier.comp, ADVANCE_RATE, carrier.cap||0);
+      state.sales.push({
+        id: uid(), entryId: entry.id, client: "", carrierId: carrier.id,
+        date: entry.date || "", effectiveDate: entry.effectiveDate || entry.date || "",
+        premType: "annual", premium,
+        comp: carrier.comp, advance: ADVANCE_RATE, advanceCap: carrier.cap||0,
+        capped: calc.capped, ap: calc.ap, commission: calc.commission, advanceAmt: calc.advanceAmt, backendAmt: calc.backendAmt,
+        status: "Submitted", backendReceived: false,
+        referralSale: entry.referralSale || "No", referralsCollected: entry.referrals || "No", reset: entry.reset || "No",
+        notes: entry.notes ? ("Synced from leaderboard — " + entry.notes) : "Synced from leaderboard"
+      });
+      linkedIds.add(entry.id);
+      added++;
+    });
+    if(added > 0) saveState();
+    return added;
+  }
+  window.__onChosenEntriesRefreshed = function(){
+    if(!currentAuth) return;
+    const added = reconcileFromLeaderboard();
+    if(added > 0){
+      renderPtAll();
+      showPtToast(added + " sale" + (added===1?"":"s") + " synced from the leaderboard into your Production Tracker");
+    }
+  };
   /* ---------------- Public API used by the Chosen (Log a Sale) side ---------------- */
   window.PT = {
     async setAuth(auth){
@@ -3129,6 +3186,7 @@
       loadLocal();
       renderPtAll();
       await pullFromCloud(true);
+      reconcileFromLeaderboard();
       renderPtAll();
       if(ptPollTimer) clearInterval(ptPollTimer);
       ptPollTimer = setInterval(async ()=>{
