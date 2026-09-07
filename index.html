@@ -1,12 +1,13 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chosen — Leaderboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
 <style>
   :root{
-    --logo-img:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArwAAAINCAYAAADcLKyTAAB9f0lEQVR42u2dd7gkVbW+v9XdZxIz5DzkJAIiSBAUEQQDKhkUEUVFxSxiTtdwvfeK6apX8aeYQEFFRJKKiIAgCAgSJYPkHAcYZuZ09/f7o9b27Cmqu6vPqe6u7vO9z9NPn9ChateuqnevWrU2IIQQQgghhBBCCCGEEEIIIaYJJGeoFYQQQgghxCgLr6kVhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBiBNENZEIIIUR7KmoCIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGE6DckTa0ghBBCDBcVNYEQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIMQj+f6N4et5ARCW0AAAAAElFTkSuQmCC');
+    --logo-img:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArwAAAINCAYAAADcLKyTAAB9f0lEQVR42u2dd7gkVbW+v9XdZxIz5DzkJAIiSBAUEQQDKhkUEUVFxSxiTtdwvfeK6apX8aeYQEFFRJKKiIAgCAgSJYPkHAcYZuZ09/f7o9b27Cmqu6vPqe6u7vO9z9NPn9ChateuqnevWrU2IIQQQgghhBBCCCGEEEIIIaYJJGeoFYQQQgghxCgLr6kVhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGE9BsShqRSCEEIIIQNGSU0ghBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIMQj+f6N4et5ARCW0AAAAAElFTkSuQmCC');
     --bg:#0A0F1C;
     --panel:#0F1830;
     --panel-2:#141F3B;
@@ -21,6 +22,10 @@
     --steel:#B7C1CB;
     --text:#F5F7FB;
     --muted:#8C96AE;
+    --ok:#4FAE7C;
+    --ok-soft:rgba(79,174,124,0.14);
+    --warn:#D9A441;
+    --warn-soft:rgba(217,164,65,0.14);
     --radius:8px;
     --shadow:0 1px 2px rgba(0,0,0,0.25);
   }
@@ -324,6 +329,52 @@
     .row-name{white-space:normal;}
     .cal-month-grid{grid-template-columns:repeat(2,1fr);}
   }
+  /* ---------- Production Tracker additions ---------- */
+  .subnav{display:flex;gap:4px;margin-bottom:18px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:0;}
+  .subnav button{
+    all:unset;cursor:pointer;padding:9px 14px;font-size:12.5px;font-weight:600;color:var(--muted);
+    border-bottom:2px solid transparent;letter-spacing:0.2px;transition:color .15s,border-color .15s;
+  }
+  .subnav button:hover{color:var(--text);}
+  .subnav button.active{color:var(--accent-bright);border-bottom-color:var(--accent);}
+  .subsection{display:none;}
+  .subsection.active{display:block;}
+  table.data-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  table.data-table thead th{
+    text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.4px;color:var(--muted);
+    font-weight:700;padding:0 8px 10px;border-bottom:1px solid var(--line);
+  }
+  table.data-table tbody td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle;}
+  table.data-table tbody tr:hover{background:var(--panel-2);}
+  .carrier-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;}
+  .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .num{font-family:'Courier New',Courier,monospace;}
+  .status-pill{display:inline-block;padding:4px 10px;border-radius:20px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;}
+  .status-Submitted{background:#16213A;color:var(--muted);}
+  .status-Pending{background:var(--warn-soft);color:var(--warn);}
+  .status-Issued-Paid{background:var(--ok-soft);color:var(--ok);}
+  .status-Not-Taken{background:#16213A;color:var(--muted);}
+  .status-Declined{background:var(--blood-soft);color:var(--blood-bright);}
+  .status-Lapsed-Chargeback{background:var(--blood-soft);color:var(--blood-bright);}
+  .table-toolbar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;justify-content:space-between;}
+  .table-toolbar select,.table-toolbar input{width:auto;min-width:130px;}
+  .row-actions{display:flex;gap:6px;}
+  .carrier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .carrier-card{border:1px solid var(--line);border-radius:10px;padding:16px;background:var(--panel-2);}
+  .carrier-card .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+  .carrier-card .name{font-weight:700;font-size:14.5px;color:var(--text);display:flex;align-items:center;gap:8px;}
+  .carrier-stats{display:flex;gap:16px;margin-top:8px;flex-wrap:wrap;}
+  .carrier-stats div{font-size:11px;color:var(--muted);}
+  .carrier-stats span{display:block;font-family:'Courier New',Courier,monospace;font-size:15px;color:var(--text);font-weight:700;margin-top:2px;}
+  .calc-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px;padding:14px;background:var(--panel-2);border:1px dashed var(--line);border-radius:10px;}
+  .calc-item .k{font-size:10.5px;text-transform:uppercase;color:var(--muted);letter-spacing:0.4px;margin-bottom:3px;}
+  .calc-item .v{font-family:'Courier New',Courier,monospace;font-size:16px;font-weight:700;color:var(--text);}
+  .backend-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;padding-top:8px;}
+  .backend-toggle input{width:15px;height:15px;padding:0;}
+  @media (max-width:760px){
+    .carrier-grid{grid-template-columns:1fr;}
+    .calc-strip{grid-template-columns:repeat(2,1fr);}
+  }
 </style>
 </head>
 <body>
@@ -399,6 +450,7 @@
   <button class="tab-btn active" data-tab="leaderboard">Leaderboard</button>
   <button class="tab-btn" data-tab="calendar">Calendar</button>
   <button class="tab-btn" data-tab="logsale">Log a Sale</button>
+  <button class="tab-btn" data-tab="production">My Production</button>
   <button class="tab-btn" data-tab="activity">My Activity</button>
   <button class="tab-btn" data-tab="settings">Settings</button>
   <button class="tab-btn hidden" data-tab="admin" id="adminTabBtn">Admin</button>
@@ -458,7 +510,7 @@
       </div>
     </div>
   </section>
-  <!-- ============ CALENDAR ============ -->
+  <!-- ============ CALENDAR (TEAM) ============ -->
   <section id="tab-calendar" class="tab-content hidden">
     <div class="page-head">
       <div>
@@ -510,7 +562,7 @@
     <div class="page-head">
       <div>
         <h1>Log a Sale</h1>
-        <p>Every submission counts toward the team board instantly — and posts straight to Slack.</p>
+        <p>Every submission posts to the team board and Slack instantly — and drops straight into your Production Tracker.</p>
       </div>
     </div>
     <div class="panel">
@@ -520,16 +572,47 @@
           <input id="ls_date" type="date">
         </div>
         <div class="field">
-          <label>Annual Premium ($)</label>
-          <input id="ls_amount" type="number" min="0" step="0.01" placeholder="1200.00">
-        </div>
-        <div class="field">
-          <label>Carrier</label>
-          <input id="ls_carrier" type="text" placeholder="Foresters">
-        </div>
-        <div class="field">
           <label>Effective Date</label>
           <input id="ls_effective_date" type="date">
+        </div>
+        <div class="field">
+          <label>Carrier <span class="hint">start typing, or add new</span></label>
+          <input id="ls_carrier" type="text" list="carrierDatalist" placeholder="Foresters">
+          <datalist id="carrierDatalist"></datalist>
+        </div>
+        <div class="field">
+          <label>Premium Type</label>
+          <select id="ls_premtype">
+            <option value="monthly">Monthly</option>
+            <option value="annual">Annual</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Premium Amount ($)</label>
+          <input id="ls_amount" type="number" min="0" step="0.01" placeholder="120.00">
+        </div>
+        <div class="field">
+          <label>Comp Rate (%) <span class="hint">auto-fills from your carrier</span></label>
+          <input id="ls_comp" type="number" min="0" max="200" step="0.1" placeholder="80">
+        </div>
+        <div class="field">
+          <label>Advance Cap ($) <span class="hint">optional</span></label>
+          <input id="ls_advance_cap" type="number" min="0" step="1" placeholder="No cap">
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <select id="ls_status">
+            <option>Submitted</option>
+            <option>Pending</option>
+            <option>Issued & Paid</option>
+            <option>Not Taken</option>
+            <option>Declined</option>
+            <option>Lapsed / Chargeback</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Client Name <span class="hint">kept private to your tracker</span></label>
+          <input id="ls_client" type="text" placeholder="Jane Smith">
         </div>
         <div class="field">
           <label>First Time Submitting Business</label>
@@ -538,10 +621,41 @@
             <option value="Yes">✅ Yes</option>
           </select>
         </div>
+        <div class="field backend-toggle" style="margin-top:22px;">
+          <input type="checkbox" id="ls_backend_received">
+          <label style="text-transform:none;font-weight:500;font-size:13px;">Backend already received</label>
+        </div>
         <div class="field">
+          <label>Referral Sale?</label>
+          <select id="ls_referral_sale">
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Referrals Collected?</label>
+          <select id="ls_referrals_collected">
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Reset?</label>
+          <select id="ls_reset">
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+          </select>
+        </div>
+        <div class="field span-2">
           <label>Note <span class="hint">optional</span></label>
           <input id="ls_note" type="text" placeholder="Optional note">
         </div>
+      </div>
+      <div class="calc-strip">
+        <div class="calc-item"><div class="k">Annual Premium</div><div class="v" id="ls_calc_ap">$0.00</div></div>
+        <div class="calc-item"><div class="k">Total Commission</div><div class="v" id="ls_calc_comm">$0.00</div></div>
+        <div class="calc-item"><div class="k">Advance (paid now, 75%)</div><div class="v" id="ls_calc_adv">$0.00</div><div class="sub" id="ls_calc_capnote" style="margin-top:2px;font-size:11px;color:var(--warn);"></div></div>
+        <div class="calc-item"><div class="k">Backend (mo. 10–12)</div><div class="v" id="ls_calc_back">$0.00</div></div>
       </div>
       <div class="btn-row">
         <button class="btn btn-gold" id="submitEntryBtn">Submit to the board</button>
@@ -616,235 +730,15 @@
           6. <strong>Deploy → New deployment → Web app</strong> → Execute as <strong>Me</strong>, Access <strong>Anyone</strong> → Deploy → authorize it.<br>
           7. Copy the Web app URL (ends in <code>/exec</code>).<br>
           8. Paste that URL into the <code>SHEET_API_URL</code> constant near the top of this file's <code>&lt;script&gt;</code> tag, replacing the empty quotes.<br>
-          9. Save the file and send it to your whole team — everyone who opens it will create their own login, and every submission syncs to the same sheet and posts to Slack automatically.<br>
-          10. If you ever update the script's code, redeploy via <strong>Deploy → Manage deployments → edit → Version: New version</strong> to keep the same URL.
+          9. Save the file and send it to your whole team — everyone who opens it will create their own login, and every submission syncs to the same sheet, posts to Slack, and lands in that agent's own Production Tracker automatically.<br>
+          10. If you ever update the script's code (for example, upgrading from an older version that didn't have Production Tracker support), redeploy via <strong>Deploy → Manage deployments → edit → Version: New version</strong> to keep the same URL — everyone keeps working with zero changes on their end.
         </div>
-        <textarea readonly style="margin-top:10px;height:300px;font-family:'Courier New', Courier, monospace;font-size:11px;width:100%;background:#090E1A;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:12px;" onclick="this.select()">// ====== CHOSEN LEADERBOARD BACKEND ======
-var USERS_SHEET = "Users";       // email | passwordHash | displayName | createdAt
-var SESSIONS_SHEET = "Sessions"; // token | email | createdAt
-var ENTRIES_SHEET = "Entries";   // id | email | displayName | amount | date | notes | createdAt | carrier | effectiveDate | referrals | reset | firstTime
-var ADMIN_EMAILS = ["kian.dolezal1@gmail.com", "toddhenningjr@gmail.com"]; // must match ADMIN_EMAILS in the website file exactly (lowercase-insensitive)
-
-// Paste your Slack Bot User OAuth Token here (starts with xoxb-, see setup steps 3-4 above). Leave blank to skip Slack posting.
-var SLACK_BOT_TOKEN = "";
-// The channel ID the bot should post to (starts with C, from "View channel details" in Slack). The bot must be invited to this channel first.
-var SLACK_CHANNEL = "";
-// Optional: link back to this app from the Slack message (paste the published page URL once you have one).
-var APP_URL = "";
-
-function doGet(e) {
-  try {
-    var action = e.parameter.action;
-    if (action === "getEntries") {
-      var email = emailForToken_(e.parameter.token);
-      if (!email) return json_({ok:false, error:"invalid_session"});
-      return json_({ok:true, entries: getAllEntries_()});
-    }
-    return json_({ok:false, error:"unknown_action"});
-  } catch (err) {
-    return json_({ok:false, error:String(err)});
-  }
-}
-function doPost(e) {
-  var lock = LockService.getScriptLock();
-  lock.waitLock(10000);
-  try {
-    var body = JSON.parse(e.postData.contents);
-    var action = body.action;
-    if (action === "signup") {
-      var email = normalizeEmail_(body.email);
-      var displayName = (body.displayName || email).toString().trim();
-      if (!email || !body.hash) return json_({ok:false, error:"missing_fields"});
-      if (findUserRow_(email) > -1) return json_({ok:false, error:"email_taken"});
-      getSheet_(USERS_SHEET).appendRow([email, body.hash, displayName, new Date()]);
-      var token = createSession_(email);
-      return json_({ok:true, token: token, email: email, displayName: displayName});
-    }
-    if (action === "login") {
-      var email = normalizeEmail_(body.email);
-      var row = findUserRow_(email);
-      if (row === -1) return json_({ok:false, error:"invalid_credentials"});
-      var users = getSheet_(USERS_SHEET);
-      var storedHash = users.getRange(row, 2).getValue();
-      if (storedHash !== body.hash) return json_({ok:false, error:"invalid_credentials"});
-      var displayName = users.getRange(row, 3).getValue();
-      var token = createSession_(email);
-      return json_({ok:true, token: token, email: email, displayName: displayName});
-    }
-    if (action === "logout") {
-      var row = findSessionRow_(body.token);
-      if (row > -1) getSheet_(SESSIONS_SHEET).deleteRow(row);
-      return json_({ok:true});
-    }
-    if (action === "addEntry") {
-      var email = emailForToken_(body.token);
-      if (!email) return json_({ok:false, error:"invalid_session"});
-      var displayName = displayNameForEmail_(email);
-      var id = Utilities.getUuid();
-      var carrier = (body.carrier || "").toString();
-      var effectiveDate = (body.effectiveDate || "").toString();
-      var referrals = (body.referrals || "No").toString();
-      var reset = (body.reset || "No").toString();
-      var firstTime = (body.firstTime || "No").toString();
-      getSheet_(ENTRIES_SHEET).appendRow([id, email, displayName, Number(body.amount)||0, body.date || "", body.notes || "", new Date(), carrier, effectiveDate, referrals, reset, firstTime]);
-      postToSlack_(displayName, Number(body.amount)||0, carrier, effectiveDate, referrals, reset, firstTime);
-      return json_({ok:true, id: id});
-    }
-    if (action === "deleteEntry") {
-      var email = emailForToken_(body.token);
-      if (!email) return json_({ok:false, error:"invalid_session"});
-      var isAdmin = isAdminEmail_(email);
-      var sheet = getSheet_(ENTRIES_SHEET);
-      var values = sheet.getDataRange().getValues();
-      for (var i = 0; i < values.length; i++) {
-        if (values[i][0] === body.id && (values[i][1] === email || isAdmin)) {
-          sheet.deleteRow(i + 1);
-          return json_({ok:true});
-        }
-      }
-      return json_({ok:false, error:"not_found_or_not_yours"});
-    }
-    if (action === "editEntry") {
-      var email = emailForToken_(body.token);
-      if (!email) return json_({ok:false, error:"invalid_session"});
-      if (!isAdminEmail_(email)) return json_({ok:false, error:"admin_only"});
-      var sheet = getSheet_(ENTRIES_SHEET);
-      var values = sheet.getDataRange().getValues();
-      for (var i = 0; i < values.length; i++) {
-        if (values[i][0] === body.id) {
-          sheet.getRange(i + 1, 4).setValue(Number(body.amount) || 0); // amount
-          sheet.getRange(i + 1, 5).setValue(body.date || "");          // date
-          sheet.getRange(i + 1, 6).setValue(body.notes || "");         // notes
-          sheet.getRange(i + 1, 8).setValue(body.carrier || "");       // carrier
-          sheet.getRange(i + 1, 9).setValue(body.effectiveDate || ""); // effectiveDate
-          sheet.getRange(i + 1, 10).setValue(body.referrals || "No");  // referrals
-          sheet.getRange(i + 1, 11).setValue(body.reset || "No");      // reset
-          sheet.getRange(i + 1, 12).setValue(body.firstTime || "No");  // firstTime
-          return json_({ok:true});
-        }
-      }
-      return json_({ok:false, error:"not_found"});
-    }
-    if (action === "changePassword") {
-      var email = emailForToken_(body.token);
-      if (!email) return json_({ok:false, error:"invalid_session"});
-      var row = findUserRow_(email);
-      getSheet_(USERS_SHEET).getRange(row, 2).setValue(body.newHash);
-      return json_({ok:true});
-    }
-    return json_({ok:false, error:"unknown_action"});
-  } catch (err) {
-    return json_({ok:false, error:String(err)});
-  } finally {
-    lock.releaseLock();
-  }
-}
-function postToSlack_(displayName, amount, carrier, effectiveDate, referrals, reset, firstTime) {
-  if (!SLACK_BOT_TOKEN || !SLACK_CHANNEL) return; // not configured yet — skip silently
-  var check = function(v) { return v === "Yes" ? "✅" : "❌"; };
-  var lines = [
-    "🎉 *New Sale Submitted!*",
-    "*Agent:* " + displayName,
-    "*AP:* $" + amount,
-    "*Carrier:* " + (carrier || "—"),
-    "*Effective Date:* " + (effectiveDate || "—"),
-    "*Referrals Collected:* " + check(referrals),
-    "*Reset:* " + check(reset),
-    "*First Time Submitting Business:* " + check(firstTime)
-  ];
-  if (APP_URL) lines.push("👉 <" + APP_URL + "|Log your next sale>");
-  var payload = { channel: SLACK_CHANNEL, text: lines.join("\n") };
-  try {
-    var res = UrlFetchApp.fetch("https://slack.com/api/chat.postMessage", {
-      method: "post",
-      contentType: "application/json; charset=utf-8",
-      headers: { "Authorization": "Bearer " + SLACK_BOT_TOKEN },
-      payload: JSON.stringify(payload),
-      muteHttpExceptions: true
-    });
-    var result = JSON.parse(res.getContentText());
-    if (!result.ok) {
-      // Common causes: "not_in_channel" (bot needs /invite'd to the channel),
-      // "channel_not_found" (wrong channel ID), or "missing_scope" (add chat:write and reinstall).
-      Logger.log("Slack post failed: " + result.error);
-    }
-  } catch (err) {
-    // Slack post failing should never block the actual sale from saving.
-  }
-}
-function json_(obj) {
-  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
-}
-function normalizeEmail_(email) { return (email || "").toString().trim().toLowerCase(); }
-function isAdminEmail_(email) {
-  var n = normalizeEmail_(email);
-  for (var i = 0; i < ADMIN_EMAILS.length; i++) {
-    if (normalizeEmail_(ADMIN_EMAILS[i]) === n) return true;
-  }
-  return false;
-}
-function getSheet_(name) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheetByName(name);
-  if (!sheet) sheet = ss.insertSheet(name);
-  return sheet;
-}
-function findUserRow_(email) {
-  var values = getSheet_(USERS_SHEET).getDataRange().getValues();
-  for (var i = 0; i < values.length; i++) {
-    if (normalizeEmail_(values[i][0]) === email) return i + 1;
-  }
-  return -1;
-}
-function findSessionRow_(token) {
-  var values = getSheet_(SESSIONS_SHEET).getDataRange().getValues();
-  for (var i = 0; i < values.length; i++) {
-    if (values[i][0] === token) return i + 1;
-  }
-  return -1;
-}
-function emailForToken_(token) {
-  if (!token) return null;
-  var row = findSessionRow_(token);
-  if (row === -1) return null;
-  return getSheet_(SESSIONS_SHEET).getRange(row, 2).getValue();
-}
-function displayNameForEmail_(email) {
-  var row = findUserRow_(email);
-  if (row === -1) return email;
-  var name = getSheet_(USERS_SHEET).getRange(row, 3).getValue();
-  return name || email;
-}
-function createSession_(email) {
-  var token = Utilities.getUuid();
-  getSheet_(SESSIONS_SHEET).appendRow([token, email, new Date()]);
-  return token;
-}
-function getAllEntries_() {
-  var values = getSheet_(ENTRIES_SHEET).getDataRange().getValues();
-  var out = [];
-  for (var i = 0; i < values.length; i++) {
-    var r = values[i];
-    if (!r[0]) continue;
-    out.push({
-      id: r[0], email: r[1], displayName: r[2], amount: Number(r[3])||0, date: formatDate_(r[4]), notes: r[5] || "",
-      carrier: r[7] || "", effectiveDate: formatDate_(r[8]), referrals: r[9] || "No", reset: r[10] || "No", firstTime: r[11] || "No"
-    });
-  }
-  return out;
-}
-function formatDate_(v) {
-  if (!v) return "";
-  if (Object.prototype.toString.call(v) === "[object Date]") {
-    return Utilities.formatDate(v, Session.getScriptTimeZone(), "yyyy-MM-dd");
-  }
-  return String(v);
-}</textarea>
+        <textarea readonly id="backendScriptText" style="margin-top:10px;height:300px;font-family:'Courier New', Courier, monospace;font-size:11px;width:100%;background:#090E1A;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:12px;" onclick="this.select()"></textarea>
       </details>
     </div>
     <div class="panel">
       <h2 style="color:var(--blood-bright);">Danger zone</h2>
-      <p class="desc">Sign out of this device. Your submissions stay on the team sheet.</p>
+      <p class="desc">Sign out of this device. Your submissions stay on the team sheet, and your Production Tracker data stays on your account.</p>
       <div class="btn-row" style="justify-content:flex-start;">
         <button class="btn btn-danger" id="logoutBtnSettings">Log out</button>
       </div>
@@ -882,21 +776,528 @@ function formatDate_(v) {
       </div>
     </div>
   </section>
+  <!-- ============ MY PRODUCTION ============ -->
+  <section id="tab-production" class="tab-content hidden">
+    <div class="page-head">
+      <div>
+        <h1>My Production</h1>
+        <p>Your private commission tracker — carriers, comp, advances, backend, deposits, and lead spend. Fed automatically from Log a Sale.</p>
+      </div>
+    </div>
+    <div class="subnav" id="ptSubnav">
+      <button class="pt-subtab-btn active" data-sub="dashboard">Overview</button>
+      <button class="pt-subtab-btn" data-sub="saleslog">Sales Log</button>
+      <button class="pt-subtab-btn" data-sub="calendar">Calendar</button>
+      <button class="pt-subtab-btn" data-sub="deposits">Deposits</button>
+      <button class="pt-subtab-btn" data-sub="leadspend">Lead Spend</button>
+      <button class="pt-subtab-btn" data-sub="carriers">Carriers</button>
+      <button class="pt-subtab-btn" data-sub="data">Data</button>
+    </div>
+
+    <!-- ---- Overview ---- -->
+    <div id="pt-sub-dashboard" class="subsection active">
+      <div class="period-tabs" id="pt_periodTabs">
+        <button class="period-tab" data-period="day">Today</button>
+        <button class="period-tab" data-period="week">This Week</button>
+        <button class="period-tab active" data-period="month">This Month</button>
+        <button class="period-tab" data-period="year">This Year</button>
+        <button class="period-tab" data-period="all">All Time</button>
+        <button class="period-tab" data-period="custom">Custom Range</button>
+      </div>
+      <div class="panel hidden" id="pt_customRangeRow" style="padding:16px 18px;">
+        <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+          <div class="field" style="min-width:150px;">
+            <label>From</label>
+            <input id="pt_customRangeFrom" type="date">
+          </div>
+          <div class="field" style="min-width:150px;">
+            <label>To</label>
+            <input id="pt_customRangeTo" type="date">
+          </div>
+          <button class="btn btn-gold" id="pt_applyCustomRangeBtn" style="margin-bottom:0;">Apply</button>
+        </div>
+      </div>
+      <div class="panel">
+        <h2 id="pt_periodPanelTitle">This Month</h2>
+        <p class="desc">AP submitted, commission earned, expected vs. actual deposits, and lead spend for the selected period.</p>
+        <div class="calc-strip" style="margin-top:0;">
+          <div class="calc-item"><div class="k">AP Submitted</div><div class="v" id="pt_pmAP">$0</div></div>
+          <div class="calc-item"><div class="k">Applications</div><div class="v" id="pt_pmCount">0</div></div>
+          <div class="calc-item"><div class="k">Average AP / Sale</div><div class="v" id="pt_pmAvgAP">$0</div></div>
+          <div class="calc-item"><div class="k">Issued &amp; Paid</div><div class="v" id="pt_pmIssued">0</div></div>
+          <div class="calc-item"><div class="k">Issued &amp; Paid AP</div><div class="v" id="pt_pmIssuedAP">$0</div></div>
+          <div class="calc-item"><div class="k">Commission Earned</div><div class="v" id="pt_pmComm">$0</div></div>
+          <div class="calc-item"><div class="k">Advance Paid</div><div class="v" id="pt_pmAdvance">$0</div></div>
+          <div class="calc-item"><div class="k">Expected Deposits</div><div class="v" id="pt_pmExpectedDeposits">$0</div></div>
+          <div class="calc-item"><div class="k">Actual Deposits</div><div class="v" id="pt_pmDeposits">$0</div></div>
+          <div class="calc-item"><div class="k">Deposit Gap</div><div class="v" id="pt_pmDepositGap">$0</div></div>
+          <div class="calc-item"><div class="k">Lead Spend</div><div class="v" id="pt_pmLeadSpend">$0</div></div>
+          <div class="calc-item"><div class="k">Cost / Sale</div><div class="v" id="pt_pmCostPerSale">$0</div></div>
+          <div class="calc-item"><div class="k">Cost / Lead</div><div class="v" id="pt_pmCostPerLead">$0</div></div>
+          <div class="calc-item"><div class="k">ROI</div><div class="v" id="pt_pmROI">—</div></div>
+        </div>
+      </div>
+      <div class="tiles" style="grid-template-columns:repeat(3,1fr);">
+        <div class="tile">
+          <div class="label">Annualized Premium Submitted (All-Time)</div>
+          <div class="value" id="pt_tileSubmittedAP">$0</div>
+          <div class="sub" id="pt_tileSubmittedCount">0 applications</div>
+        </div>
+        <div class="tile">
+          <div class="label">Issued &amp; Paid</div>
+          <div class="value" id="pt_tileIssuedCount">0</div>
+          <div class="sub" id="pt_tileIssuedAP">$0 in AP</div>
+        </div>
+        <div class="tile">
+          <div class="label">Issued &amp; Paid Business (AP)</div>
+          <div class="value" id="pt_tileIssuedAPMain">$0</div>
+          <div class="sub" id="pt_tileIssuedAPCount">0 policies issued</div>
+        </div>
+        <div class="tile">
+          <div class="label">Advance Paid Out</div>
+          <div class="value" id="pt_tileAdvance">$0</div>
+          <div class="sub">Paid on issue</div>
+        </div>
+        <div class="tile">
+          <div class="label">Backend Pending</div>
+          <div class="value" id="pt_tileBackendPending">$0</div>
+          <div class="sub" id="pt_tileBackendPendingCount">0 policies still earning out</div>
+        </div>
+        <div class="tile">
+          <div class="label">Backend Received</div>
+          <div class="value" id="pt_tileBackendReceived">$0</div>
+          <div class="sub">Collected after advance period</div>
+        </div>
+        <div class="tile">
+          <div class="label">Lapsed / Chargeback Risk</div>
+          <div class="value" id="pt_tileLapsed">$0</div>
+          <div class="sub" id="pt_tileLapsedCount">0 policies</div>
+        </div>
+        <div class="tile">
+          <div class="label">Expected Deposits (All-Time)</div>
+          <div class="value" id="pt_tileExpectedDepositsAll">$0</div>
+          <div class="sub">Advance + backend on issued policies</div>
+        </div>
+        <div class="tile">
+          <div class="label">Actual Deposits (All-Time)</div>
+          <div class="value" id="pt_tileDepositsAll">$0</div>
+          <div class="sub" id="pt_tileDepositsCount">0 deposits logged</div>
+        </div>
+        <div class="tile">
+          <div class="label">Deposit Gap (All-Time)</div>
+          <div class="value" id="pt_tileDepositGapAll">$0</div>
+          <div class="sub">Expected minus actual</div>
+        </div>
+        <div class="tile">
+          <div class="label">Total Lead Spend (All-Time)</div>
+          <div class="value" id="pt_tileLeadSpendAll">$0</div>
+          <div class="sub" id="pt_tileLeadSpendCount">0 leads purchased</div>
+        </div>
+        <div class="tile">
+          <div class="label">Average AP (All-Time)</div>
+          <div class="value" id="pt_tileAvgAPAll">$0</div>
+          <div class="sub">Per submitted application</div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Recent activity</h2>
+        <p class="desc">Your last 5 logged sales.</p>
+        <div id="pt_recentList"></div>
+      </div>
+    </div>
+    <!-- ---- Sales Log ---- -->
+    <div id="pt-sub-saleslog" class="subsection">
+      <div class="panel">
+        <div class="table-toolbar">
+          <input id="pt_searchClient" type="text" placeholder="Search client...">
+          <div class="filters" style="display:flex;gap:8px;flex-wrap:wrap;">
+            <select id="pt_filterCarrier"><option value="">All carriers</option></select>
+            <select id="pt_filterStatus">
+              <option value="">All statuses</option>
+              <option>Submitted</option>
+              <option>Pending</option>
+              <option>Issued & Paid</option>
+              <option>Not Taken</option>
+              <option>Declined</option>
+              <option>Lapsed / Chargeback</option>
+            </select>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date</th><th>Client</th><th>Carrier</th><th>AP</th><th>Comp %</th>
+              <th>Advance $</th><th>Backend $</th><th>Status</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="pt_salesTableBody"></tbody>
+        </table>
+        </div>
+        <div id="pt_salesEmptyState" class="empty-state hidden">
+          <div class="big">📋</div>
+          <div>No sales yet — submit one from <strong>Log a Sale</strong> and it'll land here automatically.</div>
+        </div>
+      </div>
+      <div class="panel hidden" id="pt_editPanel">
+        <h2 id="pt_e_title">Edit Sale</h2>
+        <p class="desc" id="pt_e_sub">Update this application. Comp, advance, and backend recalculate automatically. This does not change the team leaderboard entry.</p>
+        <div class="form-grid">
+          <div class="field">
+            <label>Client name</label>
+            <input id="pt_e_client" type="text">
+          </div>
+          <div class="field">
+            <label>Date submitted</label>
+            <input id="pt_e_date" type="date">
+          </div>
+          <div class="field">
+            <label>Effective date</label>
+            <input id="pt_e_effectiveDate" type="date">
+          </div>
+          <div class="field">
+            <label>Carrier</label>
+            <input id="pt_e_carrier" type="text" list="carrierDatalist">
+          </div>
+          <div class="field">
+            <label>Premium type</label>
+            <select id="pt_e_premType">
+              <option value="monthly">Monthly</option>
+              <option value="annual">Annual</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Premium amount ($)</label>
+            <input id="pt_e_premium" type="number" min="0" step="0.01">
+          </div>
+          <div class="field">
+            <label>Comp rate (%)</label>
+            <input id="pt_e_comp" type="number" min="0" max="200" step="0.1">
+          </div>
+          <div class="field">
+            <label>Advance rate (%) <span class="hint">fixed — always 75%</span></label>
+            <input id="pt_e_advance" type="number" value="75" readonly disabled style="opacity:0.6;cursor:not-allowed;">
+          </div>
+          <div class="field">
+            <label>Advance cap ($)</label>
+            <input id="pt_e_advanceCap" type="number" min="0" step="1">
+          </div>
+          <div class="field">
+            <label>Status</label>
+            <select id="pt_e_status">
+              <option>Submitted</option><option>Pending</option><option>Issued & Paid</option>
+              <option>Not Taken</option><option>Declined</option><option>Lapsed / Chargeback</option>
+            </select>
+          </div>
+          <div class="field backend-toggle" style="margin-top:22px;">
+            <input type="checkbox" id="pt_e_backendReceived">
+            <label style="text-transform:none;font-weight:500;font-size:13px;">Backend already received</label>
+          </div>
+          <div class="field">
+            <label>Referral sale?</label>
+            <select id="pt_e_referralSale"><option value="No">No</option><option value="Yes">Yes</option></select>
+          </div>
+          <div class="field">
+            <label>Referrals collected?</label>
+            <select id="pt_e_referralsCollected"><option value="No">No</option><option value="Yes">Yes</option></select>
+          </div>
+          <div class="field">
+            <label>Reset?</label>
+            <select id="pt_e_reset"><option value="No">No</option><option value="Yes">Yes</option></select>
+          </div>
+          <div class="field span-2">
+            <label>Notes</label>
+            <input id="pt_e_notes" type="text">
+          </div>
+        </div>
+        <div class="calc-strip">
+          <div class="calc-item"><div class="k">Annual Premium</div><div class="v" id="pt_e_calcAP">$0.00</div></div>
+          <div class="calc-item"><div class="k">Total Commission</div><div class="v" id="pt_e_calcComm">$0.00</div></div>
+          <div class="calc-item"><div class="k">Advance (paid now)</div><div class="v" id="pt_e_calcAdv">$0.00</div><div class="sub" id="pt_e_calcCapNote" style="margin-top:2px;"></div></div>
+          <div class="calc-item"><div class="k">Backend (mo. 10–12)</div><div class="v" id="pt_e_calcBack">$0.00</div></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-outline" id="pt_cancelSaleEditBtn">Cancel</button>
+          <button class="btn btn-gold" id="pt_updateSaleBtn">Update sale</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Calendar ---- -->
+    <div id="pt-sub-calendar" class="subsection">
+      <div class="panel">
+        <div class="cal-year-nav">
+          <button class="yr-btn" id="pt_calPrevYear">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <div class="yr-label" id="pt_calYearLabel">2026</div>
+          <button class="yr-btn" id="pt_calNextYear">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        </div>
+        <div class="cal-month-grid" id="pt_calMonthGrid"></div>
+      </div>
+      <div class="panel">
+        <h2 id="pt_calDetailTitle">Month metrics</h2>
+        <p class="desc">AP, commission, deposits, and lead spend for the selected month.</p>
+        <div class="calc-strip" style="margin-top:0;">
+          <div class="calc-item"><div class="k">AP Submitted</div><div class="v" id="pt_calAP">$0</div></div>
+          <div class="calc-item"><div class="k">Applications</div><div class="v" id="pt_calCount">0</div></div>
+          <div class="calc-item"><div class="k">Average AP / Sale</div><div class="v" id="pt_calAvgAP">$0</div></div>
+          <div class="calc-item"><div class="k">Issued &amp; Paid</div><div class="v" id="pt_calIssued">0</div></div>
+          <div class="calc-item"><div class="k">Commission Earned</div><div class="v" id="pt_calComm">$0</div></div>
+          <div class="calc-item"><div class="k">Expected Deposits</div><div class="v" id="pt_calExpectedDeposits">$0</div></div>
+          <div class="calc-item"><div class="k">Actual Deposits</div><div class="v" id="pt_calDeposits">$0</div></div>
+          <div class="calc-item"><div class="k">Deposit Gap</div><div class="v" id="pt_calDepositGap">$0</div></div>
+          <div class="calc-item"><div class="k">Lead Spend</div><div class="v" id="pt_calLeadSpend">$0</div></div>
+          <div class="calc-item"><div class="k">ROI</div><div class="v" id="pt_calROI">—</div></div>
+        </div>
+        <div style="overflow-x:auto;margin-top:18px;">
+        <table class="data-table">
+          <thead><tr><th>Date</th><th>Client</th><th>Carrier</th><th>AP</th><th>Status</th></tr></thead>
+          <tbody id="pt_calSalesBody"></tbody>
+        </table>
+        </div>
+        <div id="pt_calEmptyState" class="empty-state hidden">
+          <div class="big">🗓️</div>
+          <div>No sales logged for this month.</div>
+        </div>
+      </div>
+    </div>
+    <!-- ---- Deposits ---- -->
+    <div id="pt-sub-deposits" class="subsection">
+      <div class="panel">
+        <h2>Log a deposit</h2>
+        <div class="form-grid">
+          <div class="field">
+            <label>Date</label>
+            <input id="pt_dep_date" type="date">
+          </div>
+          <div class="field">
+            <label>Amount ($)</label>
+            <input id="pt_dep_amount" type="number" min="0" step="0.01" placeholder="450.00">
+          </div>
+          <div class="field span-2">
+            <label>Source <span class="hint">optional — e.g. client name, "Advance batch"</span></label>
+            <input id="pt_dep_source" type="text" placeholder="Jane Smith advance">
+          </div>
+          <div class="field span-2">
+            <label>Notes <span class="hint">optional</span></label>
+            <input id="pt_dep_notes" type="text" placeholder="Notes">
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-gold" id="pt_addDepositBtn">Log deposit</button>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Expected vs. actual</h2>
+        <p class="desc">Expected deposits are calculated automatically from each Issued &amp; Paid sale's advance + backend commission. Actual deposits are whatever you log below.</p>
+        <div class="calc-strip" style="margin-top:0;">
+          <div class="calc-item"><div class="k">Expected (All-Time)</div><div class="v" id="pt_depExpectedAll">$0</div></div>
+          <div class="calc-item"><div class="k">Actual (All-Time)</div><div class="v" id="pt_depTotalAll">$0</div></div>
+          <div class="calc-item"><div class="k">Gap (All-Time)</div><div class="v" id="pt_depGapAll">$0</div></div>
+          <div class="calc-item"><div class="k">Deposits Logged</div><div class="v" id="pt_depCountAll">0</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Deposit history</h2>
+        <div style="overflow-x:auto;margin-top:0;">
+        <table class="data-table">
+          <thead><tr><th>Date</th><th>Amount</th><th>Source</th><th>Notes</th><th></th></tr></thead>
+          <tbody id="pt_depositsTableBody"></tbody>
+        </table>
+        </div>
+        <div id="pt_depositsEmptyState" class="empty-state hidden">
+          <div class="big">💰</div>
+          <div>No deposits logged yet.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Lead Spend ---- -->
+    <div id="pt-sub-leadspend" class="subsection">
+      <div class="panel">
+        <h2>Log lead spend</h2>
+        <div class="form-grid">
+          <div class="field">
+            <label>Date</label>
+            <input id="pt_lead_date" type="date">
+          </div>
+          <div class="field">
+            <label>Source <span class="hint">e.g. Facebook, vendor name</span></label>
+            <input id="pt_lead_source" type="text" placeholder="Facebook Ads">
+          </div>
+          <div class="field">
+            <label>Amount spent ($)</label>
+            <input id="pt_lead_amount" type="number" min="0" step="0.01" placeholder="250.00">
+          </div>
+          <div class="field">
+            <label>Leads purchased <span class="hint">optional</span></label>
+            <input id="pt_lead_leads" type="number" min="0" step="1" placeholder="20">
+          </div>
+          <div class="field span-2">
+            <label>Notes <span class="hint">optional</span></label>
+            <input id="pt_lead_notes" type="text" placeholder="Notes">
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-gold" id="pt_addLeadSpendBtn">Log spend</button>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Import lead spend from CSV</h2>
+        <p class="desc">Headers (case-insensitive): <code>Date</code>, <code>Source</code>, <code>Amount</code>, <code>Leads</code>, <code>Notes</code>. Only Date and Amount are required.</p>
+        <div class="btn-row" style="justify-content:flex-start;margin-top:0;margin-bottom:12px;">
+          <input type="file" id="pt_importLeadSpendCsvFile" accept=".csv,text/csv">
+          <button class="btn btn-gold" id="pt_importLeadSpendCsvBtn">Import CSV</button>
+          <button class="btn btn-outline" id="pt_downloadLeadSpendTemplateBtn">Download template (.csv)</button>
+        </div>
+        <div id="pt_leadSpendImportResult" style="font-size:12.5px;min-height:16px;"></div>
+      </div>
+      <div class="panel">
+        <h2>Lead spend history</h2>
+        <div class="calc-strip" style="margin-top:0;">
+          <div class="calc-item"><div class="k">Total Spend</div><div class="v" id="pt_lsTotalAll">$0</div></div>
+          <div class="calc-item"><div class="k">This Month</div><div class="v" id="pt_lsTotalMonth">$0</div></div>
+          <div class="calc-item"><div class="k">Total Leads</div><div class="v" id="pt_lsLeadsAll">0</div></div>
+          <div class="calc-item"><div class="k">Cost / Lead</div><div class="v" id="pt_lsCostPerLead">$0</div></div>
+          <div class="calc-item"><div class="k">Cost / Sale (All-Time)</div><div class="v" id="pt_lsCostPerSale">$0</div></div>
+          <div class="calc-item"><div class="k">ROI (All-Time)</div><div class="v" id="pt_lsROIAll">—</div></div>
+        </div>
+        <div style="overflow-x:auto;margin-top:18px;">
+        <table class="data-table">
+          <thead><tr><th>Date</th><th>Source</th><th>Amount</th><th>Leads</th><th>Notes</th><th></th></tr></thead>
+          <tbody id="pt_leadSpendTableBody"></tbody>
+        </table>
+        </div>
+        <div id="pt_leadSpendEmptyState" class="empty-state hidden">
+          <div class="big">📣</div>
+          <div>No lead spend logged yet.</div>
+        </div>
+      </div>
+    </div>
+    <!-- ---- Carriers ---- -->
+    <div id="pt-sub-carriers" class="subsection">
+      <div class="panel">
+        <h2 id="pt_carrierFormTitle">Add a carrier</h2>
+        <p class="desc">Your carrier list is personal to you — comp rates often differ by agent contract. Editing a carrier's rates offers to update every existing sale for that carrier too.</p>
+        <div class="form-grid">
+          <div class="field">
+            <label>Carrier name</label>
+            <input id="pt_c_name" type="text" placeholder="e.g. Mutual of Omaha">
+          </div>
+          <div class="field">
+            <label>Default comp rate (%)</label>
+            <input id="pt_c_comp" type="number" min="0" max="200" step="0.1" placeholder="80">
+          </div>
+          <div class="field">
+            <label>Advance rate (%) <span class="hint">fixed — always 75%</span></label>
+            <input id="pt_c_advance" type="number" value="75" readonly disabled style="opacity:0.6;cursor:not-allowed;">
+          </div>
+          <div class="field">
+            <label>Default advance cap ($) <span class="hint">optional</span></label>
+            <input id="pt_c_cap" type="number" min="0" step="1" placeholder="No cap">
+          </div>
+          <div class="field">
+            <label>Backend release <span class="hint">months</span></label>
+            <input id="pt_c_months" type="number" min="0" step="1" placeholder="9">
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-outline hidden" id="pt_cancelCarrierEditBtn">Cancel</button>
+          <button class="btn btn-gold" id="pt_addCarrierBtn">Add carrier</button>
+        </div>
+      </div>
+      <div class="panel hidden" id="pt_cascadeConfirmPanel" style="border-color:var(--accent);">
+        <h2>Update existing sales too?</h2>
+        <p class="desc" id="pt_cascadeConfirmDesc" style="margin-bottom:14px;"></p>
+        <div class="calc-strip" style="margin-top:0;">
+          <div class="calc-item"><div class="k">Sales for this carrier</div><div class="v" id="pt_cascadeSaleCount">0</div></div>
+          <div class="calc-item"><div class="k">New Comp Rate</div><div class="v" id="pt_cascadeNewComp">0%</div></div>
+          <div class="calc-item"><div class="k">Expected Deposits Before</div><div class="v" id="pt_cascadeDepBefore">$0</div></div>
+          <div class="calc-item"><div class="k">Expected Deposits After</div><div class="v" id="pt_cascadeDepAfter">$0</div></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-outline" id="pt_cascadeSkipBtn">Just update the carrier</button>
+          <button class="btn btn-gold" id="pt_cascadeApplyBtn">Update carrier + these sales</button>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Your carriers</h2>
+        <div class="carrier-grid" id="pt_carrierGrid"></div>
+        <div id="pt_carrierEmptyState" class="empty-state hidden">
+          <div class="big">🏢</div>
+          <div>No carriers yet. Add one above, or just log a sale — new carriers are created automatically.</div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Sync all sales to current carrier rates</h2>
+        <p class="desc">
+          Brings every sale's comp %, advance %, and cap in line with what's currently set on its carrier, recalculating
+          commission, advance $, backend $, and Expected Deposits to match. This also merges any carriers that share the
+          exact same name.
+        </p>
+        <div class="btn-row" style="justify-content:flex-start;">
+          <button class="btn btn-gold" id="pt_syncAllSalesBtn">Merge duplicates &amp; sync all sales now</button>
+        </div>
+        <div id="pt_syncAllSalesResult" style="font-size:12.5px;min-height:16px;margin-top:10px;"></div>
+      </div>
+    </div>
+
+    <!-- ---- Data ---- -->
+    <div id="pt-sub-data" class="subsection">
+      <div class="panel">
+        <h2>Export</h2>
+        <p class="desc">Download a backup of your Production Tracker data, or a CSV to open in a spreadsheet.</p>
+        <div class="btn-row" style="justify-content:flex-start;">
+          <button class="btn btn-outline" id="pt_exportJsonBtn">Download backup (.json)</button>
+          <button class="btn btn-outline" id="pt_exportCsvBtn">Download sales CSV</button>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Import</h2>
+        <p class="desc">Restore from a previously downloaded backup file. This replaces your current Production Tracker data (carriers, sales, deposits, lead spend) — it does not touch the team leaderboard.</p>
+        <input type="file" id="pt_importFile" accept="application/json">
+      </div>
+      <div class="panel">
+        <h2>Bulk import historical sales from CSV</h2>
+        <p class="desc">
+          For backfilling old business into your tracker only — these do <strong>not</strong> post to the team leaderboard or Slack.
+          Only <strong>Carrier</strong> and <strong>Annualized Premium</strong> (or <code>Premium</code> + <code>Premium Type</code>) are required.
+          Recognized headers (case-insensitive): <code>Carrier</code>, <code>Effective Date</code>, <code>Annualized Premium</code>, <code>Submit Date</code>,
+          <code>Client</code>, <code>Comp %</code>, <code>Advance Cap</code>, <code>Status</code>, <code>Backend Received</code> (Yes/No),
+          <code>Referral Sale</code> (Yes/No), <code>Referrals Collected</code> (Yes/No), <code>Reset</code> (Yes/No), <code>Notes</code>.
+        </p>
+        <div class="btn-row" style="justify-content:flex-start;margin-top:0;margin-bottom:16px;">
+          <button class="btn btn-outline" id="pt_downloadSalesTemplateBtn">Download template (.xlsx)</button>
+        </div>
+        <div class="btn-row" style="justify-content:flex-start;margin-top:0;margin-bottom:12px;">
+          <input type="file" id="pt_importCsvFile" accept=".csv,text/csv">
+          <button class="btn btn-gold" id="pt_importCsvBtn">Import CSV</button>
+        </div>
+        <div id="pt_csvImportResult" style="font-size:12.5px;min-height:16px;"></div>
+      </div>
+      <div class="panel">
+        <h2 style="color:var(--blood-bright);">Danger zone</h2>
+        <p class="desc">Permanently deletes every carrier, sale, deposit, and lead-spend entry in your Production Tracker. This does not touch the team leaderboard. Download a backup first.</p>
+        <div class="btn-row" style="justify-content:flex-start;">
+          <button class="btn btn-danger" id="pt_clearTrackerBtn">Clear my Production Tracker data</button>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 <div id="savedToast"></div>
 <script>
+  // Shared by both the Chosen leaderboard IIFE and the Production Tracker IIFE below —
+  // top-level const/let declared in one <script> tag are visible to later <script> tags
+  // in the same document, so both halves of this file always point at the same backend.
+  const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbzZGM5KV8gX0PnGIvE41Ty_gh9FhswH2rtxpKUu9ZNbVWsEegONoTAGXZ8BLFUpIvnk/exec";
+</script>
+<script>
 (function(){
   "use strict";
-  /* ============================================================
-     TEAM SHEET CONFIG
-     Paste your Google Apps Script Web App URL between the quotes
-     below (see Settings → Setup instructions). This tracker will
-     not work for anyone until this is filled in and the file is
-     shared with the team. Slack posting is configured separately,
-     inside the Apps Script itself (SLACK_BOT_TOKEN + SLACK_CHANNEL)
-     — see the same setup instructions.
-     ============================================================ */
-  const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbzZGM5KV8gX0PnGIvE41Ty_gh9FhswH2rtxpKUu9ZNbVWsEegONoTAGXZ8BLFUpIvnk/exec";
   const AUTH_TOKEN_KEY = "cf_auth_token_v1";
   const AUTH_EMAIL_KEY = "cf_auth_email_v1";
   const AUTH_NAME_KEY = "cf_auth_name_v1";
@@ -907,7 +1308,7 @@ function formatDate_(v) {
   function isAdmin(){ return currentAuth.email && ADMIN_EMAILS.some(a=>a.toLowerCase()===currentAuth.email.toLowerCase()); }
   const cloudConfigured = !!SHEET_API_URL && SHEET_API_URL.indexOf("http") === 0;
   let currentAuth = { token: null, email: null, displayName: null };
-  let entries = []; // {id, email, displayName, amount, date, notes, carrier, effectiveDate, referrals, reset, firstTime}
+  let entries = []; // {id, email, displayName, amount, date, notes, carrier, effectiveDate, referrals, reset, firstTime, referralSale}
   let currentPeriod = "month";
   let calYear = new Date().getFullYear();
   let calSelectedMonth = new Date().getMonth();
@@ -926,9 +1327,6 @@ function formatDate_(v) {
   }
   function badge(v){
     return v === "Yes" ? '<span style="color:var(--accent-bright);">✅</span>' : '<span style="color:var(--blood-bright);">❌</span>';
-  }
-  function initials(name){
-    return (name||"?").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase();
   }
   async function hashPassword(password, email){
     const enc = new TextEncoder().encode(password + ":" + email.trim().toLowerCase() + ":" + PEPPER);
@@ -1019,7 +1417,7 @@ function formatDate_(v) {
     errEl.textContent = "";
     if(!email || !pass){ errEl.textContent = "Enter your email and password."; return; }
     const btn = document.getElementById("authLoginBtn");
-    btn.textContent = "Entering..."; btn.disabled = true;
+    btn.textContent = "Logging in..."; btn.disabled = true;
     try{
       const hash = await hashPassword(pass, email);
       const json = await apiPost("login", {email, hash});
@@ -1041,6 +1439,7 @@ function formatDate_(v) {
       apiPost("logout", {token}).catch(()=>{});
     }
     entries = [];
+    if(window.PT) window.PT.setAuth(null);
     showAuthOverlay();
   }
   /* ---------------- Data fetch / submit ---------------- */
@@ -1064,26 +1463,100 @@ function formatDate_(v) {
       return false;
     }
   }
+  // Live calc preview on the Log a Sale form — mirrors the Production Tracker's own math
+  // (comp % of AP, 75% advance, 3 months' backend) so agents see it before submitting.
+  function lsCurrentCalc(){
+    const premium = parseFloat(document.getElementById("ls_amount").value) || 0;
+    const premType = document.getElementById("ls_premtype").value;
+    const comp = parseFloat(document.getElementById("ls_comp").value) || 0;
+    const cap = parseFloat(document.getElementById("ls_advance_cap").value) || 0;
+    if(window.PT) return window.PT.previewCalc(premium, premType, comp, cap);
+    const ap = premType === "annual" ? premium : premium*12;
+    const commission = ap * (comp/100);
+    let advanceAmt = commission * 0.75, capped = false;
+    if(cap > 0 && advanceAmt > cap){ advanceAmt = cap; capped = true; }
+    const backendAmt = (ap/12) * (comp/100) * 3;
+    return {ap, commission, advanceAmt, backendAmt, capped};
+  }
+  function lsRecalc(){
+    const {ap, commission, advanceAmt, backendAmt, capped} = lsCurrentCalc();
+    document.getElementById("ls_calc_ap").textContent = "$" + ap.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+    document.getElementById("ls_calc_comm").textContent = "$" + commission.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+    document.getElementById("ls_calc_adv").textContent = "$" + advanceAmt.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+    document.getElementById("ls_calc_back").textContent = "$" + backendAmt.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+    const note = document.getElementById("ls_calc_capnote");
+    note.textContent = capped ? "Capped by carrier max" : "";
+  }
+  function onLsCarrierChange(){
+    const name = document.getElementById("ls_carrier").value.trim();
+    const sugg = window.PT && window.PT.getCarrierCompSuggestion(name);
+    if(sugg){
+      document.getElementById("ls_comp").value = sugg.comp;
+      document.getElementById("ls_advance_cap").value = sugg.cap ? sugg.cap : "";
+    }
+    lsRecalc();
+  }
+  function refreshCarrierDatalist(){
+    if(!window.PT) return;
+    const names = window.PT.getCarrierNames();
+    const dl = document.getElementById("carrierDatalist");
+    if(!dl) return;
+    dl.innerHTML = "";
+    names.forEach(n=>{ const o = document.createElement("option"); o.value = n; dl.appendChild(o); });
+  }
+  window.__onPtCarriersChanged = refreshCarrierDatalist;
   async function submitEntry(){
     const date = document.getElementById("ls_date").value || todayISO();
-    const amount = parseFloat(document.getElementById("ls_amount").value);
-    const notes = document.getElementById("ls_note").value.trim();
-    const carrier = document.getElementById("ls_carrier").value.trim();
     const effectiveDate = document.getElementById("ls_effective_date").value || date;
+    const carrier = document.getElementById("ls_carrier").value.trim();
+    const client = document.getElementById("ls_client").value.trim();
+    const notes = document.getElementById("ls_note").value.trim();
     const firstTime = document.getElementById("ls_first_time").value;
-    if(isNaN(amount) || amount<=0){ alert("Enter an annual premium amount."); return; }
+    const premType = document.getElementById("ls_premtype").value;
+    const premium = parseFloat(document.getElementById("ls_amount").value);
+    const comp = parseFloat(document.getElementById("ls_comp").value) || 0;
+    const advanceCap = parseFloat(document.getElementById("ls_advance_cap").value) || 0;
+    const status = document.getElementById("ls_status").value;
+    const backendReceived = document.getElementById("ls_backend_received").checked;
+    const referralSale = document.getElementById("ls_referral_sale").value;
+    const referralsCollected = document.getElementById("ls_referrals_collected").value;
+    const reset = document.getElementById("ls_reset").value;
+    if(!carrier){ alert("Enter a carrier name."); return; }
+    if(!client){ alert("Enter a client name."); return; }
+    if(isNaN(premium) || premium<=0){ alert("Enter a premium amount."); return; }
+    const calc = lsCurrentCalc();
     const btn = document.getElementById("submitEntryBtn");
     btn.textContent = "Submitting..."; btn.disabled = true;
     try{
-      const json = await apiPost("addEntry", {token: currentAuth.token, amount, date, notes, carrier, effectiveDate, firstTime});
+      const json = await apiPost("addEntry", {
+        token: currentAuth.token, amount: calc.ap, date, notes, carrier, effectiveDate, firstTime,
+        referrals: referralsCollected, reset, referralSale
+      });
       if(!json.ok){ alert("Couldn't submit — try again."); return; }
+      // Drop it straight into the agent's own Production Tracker — same sale, same math.
+      if(window.PT){
+        await window.PT.addSaleFromEntry(json.id, {
+          client, carrierName: carrier, date, effectiveDate,
+          premium, premType, comp, advanceCap, status, backendReceived,
+          referralSale, referralsCollected, reset, notes
+        });
+      }
       document.getElementById("ls_amount").value = "";
       document.getElementById("ls_note").value = "";
       document.getElementById("ls_carrier").value = "";
+      document.getElementById("ls_client").value = "";
+      document.getElementById("ls_comp").value = "";
+      document.getElementById("ls_advance_cap").value = "";
       document.getElementById("ls_date").value = todayISO();
       document.getElementById("ls_effective_date").value = "";
       document.getElementById("ls_first_time").value = "No";
-      showToast("Submitted to the board + Slack");
+      document.getElementById("ls_status").value = "Submitted";
+      document.getElementById("ls_backend_received").checked = false;
+      document.getElementById("ls_referral_sale").value = "No";
+      document.getElementById("ls_referrals_collected").value = "No";
+      document.getElementById("ls_reset").value = "No";
+      lsRecalc();
+      showToast("Submitted to the board + your Production Tracker");
       await refreshEntries(true);
       renderAll();
     }catch(e){
@@ -1093,7 +1566,7 @@ function formatDate_(v) {
     }
   }
   async function deleteEntry(id){
-    if(!confirm("Remove this submission from the board?")) return;
+    if(!confirm("Remove this submission from the board? (This does not remove it from your Production Tracker.)")) return;
     try{
       const json = await apiPost("deleteEntry", {token: currentAuth.token, id});
       if(!json.ok){ alert("Couldn't remove that entry."); return; }
@@ -1157,6 +1630,7 @@ function formatDate_(v) {
       document.querySelectorAll(".tab-content").forEach(s=>s.classList.add("hidden"));
       document.getElementById("tab-"+btn.dataset.tab).classList.remove("hidden");
       renderAll();
+      if(btn.dataset.tab==="production" && window.PT) window.PT.onTabShown();
     });
   });
   document.querySelectorAll(".period-tab").forEach(btn=>{
@@ -1192,7 +1666,6 @@ function formatDate_(v) {
     document.getElementById("settingsAcctDesc").textContent = "Signed in as " + (currentAuth.displayName||"") + " (" + (currentAuth.email||"") + ").";
     document.getElementById("adminTabBtn").classList.toggle("hidden", !isAdmin());
     if(!isAdmin() && !document.getElementById("tab-admin").classList.contains("hidden")){
-      // Safety net: if somehow on the admin tab without being admin, bounce back to the leaderboard.
       document.querySelector('.tab-btn[data-tab="leaderboard"]').click();
       return;
     }
@@ -1424,6 +1897,12 @@ function formatDate_(v) {
   }
   /* ---------------- Wiring ---------------- */
   document.getElementById("submitEntryBtn").addEventListener("click", submitEntry);
+  ["ls_amount","ls_premtype","ls_comp","ls_advance_cap"].forEach(id=>{
+    document.getElementById(id).addEventListener("input", lsRecalc);
+    document.getElementById(id).addEventListener("change", lsRecalc);
+  });
+  document.getElementById("ls_carrier").addEventListener("input", onLsCarrierChange);
+  document.getElementById("ls_carrier").addEventListener("change", onLsCarrierChange);
   document.getElementById("refreshBoardBtn").addEventListener("click", async ()=>{
     await refreshEntries(true);
     renderAll();
@@ -1493,6 +1972,7 @@ function formatDate_(v) {
   async function initAfterAuth(){
     await refreshEntries(true);
     renderAll();
+    if(window.PT) await window.PT.setAuth({token: currentAuth.token, email: currentAuth.email, displayName: currentAuth.displayName});
     applyDeepLinkTab();
     if(pollTimer) clearInterval(pollTimer);
     pollTimer = setInterval(async ()=>{
@@ -1500,8 +1980,6 @@ function formatDate_(v) {
       if(ok) renderAll();
     }, 15000);
   }
-  // Opens straight to a given tab when the page URL includes ?tab=logsale (or any other tab id).
-  // Runs once, right after login, so a link from Slack lands where it should.
   function applyDeepLinkTab(){
     try{
       const params = new URLSearchParams(window.location.search);
@@ -1513,6 +1991,7 @@ function formatDate_(v) {
   }
   (async function init(){
     setDateDefault();
+    lsRecalc();
     const cloudDesc = document.getElementById("cloudSyncDesc");
     if(!cloudConfigured){
       cloudDesc.textContent = "Not connected yet. Follow the setup steps below, then paste the Web App URL into SHEET_API_URL in this file.";
@@ -1537,6 +2016,1426 @@ function formatDate_(v) {
     }
   })();
   window.addEventListener("beforeunload", ()=>{ if(pollTimer) clearInterval(pollTimer); });
+})();
+</script>
+<script>
+(function(){
+  "use strict";
+  /* ============================================================
+     PRODUCTION TRACKER — lives inside the "My Production" tab.
+     Uses the SAME Chosen account/session (no separate login) and
+     the SAME Google Apps Script backend (SHEET_API_URL, declared
+     once above) — just a different action (getTrackerData /
+     saveTrackerData) that stores one private JSON blob per agent.
+     ============================================================ */
+  const ADVANCE_RATE = 75; // advance is fixed at 75% everywhere — not user-editable
+  const PALETTE = ["#9FB8DE","#4FAE7C","#D9A441","#D96363","#B7C1CB","#7A8FB0","#6FA8A0","#C99A5B"];
+  const EMPTY_STATE = {agentName:"", carriers:[], sales:[], deposits:[], leadSpend:[]};
+  let currentAuth = null; // {token, email, displayName}
+  let state = Object.assign({}, EMPTY_STATE, {carriers:[], sales:[], deposits:[], leadSpend:[]});
+  let ptCurrentPeriod = "month";
+  let ptCalYear = new Date().getFullYear();
+  let ptCalSelectedMonth = new Date().getMonth();
+  let ptCustomRangeStart = null;
+  let ptCustomRangeEnd = null;
+  let editingSaleId = null;
+  let editingCarrierId = null;
+  let pendingCarrierUpdate = null;
+  let ptPollTimer = null;
+  let pushPromise = null;
+  let pushQueued = false;
+  let lastCloudSyncOk = null;
+  const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+  function fmtMoney(n){
+    n = isFinite(n) ? n : 0;
+    return "$" + n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+  }
+  function statusClass(s){ return "status-"+String(s).replace(/[^a-zA-Z]+/g,"-").replace(/^-|-$/g,""); }
+  function todayISO(){ return new Date().toISOString().slice(0,10); }
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+  function fmtROI(roi){
+    if(roi===null || !isFinite(roi)) return "—";
+    return (roi>=0?"+":"") + roi.toFixed(0) + "%";
+  }
+  function setGapText(id, gap){
+    const el = document.getElementById(id);
+    if(!el) return;
+    if(gap > 0.005){ el.textContent = fmtMoney(gap) + " owed"; el.style.color = "var(--warn)"; }
+    else if(gap < -0.005){ el.textContent = fmtMoney(Math.abs(gap)) + " extra"; el.style.color = "var(--ok)"; }
+    else { el.textContent = fmtMoney(0); el.style.color = ""; }
+  }
+  /* ---------------- Local cache + cloud sync ---------------- */
+  function storageKey(){ return "pt_data_v2_" + (currentAuth && currentAuth.email ? currentAuth.email.toLowerCase() : "anon"); }
+  function loadLocal(){
+    try{
+      const raw = localStorage.getItem(storageKey());
+      if(raw){
+        const parsed = JSON.parse(raw);
+        state = Object.assign({}, EMPTY_STATE, {carriers:[], sales:[], deposits:[], leadSpend:[]}, parsed);
+      }
+    }catch(e){ console.warn("PT: could not load local cache", e); }
+    if(!state.carriers) state.carriers = [];
+    if(!state.sales) state.sales = [];
+    if(!state.deposits) state.deposits = [];
+    if(!state.leadSpend) state.leadSpend = [];
+  }
+  function saveLocal(){
+    try{ localStorage.setItem(storageKey(), JSON.stringify(state)); }catch(e){ /* best effort */ }
+  }
+  async function pushToCloud(){
+    if(!currentAuth || !currentAuth.token) return;
+    if(pushPromise){ pushQueued = true; return pushPromise; }
+    pushPromise = (async ()=>{
+      try{
+        const res = await fetch(SHEET_API_URL, {
+          method:"POST",
+          headers:{"Content-Type":"text/plain;charset=utf-8"},
+          body: JSON.stringify({action:"saveTrackerData", token: currentAuth.token, data: state})
+        });
+        const json = await res.json();
+        if(!json.ok) throw new Error(json.error || "save_failed");
+        lastCloudSyncOk = true;
+      }catch(e){
+        lastCloudSyncOk = false;
+        console.warn("PT: cloud push failed", e);
+      }
+      pushPromise = null;
+      if(pushQueued){ pushQueued = false; await pushToCloud(); }
+    })();
+    return pushPromise;
+  }
+  async function pullFromCloud(force){
+    if(!currentAuth || !currentAuth.token) return false;
+    if(pushPromise) await pushPromise;
+    try{
+      const res = await fetch(SHEET_API_URL + "?action=getTrackerData&token=" + encodeURIComponent(currentAuth.token), {cache:"no-store"});
+      const json = await res.json();
+      if(!json.ok) throw new Error(json.error || "load_failed");
+      if(json.data && (json.data.carriers || json.data.sales || json.data.deposits || json.data.leadSpend)){
+        state = Object.assign({}, EMPTY_STATE, {carriers:[], sales:[], deposits:[], leadSpend:[]}, json.data);
+      }
+      lastCloudSyncOk = true;
+      saveLocal();
+      return true;
+    }catch(e){
+      lastCloudSyncOk = false;
+      console.warn("PT: cloud pull failed", e);
+      return false;
+    }
+  }
+  function saveState(){
+    saveLocal();
+    pushToCloud();
+  }
+  function carrierById(id){ return state.carriers.find(c=>c.id===id); }
+  function carrierByName(name){
+    const n = (name||"").trim().toLowerCase();
+    if(!n) return null;
+    return state.carriers.find(c=>c.name.trim().toLowerCase()===n) || null;
+  }
+  function computeCalc(premium, premType, comp, adv, cap){
+    const isMonthly = premType !== "annual";
+    const ap = isMonthly ? premium*12 : premium;
+    const monthlyPremium = isMonthly ? premium : premium/12;
+    const commission = ap * (comp/100);
+    let advanceAmt = commission * (ADVANCE_RATE/100);
+    let capped = false;
+    if(cap > 0 && advanceAmt > cap){ advanceAmt = cap; capped = true; }
+    const backendAmt = monthlyPremium * (comp/100) * 3;
+    return {ap, commission, advanceAmt, backendAmt, capped};
+  }
+  /* ---------------- Sub-nav ---------------- */
+  document.querySelectorAll(".pt-subtab-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      document.querySelectorAll(".pt-subtab-btn").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      document.querySelectorAll("#tab-production .subsection").forEach(s=>s.classList.remove("active"));
+      document.getElementById("pt-sub-"+btn.dataset.sub).classList.add("active");
+    });
+  });
+  /* ---------------- Period helpers ---------------- */
+  function getPtPeriodRange(period){
+    const d = new Date();
+    let start, end;
+    if(period==="day"){
+      start = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      end = new Date(d.getFullYear(), d.getMonth(), d.getDate()+1);
+    } else if(period==="week"){
+      const day = d.getDay();
+      start = new Date(d.getFullYear(), d.getMonth(), d.getDate()-day);
+      end = new Date(start.getFullYear(), start.getMonth(), start.getDate()+7);
+    } else if(period==="month"){
+      start = new Date(d.getFullYear(), d.getMonth(), 1);
+      end = new Date(d.getFullYear(), d.getMonth()+1, 1);
+    } else if(period==="year"){
+      start = new Date(d.getFullYear(), 0, 1);
+      end = new Date(d.getFullYear()+1, 0, 1);
+    } else if(period==="custom" && ptCustomRangeStart){
+      start = new Date(ptCustomRangeStart+"T00:00:00");
+      const endBase = ptCustomRangeEnd ? new Date(ptCustomRangeEnd+"T00:00:00") : new Date(ptCustomRangeStart+"T00:00:00");
+      end = new Date(endBase.getFullYear(), endBase.getMonth(), endBase.getDate()+1);
+    } else {
+      start = new Date(1970,0,1);
+      end = new Date(2999,0,1);
+    }
+    return {start, end};
+  }
+  function normalizeDateString(raw){
+    if(!raw) return "";
+    raw = String(raw).trim();
+    if(/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
+    let m = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+    if(m){
+      let yyyy = m[3].length === 2 ? "20"+m[3] : m[3];
+      const mm = m[1].padStart(2,"0");
+      const dd = m[2].padStart(2,"0");
+      return `${yyyy}-${mm}-${dd}`;
+    }
+    const d = new Date(raw);
+    if(!isNaN(d)){
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    }
+    return raw;
+  }
+  function dateInRangePt(dateStr, start, end){
+    if(!dateStr) return false;
+    const d = new Date(normalizeDateString(dateStr)+"T00:00:00");
+    if(isNaN(d)) return false;
+    return d>=start && d<end;
+  }
+  function computeMetrics(start, end){
+    const sales = state.sales.filter(s=>dateInRangePt(s.date, start, end));
+    const issued = sales.filter(s=>s.status==="Issued & Paid");
+    const totalAP = sales.reduce((a,s)=>a+s.ap,0);
+    const count = sales.length;
+    const avgAP = count ? totalAP/count : 0;
+    const totalCommission = issued.reduce((a,s)=>a+s.commission,0);
+    const issuedAP = issued.reduce((a,s)=>a+s.ap,0);
+    const advancePaid = issued.reduce((a,s)=>a+s.advanceAmt,0);
+    const expectedDeposits = issued.reduce((a,s)=>a+s.advanceAmt+s.backendAmt,0);
+    const deposits = state.deposits.filter(d=>dateInRangePt(d.date,start,end)).reduce((a,d)=>a+(d.amount||0),0);
+    const depositGap = expectedDeposits - deposits;
+    const spendEntries = state.leadSpend.filter(l=>dateInRangePt(l.date,start,end));
+    const leadSpend = spendEntries.reduce((a,l)=>a+(l.amount||0),0);
+    const leadsCount = spendEntries.reduce((a,l)=>a+(l.leads||0),0);
+    const costPerSale = count ? leadSpend/count : 0;
+    const costPerLead = leadsCount ? leadSpend/leadsCount : 0;
+    const roi = leadSpend>0 ? ((totalCommission-leadSpend)/leadSpend*100) : null;
+    return {totalAP, count, avgAP, totalCommission, issuedAP, advancePaid, expectedDeposits, deposits, depositGap, leadSpend, leadsCount, costPerSale, costPerLead, roi, issuedCount: issued.length};
+  }
+  document.querySelectorAll("#pt_periodTabs .period-tab").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      document.querySelectorAll("#pt_periodTabs .period-tab").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      ptCurrentPeriod = btn.dataset.period;
+      const row = document.getElementById("pt_customRangeRow");
+      if(ptCurrentPeriod==="custom"){
+        row.classList.remove("hidden");
+        if(!ptCustomRangeStart){
+          const now = new Date();
+          document.getElementById("pt_customRangeFrom").value = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0,10);
+          document.getElementById("pt_customRangeTo").value = todayISO();
+        }
+      } else {
+        row.classList.add("hidden");
+      }
+      renderPtDashboard();
+    });
+  });
+  document.getElementById("pt_applyCustomRangeBtn").addEventListener("click", ()=>{
+    const from = document.getElementById("pt_customRangeFrom").value;
+    const to = document.getElementById("pt_customRangeTo").value;
+    if(!from){ alert("Pick a start date."); return; }
+    ptCustomRangeStart = from;
+    ptCustomRangeEnd = to || from;
+    renderPtDashboard();
+  });
+  function renderPtPeriodMetrics(){
+    const {start, end} = getPtPeriodRange(ptCurrentPeriod);
+    const m = computeMetrics(start, end);
+    const titles = {day:"Today", week:"This Week", month:"This Month", year:"This Year", all:"All Time", custom:"Custom Range"};
+    let title = titles[ptCurrentPeriod] || "Period";
+    if(ptCurrentPeriod==="custom" && ptCustomRangeStart){
+      title = ptCustomRangeStart + (ptCustomRangeEnd && ptCustomRangeEnd!==ptCustomRangeStart ? " – " + ptCustomRangeEnd : "");
+    }
+    document.getElementById("pt_periodPanelTitle").textContent = title;
+    document.getElementById("pt_pmAP").textContent = fmtMoney(m.totalAP);
+    document.getElementById("pt_pmCount").textContent = m.count;
+    document.getElementById("pt_pmAvgAP").textContent = fmtMoney(m.avgAP);
+    document.getElementById("pt_pmIssued").textContent = m.issuedCount;
+    document.getElementById("pt_pmIssuedAP").textContent = fmtMoney(m.issuedAP);
+    document.getElementById("pt_pmComm").textContent = fmtMoney(m.totalCommission);
+    document.getElementById("pt_pmAdvance").textContent = fmtMoney(m.advancePaid);
+    document.getElementById("pt_pmExpectedDeposits").textContent = fmtMoney(m.expectedDeposits);
+    document.getElementById("pt_pmDeposits").textContent = fmtMoney(m.deposits);
+    setGapText("pt_pmDepositGap", m.depositGap);
+    document.getElementById("pt_pmLeadSpend").textContent = fmtMoney(m.leadSpend);
+    document.getElementById("pt_pmCostPerSale").textContent = fmtMoney(m.costPerSale);
+    document.getElementById("pt_pmCostPerLead").textContent = fmtMoney(m.costPerLead);
+    document.getElementById("pt_pmROI").textContent = fmtROI(m.roi);
+  }
+  function renderPtDashboard(){
+    renderPtPeriodMetrics();
+    const sales = state.sales;
+    const submitted = sales;
+    const issued = sales.filter(s=> s.status==="Issued & Paid");
+    const lapsed = sales.filter(s=> s.status==="Lapsed / Chargeback");
+    const totalAP = submitted.reduce((a,s)=>a+s.ap,0);
+    const advancePaid = issued.reduce((a,s)=>a+s.advanceAmt,0);
+    const backendPending = issued.filter(s=>!s.backendReceived).reduce((a,s)=>a+s.backendAmt,0);
+    const backendPendingCount = issued.filter(s=>!s.backendReceived).length;
+    const backendReceived = issued.filter(s=>s.backendReceived).reduce((a,s)=>a+s.backendAmt,0);
+    const lapsedAmt = lapsed.reduce((a,s)=>a+s.commission,0);
+    document.getElementById("pt_tileSubmittedAP").textContent = fmtMoney(totalAP);
+    document.getElementById("pt_tileSubmittedCount").textContent = submitted.length + " application" + (submitted.length===1?"":"s");
+    document.getElementById("pt_tileIssuedCount").textContent = issued.length;
+    document.getElementById("pt_tileIssuedAP").textContent = fmtMoney(issued.reduce((a,s)=>a+s.ap,0)) + " in AP";
+    document.getElementById("pt_tileIssuedAPMain").textContent = fmtMoney(issued.reduce((a,s)=>a+s.ap,0));
+    document.getElementById("pt_tileIssuedAPCount").textContent = issued.length + " polic" + (issued.length===1?"y":"ies") + " issued";
+    document.getElementById("pt_tileAdvance").textContent = fmtMoney(advancePaid);
+    document.getElementById("pt_tileBackendPending").textContent = fmtMoney(backendPending);
+    document.getElementById("pt_tileBackendPendingCount").textContent = backendPendingCount + " polic" + (backendPendingCount===1?"y":"ies") + " still earning out";
+    document.getElementById("pt_tileBackendReceived").textContent = fmtMoney(backendReceived);
+    document.getElementById("pt_tileLapsed").textContent = fmtMoney(lapsedAmt);
+    document.getElementById("pt_tileLapsedCount").textContent = lapsed.length + " polic" + (lapsed.length===1?"y":"ies");
+    const depTotal = state.deposits.reduce((a,d)=>a+(d.amount||0),0);
+    const expectedDepAll = issued.reduce((a,s)=>a+s.advanceAmt+s.backendAmt,0);
+    document.getElementById("pt_tileExpectedDepositsAll").textContent = fmtMoney(expectedDepAll);
+    document.getElementById("pt_tileDepositsAll").textContent = fmtMoney(depTotal);
+    document.getElementById("pt_tileDepositsCount").textContent = state.deposits.length + " deposit" + (state.deposits.length===1?"":"s") + " logged";
+    setGapText("pt_tileDepositGapAll", expectedDepAll - depTotal);
+    const lsTotal = state.leadSpend.reduce((a,l)=>a+(l.amount||0),0);
+    const lsLeads = state.leadSpend.reduce((a,l)=>a+(l.leads||0),0);
+    document.getElementById("pt_tileLeadSpendAll").textContent = fmtMoney(lsTotal);
+    document.getElementById("pt_tileLeadSpendCount").textContent = lsLeads + " leads purchased";
+    document.getElementById("pt_tileAvgAPAll").textContent = fmtMoney(submitted.length ? totalAP/submitted.length : 0);
+    const recent = sales.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
+    const list = document.getElementById("pt_recentList");
+    if(recent.length===0){
+      list.innerHTML = '<div class="empty-state"><div class="big">✍️</div>No sales logged yet.</div>';
+    } else {
+      list.innerHTML = `<table class="data-table"><thead><tr><th>Date</th><th>Client</th><th>Carrier</th><th>AP</th><th>Status</th></tr></thead><tbody>` +
+        recent.map(s=>{
+          const c = carrierById(s.carrierId);
+          return `<tr>
+            <td class="num">${s.date}</td>
+            <td>${escapeHtml(s.client)}</td>
+            <td><span class="carrier-tag"><span class="dot" style="background:${c?c.color:'#999'}"></span>${c?escapeHtml(c.name):'—'}</span></td>
+            <td class="num">${fmtMoney(s.ap)}</td>
+            <td><span class="status-pill ${statusClass(s.status)}">${s.status}</span></td>
+          </tr>`;
+        }).join("") + `</tbody></table>`;
+    }
+  }
+  /* ---------------- Carriers ---------------- */
+  function populatePtCarrierSelects(){
+    const filt = document.getElementById("pt_filterCarrier");
+    const prevFilt = filt.value;
+    filt.innerHTML = '<option value="">All carriers</option>';
+    state.carriers.forEach(c=>{
+      const o = document.createElement("option"); o.value=c.id; o.textContent=c.name; filt.appendChild(o);
+    });
+    if(state.carriers.some(c=>c.id===prevFilt)) filt.value = prevFilt;
+    if(window.__onPtCarriersChanged) window.__onPtCarriersChanged();
+  }
+  function finalizeCarrierSave(applyCascade){
+    const p = pendingCarrierUpdate;
+    if(!p) return;
+    const carrier = state.carriers.find(c=>c.id===editingCarrierId);
+    if(carrier){
+      carrier.name = p.name; carrier.comp = p.comp; carrier.advance = p.advance; carrier.cap = p.cap; carrier.months = p.months;
+      if(applyCascade){
+        p.linkedSales.forEach(s=>{
+          const calc = computeCalc(s.premium, s.premType, p.comp, p.advance, p.cap);
+          s.comp = p.comp; s.advance = p.advance; s.advanceCap = p.cap;
+          s.ap = calc.ap; s.commission = calc.commission; s.advanceAmt = calc.advanceAmt; s.backendAmt = calc.backendAmt; s.capped = calc.capped;
+        });
+      }
+    }
+    pendingCarrierUpdate = null;
+    document.getElementById("pt_cascadeConfirmPanel").classList.add("hidden");
+    cancelCarrierEdit();
+    saveState();
+    renderPtCarriers();
+    populatePtCarrierSelects();
+    renderPtSalesTable();
+    renderPtDashboard();
+  }
+  document.getElementById("pt_cascadeApplyBtn").addEventListener("click", ()=> finalizeCarrierSave(true));
+  document.getElementById("pt_cascadeSkipBtn").addEventListener("click", ()=> finalizeCarrierSave(false));
+  function mergeDuplicateCarriers(){
+    const groups = {};
+    state.carriers.forEach(c=>{
+      const key = c.name.trim().toLowerCase();
+      if(!groups[key]) groups[key] = [];
+      groups[key].push(c);
+    });
+    let mergedGroups = 0, salesReassigned = 0, carriersRemoved = 0;
+    const survivors = [];
+    Object.values(groups).forEach(group=>{
+      if(group.length === 1){ survivors.push(group[0]); return; }
+      const canonical = group.slice().sort((a,b)=> (b.comp||0) - (a.comp||0))[0];
+      const duplicateIds = group.filter(c=>c.id!==canonical.id).map(c=>c.id);
+      state.sales.forEach(s=>{
+        if(duplicateIds.includes(s.carrierId)){ s.carrierId = canonical.id; salesReassigned++; }
+      });
+      survivors.push(canonical);
+      mergedGroups++;
+      carriersRemoved += duplicateIds.length;
+    });
+    state.carriers = survivors;
+    return {mergedGroups, salesReassigned, carriersRemoved};
+  }
+  document.getElementById("pt_syncAllSalesBtn").addEventListener("click", ()=>{
+    const resultEl = document.getElementById("pt_syncAllSalesResult");
+    const {mergedGroups, salesReassigned, carriersRemoved} = mergeDuplicateCarriers();
+    let updated = 0, skippedNoCarrier = 0, alreadyMatched = 0;
+    state.sales.forEach(s=>{
+      const carrier = carrierById(s.carrierId);
+      if(!carrier){ skippedNoCarrier++; return; }
+      const cap = carrier.cap || 0;
+      if(s.comp===carrier.comp && s.advance===ADVANCE_RATE && s.advanceCap===cap){ alreadyMatched++; return; }
+      const calc = computeCalc(s.premium, s.premType, carrier.comp, ADVANCE_RATE, cap);
+      s.comp = carrier.comp; s.advance = ADVANCE_RATE; s.advanceCap = cap;
+      s.ap = calc.ap; s.commission = calc.commission; s.advanceAmt = calc.advanceAmt; s.backendAmt = calc.backendAmt; s.capped = calc.capped;
+      updated++;
+    });
+    saveState();
+    populatePtCarrierSelects();
+    renderPtSalesTable();
+    renderPtCarriers();
+    renderPtDashboard();
+    resultEl.style.color = (updated > 0 || mergedGroups > 0) ? "var(--ok)" : "var(--muted)";
+    resultEl.textContent =
+      (mergedGroups ? `Merged ${carriersRemoved} duplicate carrier${carriersRemoved===1?"":"s"} into ${mergedGroups} existing entr${mergedGroups===1?"y":"ies"}, reassigning ${salesReassigned} sale${salesReassigned===1?"":"s"}. ` : "") +
+      `Updated ${updated} sale${updated===1?"":"s"} to match their carrier's current rates.` +
+      (alreadyMatched ? ` ${alreadyMatched} already matched.` : "") +
+      (skippedNoCarrier ? ` ${skippedNoCarrier} skipped (no matching carrier found).` : "");
+  });
+  document.getElementById("pt_addCarrierBtn").addEventListener("click", ()=>{
+    const name = document.getElementById("pt_c_name").value.trim();
+    const comp = parseFloat(document.getElementById("pt_c_comp").value);
+    const advance = ADVANCE_RATE;
+    const cap = parseFloat(document.getElementById("pt_c_cap").value) || 0;
+    const months = parseFloat(document.getElementById("pt_c_months").value) || 0;
+    if(!name){ alert("Enter a carrier name."); return; }
+    if(isNaN(comp)){ alert("Enter a comp rate."); return; }
+    if(editingCarrierId){
+      const carrier = state.carriers.find(c=>c.id===editingCarrierId);
+      if(carrier){
+        const ratesChanged = carrier.comp!==comp || carrier.advance!==advance || carrier.cap!==cap;
+        const linkedSales = state.sales.filter(s=>s.carrierId===carrier.id);
+        if(ratesChanged && linkedSales.length){
+          pendingCarrierUpdate = {name, comp, advance, cap, months, linkedSales};
+          const before = linkedSales.filter(s=>s.status==="Issued & Paid").reduce((a,s)=>a+s.advanceAmt+s.backendAmt,0);
+          let afterTotal = 0;
+          linkedSales.forEach(s=>{
+            if(s.status!=="Issued & Paid") return;
+            const calc = computeCalc(s.premium, s.premType, comp, advance, cap);
+            afterTotal += calc.advanceAmt + calc.backendAmt;
+          });
+          document.getElementById("pt_cascadeConfirmDesc").textContent =
+            `You changed ${name}'s rates. Apply the new comp/advance/cap to every existing sale logged under this carrier, and recalculate their commission, advance, and backend amounts?`;
+          document.getElementById("pt_cascadeSaleCount").textContent = linkedSales.length;
+          document.getElementById("pt_cascadeNewComp").textContent = comp + "%";
+          document.getElementById("pt_cascadeDepBefore").textContent = fmtMoney(before);
+          document.getElementById("pt_cascadeDepAfter").textContent = fmtMoney(afterTotal);
+          document.getElementById("pt_cascadeConfirmPanel").classList.remove("hidden");
+          document.getElementById("pt_cascadeConfirmPanel").scrollIntoView({behavior:"smooth", block:"center"});
+          return;
+        }
+        carrier.name = name; carrier.comp = comp; carrier.advance = advance; carrier.cap = cap; carrier.months = months;
+      }
+      cancelCarrierEdit();
+    } else {
+      state.carriers.push({ id:uid(), name, comp, advance, cap, months, color: PALETTE[state.carriers.length % PALETTE.length] });
+      document.getElementById("pt_c_name").value="";
+      document.getElementById("pt_c_comp").value="";
+      document.getElementById("pt_c_cap").value="";
+      document.getElementById("pt_c_months").value="";
+    }
+    saveState();
+    renderPtCarriers();
+    populatePtCarrierSelects();
+    renderPtSalesTable();
+    renderPtDashboard();
+  });
+  function startEditCarrier(id){
+    const carrier = state.carriers.find(c=>c.id===id);
+    if(!carrier) return;
+    editingCarrierId = id;
+    document.getElementById("pt_c_name").value = carrier.name;
+    document.getElementById("pt_c_comp").value = carrier.comp;
+    document.getElementById("pt_c_cap").value = carrier.cap || "";
+    document.getElementById("pt_c_months").value = carrier.months || "";
+    document.getElementById("pt_carrierFormTitle").textContent = "Edit carrier";
+    document.getElementById("pt_addCarrierBtn").textContent = "Save changes";
+    document.getElementById("pt_cancelCarrierEditBtn").classList.remove("hidden");
+    document.getElementById("pt_c_name").scrollIntoView({behavior:"smooth", block:"center"});
+  }
+  function cancelCarrierEdit(){
+    editingCarrierId = null;
+    pendingCarrierUpdate = null;
+    document.getElementById("pt_cascadeConfirmPanel").classList.add("hidden");
+    document.getElementById("pt_c_name").value="";
+    document.getElementById("pt_c_comp").value="";
+    document.getElementById("pt_c_cap").value="";
+    document.getElementById("pt_c_months").value="";
+    document.getElementById("pt_carrierFormTitle").textContent = "Add a carrier";
+    document.getElementById("pt_addCarrierBtn").textContent = "Add carrier";
+    document.getElementById("pt_cancelCarrierEditBtn").classList.add("hidden");
+  }
+  document.getElementById("pt_cancelCarrierEditBtn").addEventListener("click", cancelCarrierEdit);
+  function renderPtCarriers(){
+    const grid = document.getElementById("pt_carrierGrid");
+    const empty = document.getElementById("pt_carrierEmptyState");
+    grid.innerHTML = "";
+    if(state.carriers.length===0){ empty.classList.remove("hidden"); return; }
+    empty.classList.add("hidden");
+    state.carriers.forEach(c=>{
+      const count = state.sales.filter(s=>s.carrierId===c.id).length;
+      const div = document.createElement("div");
+      div.className = "carrier-card";
+      div.innerHTML = `
+        <div class="top">
+          <div class="name"><span class="dot" style="background:${c.color}"></span>${escapeHtml(c.name)}</div>
+          <div style="display:flex;gap:2px;">
+            <button class="icon-btn carrier-edit" title="Edit carrier" data-id="${c.id}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </button>
+            <button class="icon-btn carrier-del" title="Delete carrier" data-id="${c.id}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="carrier-stats">
+          <div>Comp<span>${c.comp}%</span></div>
+          <div>Advance<span>${c.advance}%</span></div>
+          <div>Cap<span>${c.cap ? fmtMoney(c.cap).replace('.00','') : '—'}</span></div>
+          <div>Backend<span>${c.months||0} mo</span></div>
+          <div>Sales<span>${count}</span></div>
+        </div>
+      `;
+      grid.appendChild(div);
+    });
+    grid.querySelectorAll(".carrier-edit").forEach(btn=>{
+      btn.addEventListener("click", ()=>{ startEditCarrier(btn.dataset.id); });
+    });
+    grid.querySelectorAll(".carrier-del").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const inUse = state.sales.some(s=>s.carrierId===btn.dataset.id);
+        if(inUse && !confirm("This carrier has sales logged against it. Delete anyway? (Sales will keep their saved numbers.)")) return;
+        state.carriers = state.carriers.filter(c=>c.id!==btn.dataset.id);
+        if(editingCarrierId===btn.dataset.id) cancelCarrierEdit();
+        saveState(); renderPtCarriers(); populatePtCarrierSelects();
+      });
+    });
+  }
+  /* ---------------- Sales table + Edit panel ---------------- */
+  document.getElementById("pt_searchClient").addEventListener("input", renderPtSalesTable);
+  document.getElementById("pt_filterCarrier").addEventListener("change", renderPtSalesTable);
+  document.getElementById("pt_filterStatus").addEventListener("change", renderPtSalesTable);
+  function renderPtSalesTable(){
+    const body = document.getElementById("pt_salesTableBody");
+    const empty = document.getElementById("pt_salesEmptyState");
+    const q = document.getElementById("pt_searchClient").value.toLowerCase();
+    const fCarrier = document.getElementById("pt_filterCarrier").value;
+    const fStatus = document.getElementById("pt_filterStatus").value;
+    let rows = state.sales.slice().sort((a,b)=> b.date.localeCompare(a.date));
+    rows = rows.filter(s=>{
+      if(q && !(s.client||"").toLowerCase().includes(q)) return false;
+      if(fCarrier && s.carrierId!==fCarrier) return false;
+      if(fStatus && s.status!==fStatus) return false;
+      return true;
+    });
+    body.innerHTML = "";
+    if(rows.length===0){ empty.classList.remove("hidden"); return; }
+    empty.classList.add("hidden");
+    rows.forEach(s=>{
+      const c = carrierById(s.carrierId);
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="num">${s.date}</td>
+        <td>${escapeHtml(s.client||"")}</td>
+        <td><span class="carrier-tag"><span class="dot" style="background:${c?c.color:'#999'}"></span>${c?escapeHtml(c.name):'—'}</span></td>
+        <td class="num">${fmtMoney(s.ap)}</td>
+        <td class="num">${s.comp}%</td>
+        <td class="num">${fmtMoney(s.advanceAmt)}${s.capped?' <span style="color:var(--warn);font-size:10px;" title="Advance capped by carrier">CAP</span>':''}</td>
+        <td class="num">${fmtMoney(s.backendAmt)}${s.backendReceived?' ✓':''}</td>
+        <td><select class="pt-status-select" data-id="${s.id}" style="width:auto;padding:4px 8px;font-size:11px;">
+              ${["Submitted","Pending","Issued & Paid","Not Taken","Declined","Lapsed / Chargeback"].map(opt=>`<option ${opt===s.status?'selected':''}>${opt}</option>`).join("")}
+            </select></td>
+        <td class="row-actions">
+          <button class="icon-btn pt-sale-edit" data-id="${s.id}" title="Edit">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          </button>
+          <button class="icon-btn pt-backend-toggle" data-id="${s.id}" title="Toggle backend received">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+          </button>
+          <button class="icon-btn pt-sale-del" data-id="${s.id}" title="Delete">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"/></svg>
+          </button>
+        </td>
+      `;
+      body.appendChild(tr);
+    });
+    body.querySelectorAll(".pt-status-select").forEach(sel=>{
+      sel.addEventListener("change", ()=>{
+        const sale = state.sales.find(s=>s.id===sel.dataset.id);
+        if(sale){ sale.status = sel.value; saveState(); renderPtDashboard(); }
+      });
+    });
+    body.querySelectorAll(".pt-backend-toggle").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const sale = state.sales.find(s=>s.id===btn.dataset.id);
+        if(sale){ sale.backendReceived = !sale.backendReceived; saveState(); renderPtSalesTable(); renderPtDashboard(); }
+      });
+    });
+    body.querySelectorAll(".pt-sale-edit").forEach(btn=>{
+      btn.addEventListener("click", ()=>{ startEditSale(btn.dataset.id); });
+    });
+    body.querySelectorAll(".pt-sale-del").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        if(!confirm("Delete this sale from your Production Tracker? (This does not remove it from the team leaderboard.)")) return;
+        state.sales = state.sales.filter(s=>s.id!==btn.dataset.id);
+        if(editingSaleId===btn.dataset.id) cancelSaleEdit();
+        saveState(); renderPtSalesTable(); renderPtDashboard();
+      });
+    });
+  }
+  function ptEditCurrentCalc(){
+    const premium = parseFloat(document.getElementById("pt_e_premium").value) || 0;
+    const comp = parseFloat(document.getElementById("pt_e_comp").value) || 0;
+    const cap = parseFloat(document.getElementById("pt_e_advanceCap").value) || 0;
+    return computeCalc(premium, document.getElementById("pt_e_premType").value, comp, ADVANCE_RATE, cap);
+  }
+  function ptEditRecalc(){
+    const {ap, commission, advanceAmt, backendAmt, capped} = ptEditCurrentCalc();
+    document.getElementById("pt_e_calcAP").textContent = fmtMoney(ap);
+    document.getElementById("pt_e_calcComm").textContent = fmtMoney(commission);
+    document.getElementById("pt_e_calcAdv").textContent = fmtMoney(advanceAmt);
+    document.getElementById("pt_e_calcBack").textContent = fmtMoney(backendAmt);
+    const capNote = document.getElementById("pt_e_calcCapNote");
+    capNote.textContent = capped ? "Capped by carrier max" : "";
+    capNote.style.color = capped ? "var(--warn)" : "";
+  }
+  ["pt_e_premium","pt_e_premType","pt_e_comp","pt_e_advanceCap"].forEach(id=>{
+    document.getElementById(id).addEventListener("input", ptEditRecalc);
+    document.getElementById(id).addEventListener("change", ptEditRecalc);
+  });
+  function startEditSale(id){
+    const sale = state.sales.find(s=>s.id===id);
+    if(!sale) return;
+    editingSaleId = id;
+    document.getElementById("pt_editPanel").classList.remove("hidden");
+    document.getElementById("pt_editPanel").scrollIntoView({behavior:"smooth", block:"start"});
+    document.getElementById("pt_e_client").value = sale.client || "";
+    document.getElementById("pt_e_date").value = sale.date || "";
+    document.getElementById("pt_e_effectiveDate").value = sale.effectiveDate || "";
+    const c = carrierById(sale.carrierId);
+    document.getElementById("pt_e_carrier").value = c ? c.name : "";
+    document.getElementById("pt_e_premType").value = sale.premType || "monthly";
+    document.getElementById("pt_e_premium").value = sale.premium || "";
+    document.getElementById("pt_e_comp").value = sale.comp || "";
+    document.getElementById("pt_e_advanceCap").value = sale.advanceCap || "";
+    document.getElementById("pt_e_status").value = sale.status || "Submitted";
+    document.getElementById("pt_e_backendReceived").checked = !!sale.backendReceived;
+    document.getElementById("pt_e_referralSale").value = sale.referralSale || "No";
+    document.getElementById("pt_e_referralsCollected").value = sale.referralsCollected || "No";
+    document.getElementById("pt_e_reset").value = sale.reset || "No";
+    document.getElementById("pt_e_notes").value = sale.notes || "";
+    ptEditRecalc();
+  }
+  function cancelSaleEdit(){
+    editingSaleId = null;
+    document.getElementById("pt_editPanel").classList.add("hidden");
+  }
+  document.getElementById("pt_cancelSaleEditBtn").addEventListener("click", cancelSaleEdit);
+  document.getElementById("pt_updateSaleBtn").addEventListener("click", ()=>{
+    if(!editingSaleId) return;
+    const idx = state.sales.findIndex(s=>s.id===editingSaleId);
+    if(idx===-1) return;
+    const client = document.getElementById("pt_e_client").value.trim();
+    const carrierName = document.getElementById("pt_e_carrier").value.trim();
+    if(!client){ alert("Enter a client name."); return; }
+    if(!carrierName){ alert("Enter a carrier name."); return; }
+    let carrier = carrierByName(carrierName);
+    if(!carrier){
+      carrier = { id: uid(), name: carrierName, comp: parseFloat(document.getElementById("pt_e_comp").value)||0, advance: ADVANCE_RATE, cap: parseFloat(document.getElementById("pt_e_advanceCap").value)||0, months:0, color: PALETTE[state.carriers.length % PALETTE.length] };
+      state.carriers.push(carrier);
+    }
+    const {ap, commission, advanceAmt, backendAmt, capped} = ptEditCurrentCalc();
+    const existing = state.sales[idx];
+    state.sales[idx] = Object.assign({}, existing, {
+      client, carrierId: carrier.id,
+      date: document.getElementById("pt_e_date").value || existing.date,
+      effectiveDate: document.getElementById("pt_e_effectiveDate").value || "",
+      premType: document.getElementById("pt_e_premType").value,
+      premium: parseFloat(document.getElementById("pt_e_premium").value)||0,
+      comp: parseFloat(document.getElementById("pt_e_comp").value)||0,
+      advance: ADVANCE_RATE,
+      advanceCap: parseFloat(document.getElementById("pt_e_advanceCap").value)||0,
+      capped, ap, commission, advanceAmt, backendAmt,
+      status: document.getElementById("pt_e_status").value,
+      backendReceived: document.getElementById("pt_e_backendReceived").checked,
+      referralSale: document.getElementById("pt_e_referralSale").value,
+      referralsCollected: document.getElementById("pt_e_referralsCollected").value,
+      reset: document.getElementById("pt_e_reset").value,
+      notes: document.getElementById("pt_e_notes").value.trim()
+    });
+    cancelSaleEdit();
+    saveState();
+    populatePtCarrierSelects();
+    renderPtCarriers();
+    renderPtSalesTable();
+    renderPtDashboard();
+    showPtToast("Sale updated");
+  });
+  let ptToastTimer = null;
+  function showPtToast(msg){
+    const el = document.getElementById("savedToast");
+    if(!el) return;
+    el.textContent = "✓ " + msg;
+    el.style.opacity = "1";
+    clearTimeout(ptToastTimer);
+    ptToastTimer = setTimeout(()=>{ el.style.opacity = "0"; }, 2200);
+  }
+  /* ---------------- Calendar ---------------- */
+  document.getElementById("pt_calPrevYear").addEventListener("click", ()=>{ ptCalYear--; renderPtCalendar(); });
+  document.getElementById("pt_calNextYear").addEventListener("click", ()=>{ ptCalYear++; renderPtCalendar(); });
+  function renderPtCalendar(){
+    document.getElementById("pt_calYearLabel").textContent = ptCalYear;
+    const grid = document.getElementById("pt_calMonthGrid");
+    grid.innerHTML = "";
+    for(let m=0; m<12; m++){
+      const start = new Date(ptCalYear, m, 1);
+      const end = new Date(ptCalYear, m+1, 1);
+      const sales = state.sales.filter(s=>dateInRangePt(s.date, start, end));
+      const ap = sales.reduce((a,s)=>a+s.ap,0);
+      const div = document.createElement("div");
+      div.className = "cal-month" + (m===ptCalSelectedMonth ? " active" : "");
+      div.innerHTML = `
+        <div class="cal-month-name">${MONTH_NAMES[m]}</div>
+        <div class="cal-month-count">${sales.length} sale${sales.length===1?"":"s"}</div>
+        <div class="cal-month-ap">${fmtMoney(ap)}</div>
+      `;
+      div.addEventListener("click", ()=>{ ptCalSelectedMonth = m; renderPtCalendar(); renderPtCalendarDetail(); });
+      grid.appendChild(div);
+    }
+  }
+  function renderPtCalendarDetail(){
+    const start = new Date(ptCalYear, ptCalSelectedMonth, 1);
+    const end = new Date(ptCalYear, ptCalSelectedMonth+1, 1);
+    const m = computeMetrics(start, end);
+    document.getElementById("pt_calDetailTitle").textContent = MONTH_NAMES[ptCalSelectedMonth] + " " + ptCalYear;
+    document.getElementById("pt_calAP").textContent = fmtMoney(m.totalAP);
+    document.getElementById("pt_calCount").textContent = m.count;
+    document.getElementById("pt_calAvgAP").textContent = fmtMoney(m.avgAP);
+    document.getElementById("pt_calIssued").textContent = m.issuedCount;
+    document.getElementById("pt_calComm").textContent = fmtMoney(m.totalCommission);
+    document.getElementById("pt_calExpectedDeposits").textContent = fmtMoney(m.expectedDeposits);
+    document.getElementById("pt_calDeposits").textContent = fmtMoney(m.deposits);
+    setGapText("pt_calDepositGap", m.depositGap);
+    document.getElementById("pt_calLeadSpend").textContent = fmtMoney(m.leadSpend);
+    document.getElementById("pt_calROI").textContent = fmtROI(m.roi);
+    const rows = state.sales.filter(s=>dateInRangePt(s.date,start,end)).sort((a,b)=>b.date.localeCompare(a.date));
+    const body = document.getElementById("pt_calSalesBody");
+    const empty = document.getElementById("pt_calEmptyState");
+    body.innerHTML = "";
+    if(rows.length===0){ empty.classList.remove("hidden"); return; }
+    empty.classList.add("hidden");
+    rows.forEach(s=>{
+      const c = carrierById(s.carrierId);
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="num">${s.date}</td>
+        <td>${escapeHtml(s.client||"")}</td>
+        <td><span class="carrier-tag"><span class="dot" style="background:${c?c.color:'#999'}"></span>${c?escapeHtml(c.name):'—'}</span></td>
+        <td class="num">${fmtMoney(s.ap)}</td>
+        <td><span class="status-pill ${statusClass(s.status)}">${s.status}</span></td>
+      `;
+      body.appendChild(tr);
+    });
+  }
+  /* ---------------- Deposits ---------------- */
+  document.getElementById("pt_addDepositBtn").addEventListener("click", ()=>{
+    const date = document.getElementById("pt_dep_date").value || todayISO();
+    const amount = parseFloat(document.getElementById("pt_dep_amount").value);
+    const source = document.getElementById("pt_dep_source").value.trim();
+    const notes = document.getElementById("pt_dep_notes").value.trim();
+    if(isNaN(amount) || amount<=0){ alert("Enter a deposit amount."); return; }
+    state.deposits.push({id: uid(), date, amount, source, notes});
+    saveState();
+    document.getElementById("pt_dep_amount").value = "";
+    document.getElementById("pt_dep_source").value = "";
+    document.getElementById("pt_dep_notes").value = "";
+    document.getElementById("pt_dep_date").value = todayISO();
+    renderPtDeposits();
+    renderPtDashboard();
+  });
+  function renderPtDeposits(){
+    const all = state.deposits.slice().sort((a,b)=>b.date.localeCompare(a.date));
+    const body = document.getElementById("pt_depositsTableBody");
+    const empty = document.getElementById("pt_depositsEmptyState");
+    body.innerHTML = "";
+    const allTimeAll = getPtPeriodRange("all");
+    const mAll = computeMetrics(allTimeAll.start, allTimeAll.end);
+    document.getElementById("pt_depExpectedAll").textContent = fmtMoney(mAll.expectedDeposits);
+    document.getElementById("pt_depTotalAll").textContent = fmtMoney(mAll.deposits);
+    setGapText("pt_depGapAll", mAll.depositGap);
+    document.getElementById("pt_depCountAll").textContent = state.deposits.length;
+    if(all.length===0){ empty.classList.remove("hidden"); return; }
+    empty.classList.add("hidden");
+    all.forEach(d=>{
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="num">${d.date}</td>
+        <td class="num">${fmtMoney(d.amount)}</td>
+        <td>${escapeHtml(d.source||"—")}</td>
+        <td>${escapeHtml(d.notes||"—")}</td>
+        <td class="row-actions"><button class="icon-btn pt-dep-del" data-id="${d.id}" title="Delete">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"/></svg>
+        </button></td>
+      `;
+      body.appendChild(tr);
+    });
+    body.querySelectorAll(".pt-dep-del").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        if(!confirm("Delete this deposit?")) return;
+        state.deposits = state.deposits.filter(d=>d.id!==btn.dataset.id);
+        saveState(); renderPtDeposits(); renderPtDashboard();
+      });
+    });
+  }
+  /* ---------------- Lead Spend ---------------- */
+  document.getElementById("pt_addLeadSpendBtn").addEventListener("click", ()=>{
+    const date = document.getElementById("pt_lead_date").value || todayISO();
+    const source = document.getElementById("pt_lead_source").value.trim();
+    const amount = parseFloat(document.getElementById("pt_lead_amount").value);
+    const leads = parseInt(document.getElementById("pt_lead_leads").value) || 0;
+    const notes = document.getElementById("pt_lead_notes").value.trim();
+    if(isNaN(amount) || amount<=0){ alert("Enter an amount spent."); return; }
+    state.leadSpend.push({id: uid(), date, source, amount, leads, notes});
+    saveState();
+    document.getElementById("pt_lead_source").value = "";
+    document.getElementById("pt_lead_amount").value = "";
+    document.getElementById("pt_lead_leads").value = "";
+    document.getElementById("pt_lead_notes").value = "";
+    document.getElementById("pt_lead_date").value = todayISO();
+    renderPtLeadSpend();
+    renderPtDashboard();
+  });
+  function renderPtLeadSpend(){
+    const all = state.leadSpend.slice().sort((a,b)=>b.date.localeCompare(a.date));
+    const body = document.getElementById("pt_leadSpendTableBody");
+    const empty = document.getElementById("pt_leadSpendEmptyState");
+    body.innerHTML = "";
+    const totalAll = state.leadSpend.reduce((a,l)=>a+(l.amount||0),0);
+    const leadsAll = state.leadSpend.reduce((a,l)=>a+(l.leads||0),0);
+    const {start, end} = getPtPeriodRange("month");
+    const totalMonth = state.leadSpend.filter(l=>dateInRangePt(l.date,start,end)).reduce((a,l)=>a+(l.amount||0),0);
+    const allTimeMetrics = computeMetrics(new Date(1970,0,1), new Date(2999,0,1));
+    document.getElementById("pt_lsTotalAll").textContent = fmtMoney(totalAll);
+    document.getElementById("pt_lsTotalMonth").textContent = fmtMoney(totalMonth);
+    document.getElementById("pt_lsLeadsAll").textContent = leadsAll;
+    document.getElementById("pt_lsCostPerLead").textContent = fmtMoney(leadsAll ? totalAll/leadsAll : 0);
+    document.getElementById("pt_lsCostPerSale").textContent = fmtMoney(allTimeMetrics.count ? totalAll/allTimeMetrics.count : 0);
+    document.getElementById("pt_lsROIAll").textContent = fmtROI(totalAll>0 ? ((allTimeMetrics.totalCommission-totalAll)/totalAll*100) : null);
+    if(all.length===0){ empty.classList.remove("hidden"); return; }
+    empty.classList.add("hidden");
+    all.forEach(l=>{
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="num">${l.date}</td>
+        <td>${escapeHtml(l.source||"—")}</td>
+        <td class="num">${fmtMoney(l.amount)}</td>
+        <td class="num">${l.leads||0}</td>
+        <td>${escapeHtml(l.notes||"—")}</td>
+        <td class="row-actions"><button class="icon-btn pt-ls-del" data-id="${l.id}" title="Delete">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"/></svg>
+        </button></td>
+      `;
+      body.appendChild(tr);
+    });
+    body.querySelectorAll(".pt-ls-del").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        if(!confirm("Delete this lead spend entry?")) return;
+        state.leadSpend = state.leadSpend.filter(l=>l.id!==btn.dataset.id);
+        saveState(); renderPtLeadSpend(); renderPtDashboard();
+      });
+    });
+  }
+  function downloadBlob(blob, filename){
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+  function csvCell(v){
+    return typeof v==="string" && (v.includes(",")||v.includes('"')||v.includes("\n")) ? '"'+v.replace(/"/g,'""')+'"' : v;
+  }
+  function parseCSV(text){
+    const rows = [];
+    let row = [], field = "", inQuotes = false;
+    for(let i=0;i<text.length;i++){
+      const ch = text[i];
+      if(inQuotes){
+        if(ch === '"'){ if(text[i+1] === '"'){ field += '"'; i++; } else { inQuotes = false; } }
+        else { field += ch; }
+      } else {
+        if(ch === '"'){ inQuotes = true; }
+        else if(ch === ','){ row.push(field); field = ""; }
+        else if(ch === '\n'){ row.push(field); rows.push(row); row = []; field = ""; }
+        else if(ch === '\r'){ /* skip */ }
+        else { field += ch; }
+      }
+    }
+    if(field.length > 0 || row.length > 0){ row.push(field); rows.push(row); }
+    return rows.filter(r => r.length > 1 || (r[0]||"").trim() !== "");
+  }
+  function normalizeCsvHeader(h){ return (h||"").toString().trim().toLowerCase().replace(/[^a-z0-9]/g,""); }
+  const LEADSPEND_HEADER_MAP = {
+    date:"date", source:"source", vendor:"source",
+    amount:"amount", amountspent:"amount", spend:"amount", cost:"amount",
+    leads:"leads", leadcount:"leads", numleads:"leads",
+    notes:"notes", note:"notes"
+  };
+  document.getElementById("pt_downloadLeadSpendTemplateBtn").addEventListener("click", ()=>{
+    const header = ["Date","Source","Amount","Leads","Notes"];
+    const example = ["2026-01-15","Facebook Ads","250","20","January campaign"];
+    const csv = [header.join(","), example.map(csvCell).join(",")].join("\n");
+    downloadBlob(new Blob([csv],{type:"text/csv"}), "lead-spend-import-template.csv");
+  });
+  document.getElementById("pt_importLeadSpendCsvBtn").addEventListener("click", async ()=>{
+    const fileInput = document.getElementById("pt_importLeadSpendCsvFile");
+    const resultEl = document.getElementById("pt_leadSpendImportResult");
+    const file = fileInput.files[0];
+    if(!file){ resultEl.style.color = "var(--blood-bright)"; resultEl.textContent = "Choose a CSV file first."; return; }
+    resultEl.style.color = "var(--muted)"; resultEl.textContent = "Importing...";
+    try{
+      const text = await file.text();
+      const rows = parseCSV(text);
+      if(rows.length < 2){ resultEl.style.color = "var(--blood-bright)"; resultEl.textContent = "No data rows found in that file."; return; }
+      const headerKeys = rows[0].map(h => LEADSPEND_HEADER_MAP[normalizeCsvHeader(h)] || null);
+      if(!headerKeys.includes("date") || !headerKeys.includes("amount")){
+        resultEl.style.color = "var(--blood-bright)";
+        resultEl.textContent = "Missing required columns — need at least Date and Amount.";
+        return;
+      }
+      let imported = 0, skipped = 0;
+      for(let r=1;r<rows.length;r++){
+        const raw = rows[r];
+        if(raw.every(v=>!v || !v.trim())) continue;
+        const rec = {};
+        headerKeys.forEach((key, idx)=>{ if(key) rec[key] = (raw[idx]||"").trim(); });
+        const amount = parseFloat(rec.amount);
+        if(!rec.date || isNaN(amount)){ skipped++; continue; }
+        state.leadSpend.push({ id: uid(), date: normalizeDateString(rec.date), source: rec.source||"", amount, leads: parseInt(rec.leads)||0, notes: rec.notes||"" });
+        imported++;
+      }
+      saveState();
+      renderPtLeadSpend();
+      renderPtDashboard();
+      resultEl.style.color = imported > 0 ? "var(--ok)" : "var(--blood-bright)";
+      resultEl.textContent = `Imported ${imported} entr${imported===1?"y":"ies"}.` + (skipped ? ` Skipped ${skipped} row${skipped===1?"":"s"} (missing date/amount).` : "");
+      fileInput.value = "";
+    }catch(err){
+      resultEl.style.color = "var(--blood-bright)";
+      resultEl.textContent = "Couldn't read that file as CSV.";
+      console.warn("Lead spend CSV import failed", err);
+    }
+  });
+  /* ---------------- Data: export / import ---------------- */
+  document.getElementById("pt_exportJsonBtn").addEventListener("click", ()=>{
+    const blob = new Blob([JSON.stringify(state,null,2)], {type:"application/json"});
+    downloadBlob(blob, "production-tracker-backup-"+todayISO()+".json");
+  });
+  document.getElementById("pt_exportCsvBtn").addEventListener("click", ()=>{
+    const header = ["Date","Effective Date","Client","Carrier","Premium Type","Premium","AP","Comp %","Advance %","Advance Cap","Commission","Advance $","Capped","Backend $","Backend Received","Referral Sale","Referrals Collected","Reset","Status","Notes"];
+    const rows = state.sales.map(s=>{
+      const c = carrierById(s.carrierId);
+      return [s.date, s.effectiveDate||"", s.client||"", c?c.name:"", s.premType, s.premium, s.ap.toFixed(2), s.comp, s.advance, s.advanceCap||0, s.commission.toFixed(2), s.advanceAmt.toFixed(2), s.capped?"Yes":"No", s.backendAmt.toFixed(2), s.backendReceived?"Yes":"No", s.referralSale||"No", s.referralsCollected||"No", s.reset||"No", s.status, s.notes||""]
+        .map(csvCell);
+    });
+    const csv = [header.join(","), ...rows.map(r=>r.join(","))].join("\n");
+    downloadBlob(new Blob([csv],{type:"text/csv"}), "production-tracker-export.csv");
+  });
+  document.getElementById("pt_importFile").addEventListener("change", (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const parsed = JSON.parse(reader.result);
+        if(!confirm("This will replace your current Production Tracker data with the backup file. Continue?")) return;
+        state = Object.assign({}, EMPTY_STATE, {carriers:[], sales:[], deposits:[], leadSpend:[]}, parsed);
+        saveState();
+        renderPtAll();
+        showPtToast("Backup restored");
+      }catch(err){
+        alert("That file couldn't be read as a valid backup.");
+      }
+    };
+    reader.readAsText(file);
+  });
+  async function downloadStyledXlsx(filename, sheetName, headers, rows, colWidths){
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet(sheetName || "Sheet1");
+    ws.addRow(headers);
+    rows.forEach(r => ws.addRow(r));
+    ws.columns.forEach((col, i)=>{ col.width = (colWidths && colWidths[i]) || 16; });
+    const headerRow = ws.getRow(1);
+    headerRow.eachCell(cell=>{
+      cell.fill = { type:"pattern", pattern:"solid", fgColor:{argb:"FF16213A"} };
+      cell.font = { bold:true, color:{argb:"FFE4ECFB"} };
+      cell.alignment = { vertical:"middle" };
+      cell.border = { bottom:{style:"thin", color:{argb:"FF33456B"}} };
+    });
+    const buf = await wb.xlsx.writeBuffer();
+    const blob = new Blob([buf], {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+    downloadBlob(blob, filename);
+  }
+  document.getElementById("pt_downloadSalesTemplateBtn").addEventListener("click", ()=>{
+    const headers = ["Submit Date","Carrier","Effective Date","Annual Premium"];
+    const example = ["08/08/2026","Liberty Bankers","08/14/2026",1163.00];
+    downloadStyledXlsx("sales-import-template.xlsx", "Sales", headers, [example], [14,18,14,15]);
+  });
+  const CSV_HEADER_MAP = {
+    date:"date", datesubmitted:"date", submitteddate:"date", submitdate:"date",
+    effectivedate:"effectiveDate", effdate:"effectiveDate",
+    client:"client", clientname:"client", name:"client", insured:"client",
+    carrier:"carrier", carriername:"carrier",
+    premiumtype:"premiumType", premtype:"premiumType",
+    premium:"premium", premiumamount:"premium", monthlypremium:"premium", amount:"premium",
+    ap:"ap", annualpremium:"ap", annualizedpremium:"ap",
+    comp:"comp", comppercent:"comp", commissionpercent:"comp", comprate:"comp",
+    advancecap:"advanceCap", cap:"advanceCap",
+    status:"status",
+    backendreceived:"backendReceived", backendrecvd:"backendReceived",
+    referralsale:"referralSale",
+    referralscollected:"referralsCollected", referralcollected:"referralsCollected",
+    reset:"reset",
+    notes:"notes", note:"notes"
+  };
+  const VALID_STATUSES = ["Submitted","Pending","Issued & Paid","Not Taken","Declined","Lapsed / Chargeback"];
+  document.getElementById("pt_importCsvBtn").addEventListener("click", async ()=>{
+    const fileInput = document.getElementById("pt_importCsvFile");
+    const resultEl = document.getElementById("pt_csvImportResult");
+    const file = fileInput.files[0];
+    if(!file){ resultEl.style.color = "var(--blood-bright)"; resultEl.textContent = "Choose a CSV file first."; return; }
+    resultEl.style.color = "var(--muted)"; resultEl.textContent = "Importing...";
+    try{
+      const text = await file.text();
+      const rows = parseCSV(text);
+      if(rows.length < 2){ resultEl.style.color = "var(--blood-bright)"; resultEl.textContent = "No data rows found in that file."; return; }
+      const headerKeys = rows[0].map(h => CSV_HEADER_MAP[normalizeCsvHeader(h)] || null);
+      if(!headerKeys.includes("carrier") || (!headerKeys.includes("premium") && !headerKeys.includes("ap"))){
+        resultEl.style.color = "var(--blood-bright)";
+        resultEl.textContent = "Missing required columns — need at least Carrier and Premium (or Annualized Premium).";
+        return;
+      }
+      let imported = 0, newCarriers = 0, skipped = 0;
+      for(let r=1;r<rows.length;r++){
+        const raw = rows[r];
+        if(raw.every(v=>!v || !v.trim())) continue;
+        const rec = {};
+        headerKeys.forEach((key, idx)=>{ if(key) rec[key] = (raw[idx]||"").trim(); });
+        const clientName = rec.client || "(no name)";
+        const carrierName = rec.carrier || "";
+        let premium = parseFloat(rec.premium);
+        let premType = (rec.premiumType||"monthly").toLowerCase().indexOf("annual") > -1 ? "annual" : "monthly";
+        if((isNaN(premium) || rec.premium==="") && rec.ap){
+          const apVal = parseFloat(rec.ap);
+          if(!isNaN(apVal)){ premium = apVal; premType = "annual"; }
+        }
+        if(!carrierName || isNaN(premium)){ skipped++; continue; }
+        let carrier = carrierByName(carrierName);
+        if(!carrier){
+          carrier = { id: uid(), name: carrierName, comp: parseFloat(rec.comp)||0, advance: ADVANCE_RATE, cap: parseFloat(rec.advanceCap)||0, months: 0, color: PALETTE[state.carriers.length % PALETTE.length] };
+          state.carriers.push(carrier);
+          newCarriers++;
+        }
+        let comp = carrier.comp, cap = carrier.cap || 0;
+        if(rec.comp) comp = parseFloat(rec.comp)||comp;
+        if(rec.advanceCap) cap = parseFloat(rec.advanceCap)||cap;
+        const calc = computeCalc(premium, premType, comp, ADVANCE_RATE, cap);
+        const status = VALID_STATUSES.find(s=>s.toLowerCase()===((rec.status||"").toLowerCase())) || "Submitted";
+        state.sales.push({
+          id: uid(), client: clientName, carrierId: carrier.id,
+          date: normalizeDateString(rec.date) || todayISO(),
+          effectiveDate: normalizeDateString(rec.effectiveDate) || "",
+          premType, premium, comp, advance: ADVANCE_RATE, advanceCap: cap,
+          capped: calc.capped, ap: calc.ap, commission: calc.commission, advanceAmt: calc.advanceAmt, backendAmt: calc.backendAmt,
+          status,
+          backendReceived: /^(y|yes|true|1)$/i.test(rec.backendReceived||""),
+          referralSale: /^(y|yes|true|1)$/i.test(rec.referralSale||"") ? "Yes" : "No",
+          referralsCollected: /^(y|yes|true|1)$/i.test(rec.referralsCollected||"") ? "Yes" : "No",
+          reset: /^(y|yes|true|1)$/i.test(rec.reset||"") ? "Yes" : "No",
+          notes: rec.notes || ""
+        });
+        imported++;
+      }
+      saveState();
+      populatePtCarrierSelects();
+      renderPtCarriers();
+      renderPtSalesTable();
+      renderPtDashboard();
+      resultEl.style.color = imported > 0 ? "var(--ok)" : "var(--blood-bright)";
+      resultEl.textContent = `Imported ${imported} sale${imported===1?"":"s"} into your tracker (not posted to the leaderboard).` +
+        (newCarriers ? ` Created ${newCarriers} new carrier${newCarriers===1?"":"s"}.` : "") +
+        (skipped ? ` Skipped ${skipped} row${skipped===1?"":"s"} (missing client/carrier/premium).` : "");
+      fileInput.value = "";
+    }catch(err){
+      resultEl.style.color = "var(--blood-bright)";
+      resultEl.textContent = "Couldn't read that file as CSV.";
+      console.warn("CSV import failed", err);
+    }
+  });
+  document.getElementById("pt_clearTrackerBtn").addEventListener("click", async ()=>{
+    if(!confirm("This permanently deletes all carriers, sales, deposits, and lead spend in your Production Tracker. This can't be undone and does not touch the team leaderboard. Continue?")) return;
+    if(!confirm("Are you absolutely sure? Consider exporting a backup first.")) return;
+    state = Object.assign({}, EMPTY_STATE, {carriers:[], sales:[], deposits:[], leadSpend:[]});
+    saveState();
+    if(currentAuth && currentAuth.token){
+      try{ await fetch(SHEET_API_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify({action:"clearTrackerData", token: currentAuth.token})}); }catch(e){}
+    }
+    renderPtAll();
+    showPtToast("Production Tracker data cleared");
+  });
+  function renderPtAll(){
+    populatePtCarrierSelects();
+    renderPtCarriers();
+    renderPtSalesTable();
+    renderPtDashboard();
+    renderPtDeposits();
+    renderPtLeadSpend();
+    renderPtCalendar();
+    renderPtCalendarDetail();
+  }
+  /* ---------------- Public API used by the Chosen (Log a Sale) side ---------------- */
+  window.PT = {
+    async setAuth(auth){
+      if(!auth || !auth.token){
+        if(ptPollTimer) clearInterval(ptPollTimer);
+        currentAuth = null;
+        state = Object.assign({}, EMPTY_STATE, {carriers:[], sales:[], deposits:[], leadSpend:[]});
+        return;
+      }
+      currentAuth = auth;
+      loadLocal();
+      renderPtAll();
+      await pullFromCloud(true);
+      renderPtAll();
+      if(ptPollTimer) clearInterval(ptPollTimer);
+      ptPollTimer = setInterval(async ()=>{
+        const ok = await pullFromCloud();
+        if(ok) renderPtAll();
+      }, 30000);
+    },
+    async addSaleFromEntry(entryId, data){
+      if(!currentAuth) return;
+      let carrier = carrierByName(data.carrierName);
+      if(!carrier){
+        carrier = { id: uid(), name: data.carrierName, comp: data.comp||0, advance: ADVANCE_RATE, cap: data.advanceCap||0, months: 0, color: PALETTE[state.carriers.length % PALETTE.length] };
+        state.carriers.push(carrier);
+      }
+      const comp = data.comp || carrier.comp || 0;
+      const cap = data.advanceCap || carrier.cap || 0;
+      const calc = computeCalc(data.premium, data.premType, comp, ADVANCE_RATE, cap);
+      state.sales.push({
+        id: uid(), entryId, client: data.client, carrierId: carrier.id,
+        date: data.date, effectiveDate: data.effectiveDate,
+        premType: data.premType, premium: data.premium,
+        comp, advance: ADVANCE_RATE, advanceCap: cap,
+        capped: calc.capped, ap: calc.ap, commission: calc.commission, advanceAmt: calc.advanceAmt, backendAmt: calc.backendAmt,
+        status: data.status || "Submitted", backendReceived: !!data.backendReceived,
+        referralSale: data.referralSale||"No", referralsCollected: data.referralsCollected||"No", reset: data.reset||"No",
+        notes: data.notes||""
+      });
+      saveState();
+      renderPtAll();
+    },
+    onTabShown(){ renderPtAll(); },
+    getCarrierCompSuggestion(name){
+      const c = carrierByName(name);
+      return c ? {comp: c.comp, cap: c.cap} : null;
+    },
+    getCarrierNames(){ return state.carriers.map(c=>c.name); },
+    previewCalc(premium, premType, comp, cap){ return computeCalc(premium, premType, comp||0, ADVANCE_RATE, cap||0); }
+  };
+  /* ---------------- Fill the backend Apps Script textarea (Settings tab) ---------------- */
+  (function(){
+    const el = document.getElementById("backendScriptText");
+    if(!el) return;
+    el.value = `// ====== CHOSEN LEADERBOARD + PRODUCTION TRACKER BACKEND ======
+var USERS_SHEET = "Users";       // email | passwordHash | displayName | createdAt
+var SESSIONS_SHEET = "Sessions"; // token | email | createdAt
+var ENTRIES_SHEET = "Entries";   // id | email | displayName | amount | date | notes | createdAt | carrier | effectiveDate | referrals | reset | firstTime | referralSale
+var TRACKER_SHEET = "TrackerData"; // email | jsonBlob | lastUpdated  (one private Production Tracker blob per agent)
+var ADMIN_EMAILS = ["kian.dolezal1@gmail.com", "toddhenningjr@gmail.com"]; // must match ADMIN_EMAILS in the website file exactly (lowercase-insensitive)
+// Paste your Slack Bot User OAuth Token here (starts with xoxb-, see setup steps 3-4 above). Leave blank to skip Slack posting.
+var SLACK_BOT_TOKEN = "";
+// The channel ID the bot should post to (starts with C, from "View channel details" in Slack). The bot must be invited to this channel first.
+var SLACK_CHANNEL = "";
+// Optional: link back to this app from the Slack message (paste the published page URL once you have one).
+var APP_URL = "";
+function doGet(e) {
+  try {
+    var action = e.parameter.action;
+    if (action === "getEntries") {
+      var email = emailForToken_(e.parameter.token);
+      if (!email) return json_({ok:false, error:"invalid_session"});
+      return json_({ok:true, entries: getAllEntries_()});
+    }
+    if (action === "getTrackerData") {
+      var email2 = emailForToken_(e.parameter.token);
+      if (!email2) return json_({ok:false, error:"invalid_session"});
+      return json_({ok:true, data: JSON.parse(getTrackerBlob_(email2) || "{}")});
+    }
+    return json_({ok:false, error:"unknown_action"});
+  } catch (err) {
+    return json_({ok:false, error:String(err)});
+  }
+}
+function doPost(e) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    var body = JSON.parse(e.postData.contents);
+    var action = body.action;
+    if (action === "signup") {
+      var email = normalizeEmail_(body.email);
+      var displayName = (body.displayName || email).toString().trim();
+      if (!email || !body.hash) return json_({ok:false, error:"missing_fields"});
+      if (findUserRow_(email) > -1) return json_({ok:false, error:"email_taken"});
+      getSheet_(USERS_SHEET).appendRow([email, body.hash, displayName, new Date()]);
+      var token = createSession_(email);
+      return json_({ok:true, token: token, email: email, displayName: displayName});
+    }
+    if (action === "login") {
+      var email = normalizeEmail_(body.email);
+      var row = findUserRow_(email);
+      if (row === -1) return json_({ok:false, error:"invalid_credentials"});
+      var users = getSheet_(USERS_SHEET);
+      var storedHash = users.getRange(row, 2).getValue();
+      if (storedHash !== body.hash) return json_({ok:false, error:"invalid_credentials"});
+      var displayName = users.getRange(row, 3).getValue();
+      var token = createSession_(email);
+      return json_({ok:true, token: token, email: email, displayName: displayName});
+    }
+    if (action === "logout") {
+      var row = findSessionRow_(body.token);
+      if (row > -1) getSheet_(SESSIONS_SHEET).deleteRow(row);
+      return json_({ok:true});
+    }
+    if (action === "addEntry") {
+      var email = emailForToken_(body.token);
+      if (!email) return json_({ok:false, error:"invalid_session"});
+      var displayName = displayNameForEmail_(email);
+      var id = Utilities.getUuid();
+      var carrier = (body.carrier || "").toString();
+      var effectiveDate = (body.effectiveDate || "").toString();
+      var referrals = (body.referrals || "No").toString();
+      var reset = (body.reset || "No").toString();
+      var firstTime = (body.firstTime || "No").toString();
+      var referralSale = (body.referralSale || "No").toString();
+      getSheet_(ENTRIES_SHEET).appendRow([id, email, displayName, Number(body.amount)||0, body.date || "", body.notes || "", new Date(), carrier, effectiveDate, referrals, reset, firstTime, referralSale]);
+      postToSlack_(displayName, Number(body.amount)||0, carrier, effectiveDate, firstTime);
+      return json_({ok:true, id: id});
+    }
+    if (action === "deleteEntry") {
+      var email = emailForToken_(body.token);
+      if (!email) return json_({ok:false, error:"invalid_session"});
+      var isAdmin = isAdminEmail_(email);
+      var sheet = getSheet_(ENTRIES_SHEET);
+      var values = sheet.getDataRange().getValues();
+      for (var i = 0; i < values.length; i++) {
+        if (values[i][0] === body.id && (values[i][1] === email || isAdmin)) {
+          sheet.deleteRow(i + 1);
+          return json_({ok:true});
+        }
+      }
+      return json_({ok:false, error:"not_found_or_not_yours"});
+    }
+    if (action === "editEntry") {
+      var email = emailForToken_(body.token);
+      if (!email) return json_({ok:false, error:"invalid_session"});
+      if (!isAdminEmail_(email)) return json_({ok:false, error:"admin_only"});
+      var sheet = getSheet_(ENTRIES_SHEET);
+      var values = sheet.getDataRange().getValues();
+      for (var i = 0; i < values.length; i++) {
+        if (values[i][0] === body.id) {
+          sheet.getRange(i + 1, 4).setValue(Number(body.amount) || 0);
+          sheet.getRange(i + 1, 5).setValue(body.date || "");
+          sheet.getRange(i + 1, 6).setValue(body.notes || "");
+          sheet.getRange(i + 1, 8).setValue(body.carrier || "");
+          sheet.getRange(i + 1, 9).setValue(body.effectiveDate || "");
+          sheet.getRange(i + 1, 10).setValue(body.referrals || "No");
+          sheet.getRange(i + 1, 11).setValue(body.reset || "No");
+          sheet.getRange(i + 1, 12).setValue(body.firstTime || "No");
+          return json_({ok:true});
+        }
+      }
+      return json_({ok:false, error:"not_found"});
+    }
+    if (action === "changePassword") {
+      var email = emailForToken_(body.token);
+      if (!email) return json_({ok:false, error:"invalid_session"});
+      var row = findUserRow_(email);
+      getSheet_(USERS_SHEET).getRange(row, 2).setValue(body.newHash);
+      return json_({ok:true});
+    }
+    if (action === "saveTrackerData") {
+      var email = emailForToken_(body.token);
+      if (!email) return json_({ok:false, error:"invalid_session"});
+      setTrackerBlob_(email, JSON.stringify(body.data));
+      return json_({ok:true});
+    }
+    if (action === "clearTrackerData") {
+      var email = emailForToken_(body.token);
+      if (!email) return json_({ok:false, error:"invalid_session"});
+      setTrackerBlob_(email, "{}");
+      return json_({ok:true});
+    }
+    return json_({ok:false, error:"unknown_action"});
+  } catch (err) {
+    return json_({ok:false, error:String(err)});
+  } finally {
+    lock.releaseLock();
+  }
+}
+function postToSlack_(displayName, amount, carrier, effectiveDate, firstTime) {
+  if (!SLACK_BOT_TOKEN || !SLACK_CHANNEL) {
+    debugLog_("Slack skipped — SLACK_BOT_TOKEN or SLACK_CHANNEL is blank.");
+    return;
+  }
+  var check = function(v) { return v === "Yes" ? "✅" : "❌"; };
+  var lines = [
+    "*New Sale Submitted!*",
+    "*Agent:* " + displayName,
+    "*AP:* $" + amount,
+    "*Carrier:* " + (carrier || "—"),
+    "*Effective Date:* " + (effectiveDate || "—"),
+  ];
+  if (APP_URL) lines.push("👉 <" + APP_URL + "|Log your next sale>");
+  var payload = { channel: SLACK_CHANNEL, text: lines.join("\\n") };
+  try {
+    var res = UrlFetchApp.fetch("https://slack.com/api/chat.postMessage", {
+      method: "post",
+      contentType: "application/json; charset=utf-8",
+      headers: { "Authorization": "Bearer " + SLACK_BOT_TOKEN },
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true
+    });
+    var result = JSON.parse(res.getContentText());
+    debugLog_("Slack response: " + JSON.stringify(result));
+  } catch (err) {
+    debugLog_("Slack fetch threw an error: " + err);
+  }
+}
+function debugLog_(msg) {
+  try {
+    getSheet_("Debug").appendRow([new Date(), msg]);
+  } catch (e) {
+    // even the debug log shouldn't be able to break a sale submission
+  }
+}
+function json_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+function normalizeEmail_(email) { return (email || "").toString().trim().toLowerCase(); }
+function isAdminEmail_(email) {
+  var n = normalizeEmail_(email);
+  for (var i = 0; i < ADMIN_EMAILS.length; i++) {
+    if (normalizeEmail_(ADMIN_EMAILS[i]) === n) return true;
+  }
+  return false;
+}
+function getSheet_(name) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(name);
+  if (!sheet) sheet = ss.insertSheet(name);
+  return sheet;
+}
+function findUserRow_(email) {
+  var values = getSheet_(USERS_SHEET).getDataRange().getValues();
+  for (var i = 0; i < values.length; i++) {
+    if (normalizeEmail_(values[i][0]) === email) return i + 1;
+  }
+  return -1;
+}
+function findSessionRow_(token) {
+  var values = getSheet_(SESSIONS_SHEET).getDataRange().getValues();
+  for (var i = 0; i < values.length; i++) {
+    if (values[i][0] === token) return i + 1;
+  }
+  return -1;
+}
+function emailForToken_(token) {
+  if (!token) return null;
+  var row = findSessionRow_(token);
+  if (row === -1) return null;
+  return getSheet_(SESSIONS_SHEET).getRange(row, 2).getValue();
+}
+function displayNameForEmail_(email) {
+  var row = findUserRow_(email);
+  if (row === -1) return email;
+  var name = getSheet_(USERS_SHEET).getRange(row, 3).getValue();
+  return name || email;
+}
+function createSession_(email) {
+  var token = Utilities.getUuid();
+  getSheet_(SESSIONS_SHEET).appendRow([token, email, new Date()]);
+  return token;
+}
+function getAllEntries_() {
+  var values = getSheet_(ENTRIES_SHEET).getDataRange().getValues();
+  var out = [];
+  for (var i = 0; i < values.length; i++) {
+    var r = values[i];
+    if (!r[0]) continue;
+    out.push({
+      id: r[0], email: r[1], displayName: r[2], amount: Number(r[3])||0, date: formatDate_(r[4]), notes: r[5] || "",
+      carrier: r[7] || "", effectiveDate: formatDate_(r[8]), referrals: r[9] || "No", reset: r[10] || "No", firstTime: r[11] || "No",
+      referralSale: r[12] || "No"
+    });
+  }
+  return out;
+}
+function formatDate_(v) {
+  if (!v) return "";
+  if (Object.prototype.toString.call(v) === "[object Date]") {
+    return Utilities.formatDate(v, Session.getScriptTimeZone(), "yyyy-MM-dd");
+  }
+  return String(v);
+}
+function findTrackerRow_(email) {
+  var values = getSheet_(TRACKER_SHEET).getDataRange().getValues();
+  for (var i = 0; i < values.length; i++) {
+    if (normalizeEmail_(values[i][0]) === email) return i + 1;
+  }
+  return -1;
+}
+function getTrackerBlob_(email) {
+  var row = findTrackerRow_(email);
+  if (row === -1) return "{}";
+  return getSheet_(TRACKER_SHEET).getRange(row, 2).getValue();
+}
+function setTrackerBlob_(email, json) {
+  var row = findTrackerRow_(email);
+  var sheet = getSheet_(TRACKER_SHEET);
+  if (row === -1) {
+    sheet.appendRow([email, json, new Date()]);
+  } else {
+    sheet.getRange(row, 2).setValue(json);
+    sheet.getRange(row, 3).setValue(new Date());
+  }
+}`;
+  })();
 })();
 </script>
 </body>
