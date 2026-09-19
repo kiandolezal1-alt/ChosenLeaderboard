@@ -464,6 +464,7 @@
         <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="saleslog">Sales Log</button>
         <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="calendar">Calendar</button>
         <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="deposits">Deposits</button>
+        <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="backend">Backend</button>
         <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="renewals">Renewals</button>
         <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="leadspend">Lead Spend</button>
         <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="carriers">Carriers</button>
@@ -1152,6 +1153,55 @@
       </div>
     </div>
 
+    <!-- ---- Backend ---- -->
+    <div id="pt-sub-backend" class="subsection">
+      <div class="panel">
+        <h2>Backend commission</h2>
+        <p class="desc">
+          The remaining 3-month piece of first-year comp on each Issued &amp; Paid sale, separate from the
+          9-month Deposit Amount paid at issue. Expected to land about 9 months after the effective date —
+          when the advance period ends. Estimates only.
+        </p>
+        <div class="calc-strip" style="margin-top:0;">
+          <div class="calc-item"><div class="k">Pending (All-Time)</div><div class="v" id="pt_bk_pending">$0</div></div>
+          <div class="calc-item"><div class="k">Received (All-Time)</div><div class="v" id="pt_bk_received">$0</div></div>
+          <div class="calc-item"><div class="k">Policies Pending</div><div class="v" id="pt_bk_pendingCount">0</div></div>
+          <div class="calc-item"><div class="k">Policies Received</div><div class="v" id="pt_bk_receivedCount">0</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="cal-year-nav">
+          <button class="yr-btn" id="pt_bkCalPrevYear">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <div class="yr-label" id="pt_bkCalYearLabel">2026</div>
+          <button class="yr-btn" id="pt_bkCalNextYear">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        </div>
+        <p class="desc" style="margin-top:-6px;">Each tile is total Backend Amount expected to become due that month (effective date + 9 months), whether or not you've marked it received yet.</p>
+        <div class="cal-month-grid" id="pt_bkCalMonthGrid"></div>
+      </div>
+      <div class="panel">
+        <h2 id="pt_bkCalDetailTitle">Month backend</h2>
+        <p class="desc">Every policy whose 9-month advance period ends in the selected month.</p>
+        <div class="calc-strip" style="margin-top:0;">
+          <div class="calc-item"><div class="k">Expected This Month</div><div class="v" id="pt_bkCalMonthTotal">$0</div></div>
+          <div class="calc-item"><div class="k">Policies Due</div><div class="v" id="pt_bkCalMonthCount">0</div></div>
+        </div>
+        <div style="overflow-x:auto;margin-top:18px;">
+        <table class="data-table">
+          <thead><tr><th>Client</th><th>Carrier / Product</th><th>Effective</th><th>Expected Backend</th><th>Backend $</th><th>Status</th><th></th></tr></thead>
+          <tbody id="pt_bkCalDetailBody"></tbody>
+        </table>
+        </div>
+        <div id="pt_bkCalDetailEmpty" class="empty-state hidden">
+          <div class="big">🗓️</div>
+          <div>No policies due this month.</div>
+        </div>
+      </div>
+    </div>
+
     <!-- ---- Renewals ---- -->
     <div id="pt-sub-renewals" class="subsection">
       <div class="panel">
@@ -1169,7 +1219,38 @@
         </div>
       </div>
       <div class="panel">
-        <h2>By policy</h2>
+        <div class="cal-year-nav">
+          <button class="yr-btn" id="pt_renCalPrevYear">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <div class="yr-label" id="pt_renCalYearLabel">2026</div>
+          <button class="yr-btn" id="pt_renCalNextYear">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        </div>
+        <p class="desc" style="margin-top:-6px;">Each tile is expected renewal $ that month — based on each policy's anniversary date and what policy year it'll be in. Browse forward to project future months, or back to see what should have landed.</p>
+        <div class="cal-month-grid" id="pt_renCalMonthGrid"></div>
+      </div>
+      <div class="panel">
+        <h2 id="pt_renCalDetailTitle">Month renewals</h2>
+        <p class="desc">Every policy with an anniversary in the selected month, and the renewal $ expected then.</p>
+        <div class="calc-strip" style="margin-top:0;">
+          <div class="calc-item"><div class="k">Expected This Month</div><div class="v" id="pt_renCalMonthTotal">$0</div></div>
+          <div class="calc-item"><div class="k">Policies Renewing</div><div class="v" id="pt_renCalMonthCount">0</div></div>
+        </div>
+        <div style="overflow-x:auto;margin-top:18px;">
+        <table class="data-table">
+          <thead><tr><th>Client</th><th>Carrier / Product</th><th>Anniversary</th><th>Policy Year</th><th>Rate</th><th>Expected $</th></tr></thead>
+          <tbody id="pt_renCalDetailBody"></tbody>
+        </table>
+        </div>
+        <div id="pt_renCalDetailEmpty" class="empty-state hidden">
+          <div class="big">🗓️</div>
+          <div>No policies renew this month.</div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>All in-force policies</h2>
         <div style="overflow-x:auto;margin-top:0;">
         <table class="data-table">
           <thead><tr><th>Client</th><th>Carrier / Product</th><th>Effective</th><th>Policy Year</th><th>Current Rate</th><th>This Year</th><th>Earned to Date</th></tr></thead>
@@ -2170,6 +2251,10 @@
   let ptCurrentPeriod = "month";
   let ptCalYear = new Date().getFullYear();
   let ptCalSelectedMonth = new Date().getMonth();
+  let ptRenCalYear = new Date().getFullYear();
+  let ptRenCalSelectedMonth = new Date().getMonth();
+  let ptBkCalYear = new Date().getFullYear();
+  let ptBkCalSelectedMonth = new Date().getMonth();
   let ptCustomRangeStart = null;
   let ptCustomRangeEnd = null;
   let editingSaleId = null;
@@ -2978,6 +3063,92 @@
       });
     });
   }
+  /* ---------------- Backend ----------------
+     The 3-month remainder of first-year comp, separate from the 9-month Deposit Amount paid at
+     issue. Modeled as landing in one lump around effectiveDate + 9 months (when the advance period
+     ends) — a single expected month per sale, not a recurring thing like renewals. */
+  function expectedBackendDate(sale){
+    const base = sale.effectiveDate || sale.date;
+    if(!base) return null;
+    const start = new Date(normalizeDateString(base)+"T00:00:00");
+    if(isNaN(start)) return null;
+    return new Date(start.getFullYear(), start.getMonth()+DEPOSIT_MONTHS, start.getDate());
+  }
+  function backendForCalMonth(year, month){
+    const issued = state.sales.filter(s=>s.status==="Issued & Paid");
+    const rows = [];
+    issued.forEach(s=>{
+      const d = expectedBackendDate(s);
+      if(!d) return;
+      if(d.getFullYear()===year && d.getMonth()===month) rows.push({sale:s, expectedDate:d});
+    });
+    return rows;
+  }
+  function renderPtBackend(){
+    const issued = state.sales.filter(s=>s.status==="Issued & Paid");
+    const pending = issued.filter(s=>!s.backendReceived);
+    const received = issued.filter(s=>s.backendReceived);
+    document.getElementById("pt_bk_pending").textContent = fmtMoney(pending.reduce((a,s)=>a+(s.backendAmt||0),0));
+    document.getElementById("pt_bk_received").textContent = fmtMoney(received.reduce((a,s)=>a+(s.backendAmt||0),0));
+    document.getElementById("pt_bk_pendingCount").textContent = pending.length;
+    document.getElementById("pt_bk_receivedCount").textContent = received.length;
+    renderPtBkCalendar();
+    renderPtBkCalendarDetail();
+  }
+  document.getElementById("pt_bkCalPrevYear").addEventListener("click", ()=>{ ptBkCalYear--; renderPtBkCalendar(); renderPtBkCalendarDetail(); });
+  document.getElementById("pt_bkCalNextYear").addEventListener("click", ()=>{ ptBkCalYear++; renderPtBkCalendar(); renderPtBkCalendarDetail(); });
+  function renderPtBkCalendar(){
+    document.getElementById("pt_bkCalYearLabel").textContent = ptBkCalYear;
+    const grid = document.getElementById("pt_bkCalMonthGrid");
+    grid.innerHTML = "";
+    for(let m=0; m<12; m++){
+      const rows = backendForCalMonth(ptBkCalYear, m);
+      const total = rows.reduce((a,r)=>a+(r.sale.backendAmt||0),0);
+      const div = document.createElement("div");
+      div.className = "cal-month" + (m===ptBkCalSelectedMonth ? " active" : "");
+      div.innerHTML = `
+        <div class="cal-month-name">${MONTH_NAMES[m]}</div>
+        <div class="cal-month-count">${rows.length} polic${rows.length===1?"y":"ies"}</div>
+        <div class="cal-month-ap">${fmtMoney(total)}</div>
+      `;
+      div.addEventListener("click", ()=>{ ptBkCalSelectedMonth = m; renderPtBkCalendar(); renderPtBkCalendarDetail(); });
+      grid.appendChild(div);
+    }
+  }
+  function renderPtBkCalendarDetail(){
+    const rows = backendForCalMonth(ptBkCalYear, ptBkCalSelectedMonth).sort((a,b)=> (b.sale.backendAmt||0) - (a.sale.backendAmt||0));
+    document.getElementById("pt_bkCalDetailTitle").textContent = MONTH_NAMES[ptBkCalSelectedMonth] + " " + ptBkCalYear + " backend";
+    document.getElementById("pt_bkCalMonthTotal").textContent = fmtMoney(rows.reduce((a,r)=>a+(r.sale.backendAmt||0),0));
+    document.getElementById("pt_bkCalMonthCount").textContent = rows.length;
+    const body = document.getElementById("pt_bkCalDetailBody");
+    const empty = document.getElementById("pt_bkCalDetailEmpty");
+    body.innerHTML = "";
+    if(rows.length===0){ empty.classList.remove("hidden"); return; }
+    empty.classList.add("hidden");
+    rows.forEach(({sale:s, expectedDate})=>{
+      const disp = saleCarrierDisplay(s);
+      const expStr = expectedDate.getFullYear()+"-"+String(expectedDate.getMonth()+1).padStart(2,"0")+"-"+String(expectedDate.getDate()).padStart(2,"0");
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${escapeHtml(s.client||"—")}</td>
+        <td><span class="dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${disp.color};margin-right:6px;"></span>${escapeHtml(disp.name)}</td>
+        <td class="num">${escapeHtml(s.effectiveDate || s.date || "—")}</td>
+        <td class="num">${expStr}</td>
+        <td class="num">${fmtMoney(s.backendAmt)}</td>
+        <td>${s.backendReceived ? '<span class="status-pill status-Issued-Paid">Received</span>' : '<span class="status-pill status-Pending">Pending</span>'}</td>
+        <td class="row-actions"><button class="icon-btn pt-bk-toggle" data-id="${s.id}" title="Toggle backend received">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+        </button></td>
+      `;
+      body.appendChild(tr);
+    });
+    body.querySelectorAll(".pt-bk-toggle").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const sale = state.sales.find(s=>s.id===btn.dataset.id);
+        if(sale){ sale.backendReceived = !sale.backendReceived; saveState(); renderPtBackend(); renderPtDashboard(); renderPtSalesTable(); }
+      });
+    });
+  }
   /* ---------------- Renewals ---------------- */
   function renderPtRenewals(){
     const issued = state.sales.filter(s=>s.status==="Issued & Paid");
@@ -3014,6 +3185,74 @@
         `;
         body.appendChild(tr);
       });
+    renderPtRenCalendar();
+    renderPtRenCalendarDetail();
+  }
+  // Every in-force policy with a renewal schedule whose anniversary (same month/day as effective
+  // date) falls in the given calendar month/year — i.e. what would actually land that month.
+  function renewalsForCalMonth(year, month){
+    const issued = state.sales.filter(s=>s.status==="Issued & Paid");
+    const rows = [];
+    issued.forEach(s=>{
+      const base = s.effectiveDate || s.date;
+      if(!base) return;
+      const start = new Date(normalizeDateString(base)+"T00:00:00");
+      if(isNaN(start)) return;
+      if(start.getMonth() !== month) return;
+      const policyYear = (year - start.getFullYear()) + 1;
+      if(policyYear < 2) return; // year 1 is the issue itself, not a renewal
+      const product = carrierMasterProduct(s.carrier, s.product);
+      if(!product || !product.renewal || !product.renewal.tiers || !product.renewal.tiers.length) return;
+      const level = s.contractLevel || 100;
+      const rate = renewalRateForYear(product, level, policyYear);
+      const amount = (s.ap||0) * rate/100;
+      rows.push({sale: s, policyYear, rate, amount});
+    });
+    return rows;
+  }
+  document.getElementById("pt_renCalPrevYear").addEventListener("click", ()=>{ ptRenCalYear--; renderPtRenCalendar(); renderPtRenCalendarDetail(); });
+  document.getElementById("pt_renCalNextYear").addEventListener("click", ()=>{ ptRenCalYear++; renderPtRenCalendar(); renderPtRenCalendarDetail(); });
+  function renderPtRenCalendar(){
+    document.getElementById("pt_renCalYearLabel").textContent = ptRenCalYear;
+    const grid = document.getElementById("pt_renCalMonthGrid");
+    grid.innerHTML = "";
+    for(let m=0; m<12; m++){
+      const rows = renewalsForCalMonth(ptRenCalYear, m);
+      const total = rows.reduce((a,r)=>a+r.amount,0);
+      const div = document.createElement("div");
+      div.className = "cal-month" + (m===ptRenCalSelectedMonth ? " active" : "");
+      div.innerHTML = `
+        <div class="cal-month-name">${MONTH_NAMES[m]}</div>
+        <div class="cal-month-count">${rows.length} polic${rows.length===1?"y":"ies"}</div>
+        <div class="cal-month-ap">${fmtMoney(total)}</div>
+      `;
+      div.addEventListener("click", ()=>{ ptRenCalSelectedMonth = m; renderPtRenCalendar(); renderPtRenCalendarDetail(); });
+      grid.appendChild(div);
+    }
+  }
+  function renderPtRenCalendarDetail(){
+    const rows = renewalsForCalMonth(ptRenCalYear, ptRenCalSelectedMonth).sort((a,b)=> b.amount - a.amount);
+    document.getElementById("pt_renCalDetailTitle").textContent = MONTH_NAMES[ptRenCalSelectedMonth] + " " + ptRenCalYear + " renewals";
+    document.getElementById("pt_renCalMonthTotal").textContent = fmtMoney(rows.reduce((a,r)=>a+r.amount,0));
+    document.getElementById("pt_renCalMonthCount").textContent = rows.length;
+    const body = document.getElementById("pt_renCalDetailBody");
+    const empty = document.getElementById("pt_renCalDetailEmpty");
+    body.innerHTML = "";
+    if(rows.length===0){ empty.classList.remove("hidden"); return; }
+    empty.classList.add("hidden");
+    rows.forEach(({sale:s, policyYear, rate, amount})=>{
+      const disp = saleCarrierDisplay(s);
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${escapeHtml(s.client||"—")}</td>
+        <td><span class="dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${disp.color};margin-right:6px;"></span>${escapeHtml(disp.name)}</td>
+        <td class="num">${escapeHtml(s.effectiveDate || s.date || "—")}</td>
+        <td class="num">Year ${policyYear}</td>
+        <td class="num">${rate}%</td>
+        <td class="num">${fmtMoney(amount)}</td>
+      `;
+      body.appendChild(tr);
+    });
   }
   /* ---------------- Lead Spend ---------------- */
   document.getElementById("pt_addLeadSpendBtn").addEventListener("click", ()=>{
@@ -3313,6 +3552,7 @@
     renderPtSalesTable();
     renderPtDashboard();
     renderPtDeposits();
+    renderPtBackend();
     renderPtRenewals();
     renderPtLeadSpend();
     renderPtCalendar();
