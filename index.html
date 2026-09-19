@@ -464,6 +464,7 @@
         <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="saleslog">Sales Log</button>
         <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="calendar">Calendar</button>
         <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="deposits">Deposits</button>
+        <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="renewals">Renewals</button>
         <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="leadspend">Lead Spend</button>
         <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="carriers">Carriers</button>
         <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="data">Data</button>
@@ -1147,6 +1148,37 @@
         <div id="pt_depositsEmptyState" class="empty-state hidden">
           <div class="big">💰</div>
           <div>No deposits logged yet.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Renewals ---- -->
+    <div id="pt-sub-renewals" class="subsection">
+      <div class="panel">
+        <h2>Renewal income</h2>
+        <p class="desc">
+          Years 2+ commission on your in-force (Issued &amp; Paid) policies, from each carrier/product's renewal
+          schedule at your contract level. Estimates only — assumes the policy is still active and the full
+          premium renewed each anniversary.
+        </p>
+        <div class="calc-strip" style="margin-top:0;">
+          <div class="calc-item"><div class="k">This Year</div><div class="v" id="pt_ren_thisYear">$0</div></div>
+          <div class="calc-item"><div class="k">All-Time Earned</div><div class="v" id="pt_ren_allTime">$0</div></div>
+          <div class="calc-item"><div class="k">Policies Earning Renewals</div><div class="v" id="pt_ren_count">0</div></div>
+          <div class="calc-item"><div class="k">Issued Policies w/o Renewal Data</div><div class="v" id="pt_ren_noSchedule">0</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>By policy</h2>
+        <div style="overflow-x:auto;margin-top:0;">
+        <table class="data-table">
+          <thead><tr><th>Client</th><th>Carrier / Product</th><th>Effective</th><th>Policy Year</th><th>Current Rate</th><th>This Year</th><th>Earned to Date</th></tr></thead>
+          <tbody id="pt_renewalsTableBody"></tbody>
+        </table>
+        </div>
+        <div id="pt_renewalsEmptyState" class="empty-state hidden">
+          <div class="big">🔄</div>
+          <div>No in-force policies with renewal data yet — issue a sale on a carrier/product that has a renewal schedule.</div>
         </div>
       </div>
     </div>
@@ -2946,6 +2978,43 @@
       });
     });
   }
+  /* ---------------- Renewals ---------------- */
+  function renderPtRenewals(){
+    const issued = state.sales.filter(s=>s.status==="Issued & Paid");
+    const rows = issued.map(s=>({sale:s, info: renewalInfoForSale(s)}));
+    const withSchedule = rows.filter(r=>r.info.hasSchedule);
+    const withoutSchedule = rows.filter(r=>!r.info.hasSchedule);
+    const thisYearTotal = withSchedule.reduce((a,r)=>a+r.info.thisYearAmount,0);
+    const allTimeTotal = withSchedule.reduce((a,r)=>a+r.info.cumulativeAmount,0);
+    document.getElementById("pt_ren_thisYear").textContent = fmtMoney(thisYearTotal);
+    document.getElementById("pt_ren_allTime").textContent = fmtMoney(allTimeTotal);
+    document.getElementById("pt_ren_count").textContent = withSchedule.length;
+    document.getElementById("pt_ren_noSchedule").textContent = withoutSchedule.length;
+    const body = document.getElementById("pt_renewalsTableBody");
+    const empty = document.getElementById("pt_renewalsEmptyState");
+    body.innerHTML = "";
+    if(withSchedule.length===0){ empty.classList.remove("hidden"); return; }
+    empty.classList.add("hidden");
+    withSchedule
+      .sort((a,b)=> b.info.cumulativeAmount - a.info.cumulativeAmount)
+      .forEach(({sale:s, info})=>{
+        const product = carrierMasterProduct(s.carrier, s.product);
+        const level = s.contractLevel || 100;
+        const rate = info.policyYear>=2 ? renewalRateForYear(product, level, info.policyYear) : renewalRateForYear(product, level, 2);
+        const disp = saleCarrierDisplay(s);
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${escapeHtml(s.client||"—")}</td>
+          <td><span class="dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${disp.color};margin-right:6px;"></span>${escapeHtml(disp.name)}</td>
+          <td class="num">${escapeHtml(s.effectiveDate || s.date || "—")}</td>
+          <td class="num">${info.policyYear < 2 ? "Year 1 (no renewal yet)" : "Year " + info.policyYear}</td>
+          <td class="num">${info.policyYear < 2 ? "—" : rate + "%"}</td>
+          <td class="num">${fmtMoney(info.thisYearAmount)}</td>
+          <td class="num">${fmtMoney(info.cumulativeAmount)}</td>
+        `;
+        body.appendChild(tr);
+      });
+  }
   /* ---------------- Lead Spend ---------------- */
   document.getElementById("pt_addLeadSpendBtn").addEventListener("click", ()=>{
     const date = document.getElementById("pt_lead_date").value || todayISO();
@@ -3244,6 +3313,7 @@
     renderPtSalesTable();
     renderPtDashboard();
     renderPtDeposits();
+    renderPtRenewals();
     renderPtLeadSpend();
     renderPtCalendar();
     renderPtCalendarDetail();
