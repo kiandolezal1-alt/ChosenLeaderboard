@@ -7,7 +7,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
 <style>
   :root{
-    --logo-img:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArwAAAINCAYAAADcLKyTAAB9f0lEQVR42u2dd7gkVbW+v9XdZxIz5DzkJAIiSBAUEQQDKhkUEUVFxSxiTtdwvfeK6apX8aeYQEFFRJKKiIAgCAgSJYPkHAcYZuZ09/f7o9b27Cmqu6vPqe6u7vO9z9NPn9ChateuqnevWrU2IIQQQgghhBBCCCGEEEIIIaYJJGeoFYQQQgghxCgLr6kVhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGE9BsShqRSCEEIIIQNGSU0ghBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIMQj+f6N4et5ARCW0AAAAAElFTkSuQmCC');
+    --logo-img:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArwAAAINCAYAAADcLKyTAAB9f0lEQVR42u2dd7gkVbW+v9XdZxIz5DzkJAIiSBAUEQQDKhkUEUVFxSxiTtdwvfeK6apX8aeYQEFFRJKKiIAgCAgSJYPkHAcYZuZ09/f7o9b27Cmqu6vPqe6u7vO9z9NPn9ChateuqnevWrU2IIQQQgghhBBCCCGEEEIIIaYJJGeoFYQQQgghxCgLr6kVhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIMQj+f6N4et5ARCW0AAAAAElFTkSuQmCC');
     --bg:#0A0F1C;
     --panel:#0F1830;
     --panel-2:#141F3B;
@@ -34,7 +34,7 @@
   body{
     background:var(--bg);
     color:var(--text);
-    font-family:'Times New Roman', Times, Georgia, 'Liberation Serif', serif;
+    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, Helvetica, Arial, sans-serif;
     font-size:14.5px;
     line-height:1.5;
     min-height:100vh;
@@ -43,67 +43,78 @@
   ::-webkit-scrollbar-thumb{background:#1C2740;border-radius:10px;}
   .hidden{display:none !important;}
   a{color:inherit;}
-  /* ---------- Brand header ---------- */
-  .brandband{
-    text-align:center;
-    padding:46px 20px 28px;
+  /* ---------- App shell / Sidebar ---------- */
+  .app-shell{display:flex;align-items:stretch;min-height:100vh;}
+  .sidebar{
+    width:236px;flex-shrink:0;
+    background:var(--panel);
+    border-right:1px solid var(--line);
+    display:flex;flex-direction:column;
+    position:sticky;top:0;height:100vh;overflow-y:auto;
+  }
+  .sidebar-brand{
+    text-align:left;
+    padding:28px 20px 18px;
     border-bottom:1px solid var(--line);
   }
   .wordmark{
     font-family:'Times New Roman', Times, Georgia, serif;
     font-weight:700;
-    font-size:clamp(30px,5.5vw,46px);
-    letter-spacing:6px;
+    font-size:24px;
+    letter-spacing:3px;
     color:var(--text);
     margin:0;
     text-transform:uppercase;
     text-decoration:underline;
-    text-underline-offset:10px;
+    text-underline-offset:6px;
     text-decoration-thickness:1.5px;
   }
-  .tagline{
-    font-size:11px;
-    letter-spacing:3px;
+  .sidebar-brand .tagline{
+    font-size:9.5px;
+    letter-spacing:2px;
     text-transform:uppercase;
     color:var(--muted);
-    margin:10px 0 0;
+    margin:8px 0 0;
     font-weight:600;
   }
-  .divider{
-    max-width:120px;height:1px;
-    margin:22px auto 0;
-    background:var(--line-bright);
+  .sidebar-nav{flex:1;padding:10px 12px;}
+  .sidebar-group{margin-bottom:4px;}
+  .sidebar-label{
+    font-size:10px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;
+    color:var(--muted);padding:14px 10px 6px;
   }
-  .topbar{
-    display:flex;justify-content:space-between;align-items:center;
-    max-width:1040px;margin:0 auto;padding:14px 20px;
-    flex-wrap:wrap;gap:10px;
-  }
-  .who{font-size:12.5px;color:var(--muted);}
-  .who b{color:var(--text);font-weight:600;}
-  .topbar-actions{display:flex;gap:8px;align-items:center;}
-  /* ---------- Nav ---------- */
-  nav.tabs{
-    display:flex;justify-content:center;gap:4px;
-    max-width:1040px;margin:0 auto;padding:0 20px;
-    border-bottom:1px solid var(--line);
-    flex-wrap:wrap;
-  }
-  nav.tabs button{
-    all:unset;cursor:pointer;
-    padding:13px 18px;
-    font-size:13px;font-weight:600;
+  .side-btn{
+    all:unset;box-sizing:border-box;cursor:pointer;
+    display:block;width:100%;
+    padding:9px 10px;margin:1px 0;
+    font-size:13px;font-weight:500;
     color:var(--muted);
-    border-bottom:2px solid transparent;
-    letter-spacing:0.3px;
-    transition:color .15s, border-color .15s;
+    border-radius:7px;
+    letter-spacing:0.2px;
+    transition:color .15s, background-color .15s;
   }
-  nav.tabs button:hover{color:var(--text);}
-  nav.tabs button.active{color:var(--accent-bright);border-bottom-color:var(--accent);}
-  main{max-width:1040px;margin:0 auto;padding:26px 20px 70px;}
+  .side-btn:hover{background:var(--panel-2);color:var(--text);}
+  .side-btn.active{background:var(--accent-soft);color:var(--accent-bright);font-weight:700;}
+  .sidebar-foot{padding:14px 18px 18px;border-top:1px solid var(--line);}
+  .who{font-size:12px;color:var(--muted);}
+  .who b{color:var(--text);font-weight:600;}
+  .content-area{flex:1;min-width:0;}
+  main{max-width:1040px;margin:0 auto;padding:32px 28px 70px;}
+  @media (max-width:780px){
+    .app-shell{flex-direction:column;}
+    .sidebar{width:100%;height:auto;position:relative;flex-direction:row;flex-wrap:wrap;align-items:center;padding:10px 14px;overflow-y:visible;}
+    .sidebar-brand{border-bottom:none;padding:6px 10px;text-align:left;flex-shrink:0;}
+    .wordmark{font-size:18px;}
+    .sidebar-nav{display:flex;flex-wrap:wrap;gap:2px;flex:1;padding:0 4px;}
+    .sidebar-group{display:flex;flex-wrap:wrap;align-items:center;margin-bottom:0;}
+    .sidebar-label{display:none;}
+    .side-btn{width:auto;padding:7px 10px;}
+    .sidebar-foot{border-top:none;padding:6px 10px;display:flex;align-items:center;gap:10px;}
+    main{padding:20px 16px 60px;}
+  }
   .page-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:18px;flex-wrap:wrap;gap:12px;}
   .page-head h1{
-    font-family:'Times New Roman', Times, Georgia, serif;
+    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, Helvetica, Arial, sans-serif;
     font-weight:700;
     font-size:22px;
     letter-spacing:1px;
@@ -121,7 +132,7 @@
     margin-bottom:18px;
   }
   .panel h2{
-    font-family:'Times New Roman', Times, Georgia, serif;
+    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, Helvetica, Arial, sans-serif;
     font-weight:700;
     font-size:15px;
     letter-spacing:0.5px;
@@ -147,7 +158,7 @@
     background:var(--panel-2);border:1px solid var(--line);color:var(--text);
   }
   .cal-year-nav .yr-btn:hover{border-color:var(--accent);}
-  .cal-year-nav .yr-label{font-family:'Times New Roman', Times, Georgia, serif;font-weight:700;font-size:18px;color:var(--text);min-width:64px;text-align:center;}
+  .cal-year-nav .yr-label{font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, Helvetica, Arial, sans-serif;font-weight:700;font-size:18px;color:var(--text);min-width:64px;text-align:center;}
   .cal-month-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
   .cal-month{
     border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--panel-2);
@@ -155,9 +166,9 @@
   }
   .cal-month:hover{border-color:var(--accent);}
   .cal-month.active{border-color:var(--accent);background:var(--accent-soft);}
-  .cal-month-name{font-family:'Times New Roman', Times, Georgia, serif;font-weight:700;font-size:14px;color:var(--text);margin-bottom:6px;}
+  .cal-month-name{font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, Helvetica, Arial, sans-serif;font-weight:700;font-size:14px;color:var(--text);margin-bottom:6px;}
   .cal-month-count{font-size:11.5px;color:var(--muted);}
-  .cal-month-ap{font-family:'Times New Roman', Times, Georgia, serif;font-size:15px;font-weight:700;color:var(--text);margin-top:4px;}
+  .cal-month-ap{font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, Helvetica, Arial, sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-top:4px;}
   /* ---------- Team stat tiles ---------- */
   .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
   .tile{
@@ -165,7 +176,7 @@
     padding:16px 18px;box-shadow:var(--shadow);
   }
   .tile .label{font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:600;}
-  .tile .value{font-family:'Times New Roman', Times, Georgia, serif;font-size:24px;font-weight:700;color:var(--text);margin-top:6px;}
+  .tile .value{font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, Helvetica, Arial, sans-serif;font-size:24px;font-weight:700;color:var(--text);margin-top:6px;}
   .tile .sub{font-size:11.5px;color:var(--muted);margin-top:3px;}
   /* ---------- Leaderboard rows (signature element: blade bars) ---------- */
   .board{display:flex;flex-direction:column;gap:10px;}
@@ -182,7 +193,7 @@
   .rank{
     width:34px;height:34px;border-radius:50%;flex-shrink:0;
     display:flex;align-items:center;justify-content:center;
-    font-family:'Times New Roman', Times, Georgia, serif;font-weight:700;font-size:13px;
+    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, Helvetica, Arial, sans-serif;font-weight:700;font-size:13px;
     background:#16213A;color:var(--muted);border:1px solid var(--line-bright);
   }
   .rank.r1,.rank.r2,.rank.r3{background:var(--panel-2);border-color:var(--line-bright);color:var(--text);}
@@ -196,7 +207,7 @@
     min-width:4px;
   }
   .row-amt{text-align:right;flex-shrink:0;}
-  .row-amt .ap{font-family:'Times New Roman', Times, Georgia, serif;font-weight:700;font-size:16px;color:var(--accent-bright);}
+  .row-amt .ap{font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, Helvetica, Arial, sans-serif;font-weight:700;font-size:16px;color:var(--accent-bright);}
   .row-amt .cnt{font-size:11px;color:var(--muted);margin-top:2px;}
   .empty-state{padding:44px 20px;text-align:center;color:var(--muted);}
   .empty-state .big{font-size:32px;margin-bottom:10px;}
@@ -207,7 +218,7 @@
   .field label{font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:0.5px;}
   .field .hint{font-size:11px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;}
   input,select,textarea{
-    font-family:'Times New Roman', Times, Georgia, serif;
+    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, Helvetica, Arial, sans-serif;
     font-size:14px;
     padding:10px 12px;
     border:1px solid var(--line);
@@ -225,7 +236,7 @@
   textarea{resize:vertical;min-height:44px;}
   .btn{
     all:unset;cursor:pointer;
-    font-family:'Times New Roman', Times, Georgia, serif;
+    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, Helvetica, Arial, sans-serif;
     font-weight:700;
     font-size:13px;
     padding:11px 20px;
@@ -250,7 +261,7 @@
   .feed-item:last-child{border-bottom:none;}
   .feed-name{font-weight:600;font-size:13.5px;}
   .feed-meta{font-size:11.5px;color:var(--muted);margin-top:2px;}
-  .feed-amt{font-family:'Times New Roman', Times, Georgia, serif;font-weight:700;color:var(--accent-bright);font-size:14px;flex-shrink:0;}
+  .feed-amt{font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, Helvetica, Arial, sans-serif;font-weight:700;color:var(--accent-bright);font-size:14px;flex-shrink:0;}
   .icon-btn{
     all:unset;cursor:pointer;width:26px;height:26px;border-radius:6px;
     display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;
@@ -434,28 +445,44 @@
     </div>
   </div>
 </div>
-<div class="brandband">
-  <h1 class="wordmark">CHOSEN</h1>
-  <p class="tagline">Why not you?</p>
-  <div class="divider"></div>
-</div>
-<div class="topbar">
-  <div class="who">Signed in as <b id="whoName">—</b></div>
-  <div class="topbar-actions">
-    <div class="status-strip"><span class="status-dot" id="syncDot"></span><span id="syncText">—</span></div>
-    <button class="btn btn-outline" id="logoutBtn" style="padding:7px 14px;font-size:12px;">Log out</button>
-  </div>
-</div>
-<nav class="tabs">
-  <button class="tab-btn active" data-tab="leaderboard">Leaderboard</button>
-  <button class="tab-btn" data-tab="calendar">Calendar</button>
-  <button class="tab-btn" data-tab="logsale">Log a Sale</button>
-  <button class="tab-btn" data-tab="production">My Production</button>
-  <button class="tab-btn" data-tab="activity">My Activity</button>
-  <button class="tab-btn" data-tab="settings">Settings</button>
-  <button class="tab-btn hidden" data-tab="admin" id="adminTabBtn">Admin</button>
-</nav>
-<main>
+<div class="app-shell">
+  <aside class="sidebar" id="appSidebar">
+    <div class="sidebar-brand">
+      <h1 class="wordmark">CHOSEN</h1>
+      <p class="tagline">Why not you?</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-group">
+        <div class="sidebar-label">Team</div>
+        <button class="side-btn tab-btn active" data-tab="leaderboard">Leaderboard</button>
+        <button class="side-btn tab-btn" data-tab="calendar">Calendar</button>
+        <button class="side-btn tab-btn" data-tab="logsale">Log a Sale</button>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-label">My Production</div>
+        <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="dashboard">Overview</button>
+        <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="saleslog">Sales Log</button>
+        <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="calendar">Calendar</button>
+        <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="deposits">Deposits</button>
+        <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="leadspend">Lead Spend</button>
+        <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="carriers">Carriers</button>
+        <button class="side-btn tab-btn pt-subtab-btn" data-tab="production" data-sub="data">Data</button>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-label">Account</div>
+        <button class="side-btn tab-btn" data-tab="activity">My Activity</button>
+        <button class="side-btn tab-btn" data-tab="settings">Settings</button>
+        <button class="side-btn tab-btn hidden" data-tab="admin" id="adminTabBtn">Admin</button>
+      </div>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="who">Signed in as <b id="whoName">—</b></div>
+      <div class="status-strip" style="margin:8px 0;"><span class="status-dot" id="syncDot"></span><span id="syncText">—</span></div>
+      <button class="btn btn-outline" id="logoutBtn" style="width:100%;padding:7px 14px;font-size:12px;">Log out</button>
+    </div>
+  </aside>
+  <div class="content-area">
+  <main>
   <!-- ============ LEADERBOARD ============ -->
   <section id="tab-leaderboard" class="tab-content">
     <div class="page-head">
@@ -576,9 +603,12 @@
           <input id="ls_effective_date" type="date">
         </div>
         <div class="field">
-          <label>Carrier <span class="hint">start typing, or add new</span></label>
-          <input id="ls_carrier" type="text" list="carrierDatalist" placeholder="Foresters">
-          <datalist id="carrierDatalist"></datalist>
+          <label>Carrier</label>
+          <select id="ls_carrier"></select>
+        </div>
+        <div class="field">
+          <label>Product</label>
+          <select id="ls_product"></select>
         </div>
         <div class="field">
           <label>Premium Type</label>
@@ -592,12 +622,8 @@
           <input id="ls_amount" type="number" min="0" step="0.01" placeholder="120.00">
         </div>
         <div class="field">
-          <label>Comp Rate (%) <span class="hint">auto-fills from your carrier</span></label>
-          <input id="ls_comp" type="number" min="0" max="200" step="0.1" placeholder="80">
-        </div>
-        <div class="field">
-          <label>Advance Cap ($) <span class="hint">optional</span></label>
-          <input id="ls_advance_cap" type="number" min="0" step="1" placeholder="No cap">
+          <label>Your Comp Rate <span class="hint">set by carrier + your contract level</span></label>
+          <div id="ls_comp_display" style="padding:10px 0;font-weight:700;color:var(--accent-bright);">Pick a carrier + product</div>
         </div>
         <div class="field">
           <label>Status</label>
@@ -654,8 +680,8 @@
       <div class="calc-strip">
         <div class="calc-item"><div class="k">Annual Premium</div><div class="v" id="ls_calc_ap">$0.00</div></div>
         <div class="calc-item"><div class="k">Total Commission</div><div class="v" id="ls_calc_comm">$0.00</div></div>
-        <div class="calc-item"><div class="k">Advance (paid now, 75%)</div><div class="v" id="ls_calc_adv">$0.00</div><div class="sub" id="ls_calc_capnote" style="margin-top:2px;font-size:11px;color:var(--warn);"></div></div>
-        <div class="calc-item"><div class="k">Backend (mo. 10–12)</div><div class="v" id="ls_calc_back">$0.00</div></div>
+        <div class="calc-item"><div class="k">Deposit Amount (9-mo advance)</div><div class="v" id="ls_calc_adv">$0.00</div></div>
+        <div class="calc-item"><div class="k">Backend (3-mo)</div><div class="v" id="ls_calc_back">$0.00</div></div>
       </div>
       <div class="btn-row">
         <button class="btn btn-gold" id="submitEntryBtn">Submit to the board</button>
@@ -711,6 +737,16 @@
       <div id="changePasswordMsg" style="font-size:12px;min-height:16px;margin-top:8px;"></div>
       <div class="btn-row">
         <button class="btn btn-outline" id="changePasswordBtn">Update password</button>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Production Tracker</h2>
+      <p class="desc">Your contract level determines the comp % you get on every carrier/product in your Sales Log. Only admins can change carrier rates themselves.</p>
+      <div class="form-grid">
+        <div class="field">
+          <label>Contract level</label>
+          <select id="cl_select" class="pt-level-select"></select>
+        </div>
       </div>
     </div>
     <div class="panel">
@@ -784,16 +820,6 @@
         <p>Your private commission tracker — carriers, comp, advances, backend, deposits, and lead spend. Fed automatically from Log a Sale.</p>
       </div>
     </div>
-    <div class="subnav" id="ptSubnav">
-      <button class="pt-subtab-btn active" data-sub="dashboard">Overview</button>
-      <button class="pt-subtab-btn" data-sub="saleslog">Sales Log</button>
-      <button class="pt-subtab-btn" data-sub="calendar">Calendar</button>
-      <button class="pt-subtab-btn" data-sub="deposits">Deposits</button>
-      <button class="pt-subtab-btn" data-sub="leadspend">Lead Spend</button>
-      <button class="pt-subtab-btn" data-sub="carriers">Carriers</button>
-      <button class="pt-subtab-btn" data-sub="data">Data</button>
-    </div>
-
     <!-- ---- Overview ---- -->
     <div id="pt-sub-dashboard" class="subsection active">
       <div class="period-tabs" id="pt_periodTabs">
@@ -868,9 +894,9 @@
           <div class="value" id="pt_tileBackendReceived">$0</div>
           <div class="sub">Collected after advance period</div>
         </div>
-        <div class="tile">
-          <div class="label">Lapsed / Chargeback Risk</div>
-          <div class="value" id="pt_tileLapsed">$0</div>
+        <div class="tile" style="border-color:var(--blood-soft);">
+          <div class="label" style="color:var(--blood-bright);">Debt (Chargeback Repayment)</div>
+          <div class="value" id="pt_tileLapsed" style="color:var(--blood-bright);">$0</div>
           <div class="sub" id="pt_tileLapsedCount">0 policies</div>
         </div>
         <div class="tile">
@@ -957,7 +983,11 @@
           </div>
           <div class="field">
             <label>Carrier</label>
-            <input id="pt_e_carrier" type="text" list="carrierDatalist">
+            <select id="pt_e_carrier"></select>
+          </div>
+          <div class="field">
+            <label>Product</label>
+            <select id="pt_e_product"></select>
           </div>
           <div class="field">
             <label>Premium type</label>
@@ -971,16 +1001,8 @@
             <input id="pt_e_premium" type="number" min="0" step="0.01">
           </div>
           <div class="field">
-            <label>Comp rate (%)</label>
-            <input id="pt_e_comp" type="number" min="0" max="200" step="0.1">
-          </div>
-          <div class="field">
-            <label>Advance rate (%) <span class="hint">fixed — always 75%</span></label>
-            <input id="pt_e_advance" type="number" value="75" readonly disabled style="opacity:0.6;cursor:not-allowed;">
-          </div>
-          <div class="field">
-            <label>Advance cap ($)</label>
-            <input id="pt_e_advanceCap" type="number" min="0" step="1">
+            <label>Comp Rate <span class="hint">set by carrier + your contract level</span></label>
+            <div id="pt_e_compDisplay" style="padding:10px 0;font-weight:700;color:var(--accent-bright);">—</div>
           </div>
           <div class="field">
             <label>Status</label>
@@ -1013,8 +1035,8 @@
         <div class="calc-strip">
           <div class="calc-item"><div class="k">Annual Premium</div><div class="v" id="pt_e_calcAP">$0.00</div></div>
           <div class="calc-item"><div class="k">Total Commission</div><div class="v" id="pt_e_calcComm">$0.00</div></div>
-          <div class="calc-item"><div class="k">Advance (paid now)</div><div class="v" id="pt_e_calcAdv">$0.00</div><div class="sub" id="pt_e_calcCapNote" style="margin-top:2px;"></div></div>
-          <div class="calc-item"><div class="k">Backend (mo. 10–12)</div><div class="v" id="pt_e_calcBack">$0.00</div></div>
+          <div class="calc-item"><div class="k">Deposit Amount (9-mo advance)</div><div class="v" id="pt_e_calcAdv">$0.00</div></div>
+          <div class="calc-item"><div class="k">Backend (3-mo)</div><div class="v" id="pt_e_calcBack">$0.00</div></div>
         </div>
         <div class="btn-row">
           <button class="btn btn-outline" id="pt_cancelSaleEditBtn">Cancel</button>
@@ -1022,7 +1044,6 @@
         </div>
       </div>
     </div>
-
     <!-- ---- Calendar ---- -->
     <div id="pt-sub-calendar" class="subsection">
       <div class="panel">
@@ -1180,66 +1201,47 @@
     <!-- ---- Carriers ---- -->
     <div id="pt-sub-carriers" class="subsection">
       <div class="panel">
-        <h2 id="pt_carrierFormTitle">Add a carrier</h2>
-        <p class="desc">Your carrier list is personal to you — comp rates often differ by agent contract. Editing a carrier's rates offers to update every existing sale for that carrier too.</p>
+        <h2>Your contract level</h2>
+        <p class="desc">Comp % for every carrier and product is looked up from the shared rate list at your contract level below. Ask your upline if you're not sure what level you're on.</p>
         <div class="form-grid">
           <div class="field">
-            <label>Carrier name</label>
-            <input id="pt_c_name" type="text" placeholder="e.g. Mutual of Omaha">
+            <label>Contract level</label>
+            <select id="pt_levelSelect" class="pt-level-select"></select>
           </div>
-          <div class="field">
-            <label>Default comp rate (%)</label>
-            <input id="pt_c_comp" type="number" min="0" max="200" step="0.1" placeholder="80">
-          </div>
-          <div class="field">
-            <label>Advance rate (%) <span class="hint">fixed — always 75%</span></label>
-            <input id="pt_c_advance" type="number" value="75" readonly disabled style="opacity:0.6;cursor:not-allowed;">
-          </div>
-          <div class="field">
-            <label>Default advance cap ($) <span class="hint">optional</span></label>
-            <input id="pt_c_cap" type="number" min="0" step="1" placeholder="No cap">
-          </div>
-          <div class="field">
-            <label>Backend release <span class="hint">months</span></label>
-            <input id="pt_c_months" type="number" min="0" step="1" placeholder="9">
-          </div>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-outline hidden" id="pt_cancelCarrierEditBtn">Cancel</button>
-          <button class="btn btn-gold" id="pt_addCarrierBtn">Add carrier</button>
         </div>
       </div>
-      <div class="panel hidden" id="pt_cascadeConfirmPanel" style="border-color:var(--accent);">
-        <h2>Update existing sales too?</h2>
-        <p class="desc" id="pt_cascadeConfirmDesc" style="margin-bottom:14px;"></p>
-        <div class="calc-strip" style="margin-top:0;">
-          <div class="calc-item"><div class="k">Sales for this carrier</div><div class="v" id="pt_cascadeSaleCount">0</div></div>
-          <div class="calc-item"><div class="k">New Comp Rate</div><div class="v" id="pt_cascadeNewComp">0%</div></div>
-          <div class="calc-item"><div class="k">Expected Deposits Before</div><div class="v" id="pt_cascadeDepBefore">$0</div></div>
-          <div class="calc-item"><div class="k">Expected Deposits After</div><div class="v" id="pt_cascadeDepAfter">$0</div></div>
+      <div class="panel hidden" id="pt_carrierAdminPanel">
+        <h2>Add a carrier <span class="hint">admin only</span></h2>
+        <p class="desc">Carriers and products are shared team-wide. Only admins can add carriers/products or edit comp rates. Changes apply to every agent immediately once saved.</p>
+        <div class="form-grid">
+          <div class="field">
+            <label>New carrier name</label>
+            <input id="pt_admin_newCarrierName" type="text" placeholder="e.g. Mutual of Omaha">
+          </div>
         </div>
         <div class="btn-row">
-          <button class="btn btn-outline" id="pt_cascadeSkipBtn">Just update the carrier</button>
-          <button class="btn btn-gold" id="pt_cascadeApplyBtn">Update carrier + these sales</button>
+          <button class="btn btn-outline" id="pt_admin_addCarrierBtn">Add carrier</button>
+          <button class="btn btn-gold" id="pt_admin_saveMasterBtn">Save changes for the whole team</button>
         </div>
+        <div id="pt_admin_saveMasterResult" style="font-size:12.5px;min-height:16px;margin-top:10px;"></div>
       </div>
       <div class="panel">
-        <h2>Your carriers</h2>
+        <h2>Carriers &amp; comp rates</h2>
+        <p class="desc">Your contract level's column is highlighted. Rates come from the shared FFG comp guide.</p>
         <div class="carrier-grid" id="pt_carrierGrid"></div>
         <div id="pt_carrierEmptyState" class="empty-state hidden">
           <div class="big">🏢</div>
-          <div>No carriers yet. Add one above, or just log a sale — new carriers are created automatically.</div>
+          <div>No carriers set up yet. An admin needs to add carriers before sales can be logged.</div>
         </div>
       </div>
       <div class="panel">
-        <h2>Sync all sales to current carrier rates</h2>
+        <h2>Sync my sales to current rates</h2>
         <p class="desc">
-          Brings every sale's comp %, advance %, and cap in line with what's currently set on its carrier, recalculating
-          commission, advance $, backend $, and Expected Deposits to match. This also merges any carriers that share the
-          exact same name.
+          Recalculates commission, Deposit Amount, and Backend Amount for every one of your sales using the current
+          shared carrier/product rates at your contract level. Use this after a rate update or a contract level change.
         </p>
         <div class="btn-row" style="justify-content:flex-start;">
-          <button class="btn btn-gold" id="pt_syncAllSalesBtn">Merge duplicates &amp; sync all sales now</button>
+          <button class="btn btn-gold" id="pt_syncAllSalesBtn">Sync all my sales now</button>
         </div>
         <div id="pt_syncAllSalesResult" style="font-size:12.5px;min-height:16px;margin-top:10px;"></div>
       </div>
@@ -1287,7 +1289,9 @@
       </div>
     </div>
   </section>
-</main>
+  </main>
+  </div>
+</div>
 <div id="savedToast"></div>
 <script>
   // Shared by both the Chosen leaderboard IIFE and the Production Tracker IIFE below —
@@ -1306,6 +1310,9 @@
   // Everyone else can only add and delete their own submissions.
   const ADMIN_EMAILS = ["kian.dolezal1@gmail.com", "toddhenningjr@gmail.com"];
   function isAdmin(){ return currentAuth.email && ADMIN_EMAILS.some(a=>a.toLowerCase()===currentAuth.email.toLowerCase()); }
+  // Exposed so the Production Tracker script (a separate IIFE below) can gate the carrier-master
+  // editing UI without duplicating the ADMIN_EMAILS list — always reflects the live currentAuth.
+  window.__chosenIsAdmin = function(){ return isAdmin(); };
   const cloudConfigured = !!SHEET_API_URL && SHEET_API_URL.indexOf("http") === 0;
   let currentAuth = { token: null, email: null, displayName: null };
   let entries = []; // {id, email, displayName, amount, date, notes, carrier, effectiveDate, referrals, reset, firstTime, referralSale}
@@ -1474,63 +1481,69 @@
   }
   // Live calc preview on the Log a Sale form — mirrors the Production Tracker's own math
   // (comp % of AP, 75% advance, 3 months' backend) so agents see it before submitting.
+  function lsCurrentCompSuggestion(){
+    if(!window.PT) return null;
+    const carrierName = document.getElementById("ls_carrier").value;
+    const productName = document.getElementById("ls_product").value;
+    return window.PT.getCompForSelection(carrierName, productName);
+  }
   function lsCurrentCalc(){
     const premium = parseFloat(document.getElementById("ls_amount").value) || 0;
     const premType = document.getElementById("ls_premtype").value;
-    const comp = parseFloat(document.getElementById("ls_comp").value) || 0;
-    const cap = parseFloat(document.getElementById("ls_advance_cap").value) || 0;
-    if(window.PT) return window.PT.previewCalc(premium, premType, comp, cap);
+    const sugg = lsCurrentCompSuggestion();
+    const comp = sugg ? sugg.comp : 0;
+    const compDisplay = document.getElementById("ls_comp_display");
+    if(compDisplay) compDisplay.textContent = sugg ? (comp + "% (your level " + sugg.level + ")") : "Pick a carrier + product";
+    if(window.PT) return window.PT.previewCalc(premium, premType, comp);
     const ap = premType === "annual" ? premium : premium*12;
     const commission = ap * (comp/100);
-    let advanceAmt = commission * 0.75, capped = false;
-    if(cap > 0 && advanceAmt > cap){ advanceAmt = cap; capped = true; }
+    const advanceAmt = (ap/12) * DEPOSIT_MONTHS_CLIENT_FALLBACK * (comp/100);
     const backendAmt = (ap/12) * (comp/100) * 3;
-    return {ap, commission, advanceAmt, backendAmt, capped};
+    return {ap, commission, advanceAmt, backendAmt, capped:false};
   }
+  const DEPOSIT_MONTHS_CLIENT_FALLBACK = 9; // used only if PT hasn't loaded yet
   function lsRecalc(){
-    const {ap, commission, advanceAmt, backendAmt, capped} = lsCurrentCalc();
+    const {ap, commission, advanceAmt, backendAmt} = lsCurrentCalc();
     document.getElementById("ls_calc_ap").textContent = "$" + ap.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
     document.getElementById("ls_calc_comm").textContent = "$" + commission.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
     document.getElementById("ls_calc_adv").textContent = "$" + advanceAmt.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
     document.getElementById("ls_calc_back").textContent = "$" + backendAmt.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
-    const note = document.getElementById("ls_calc_capnote");
-    note.textContent = capped ? "Capped by carrier max" : "";
   }
-  function onLsCarrierChange(){
-    const name = document.getElementById("ls_carrier").value.trim();
-    const sugg = window.PT && window.PT.getCarrierCompSuggestion(name);
-    if(sugg){
-      document.getElementById("ls_comp").value = sugg.comp;
-      document.getElementById("ls_advance_cap").value = sugg.cap ? sugg.cap : "";
-    }
+  function refreshLsProductOptions(){
+    if(!window.PT) return;
+    const carrierName = document.getElementById("ls_carrier").value;
+    const products = window.PT.getMasterProductNames(carrierName);
+    const sel = document.getElementById("ls_product");
+    sel.innerHTML = products.map(p=>`<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join("");
     lsRecalc();
   }
-  function refreshCarrierDatalist(){
+  function refreshLsCarrierOptions(){
     if(!window.PT) return;
-    const names = window.PT.getCarrierNames();
-    const dl = document.getElementById("carrierDatalist");
-    if(!dl) return;
-    dl.innerHTML = "";
-    names.forEach(n=>{ const o = document.createElement("option"); o.value = n; dl.appendChild(o); });
+    const names = window.PT.getMasterCarrierNames();
+    const sel = document.getElementById("ls_carrier");
+    const prev = sel.value;
+    sel.innerHTML = names.map(n=>`<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join("");
+    if(names.includes(prev)) sel.value = prev;
+    refreshLsProductOptions();
   }
-  window.__onPtCarriersChanged = refreshCarrierDatalist;
+  window.__onPtCarriersChanged = refreshLsCarrierOptions;
   async function submitEntry(){
     const date = document.getElementById("ls_date").value || todayISO();
     const effectiveDate = document.getElementById("ls_effective_date").value || date;
-    const carrier = document.getElementById("ls_carrier").value.trim();
+    const carrier = document.getElementById("ls_carrier").value;
+    const product = document.getElementById("ls_product").value;
     const client = document.getElementById("ls_client").value.trim();
     const notes = document.getElementById("ls_note").value.trim();
     const firstTime = document.getElementById("ls_first_time").value;
     const premType = document.getElementById("ls_premtype").value;
     const premium = parseFloat(document.getElementById("ls_amount").value);
-    const comp = parseFloat(document.getElementById("ls_comp").value) || 0;
-    const advanceCap = parseFloat(document.getElementById("ls_advance_cap").value) || 0;
     const status = document.getElementById("ls_status").value;
     const backendReceived = document.getElementById("ls_backend_received").checked;
     const referralSale = document.getElementById("ls_referral_sale").value;
     const referralsCollected = document.getElementById("ls_referrals_collected").value;
     const reset = document.getElementById("ls_reset").value;
-    if(!carrier){ alert("Enter a carrier name."); return; }
+    if(!carrier){ alert("Pick a carrier."); return; }
+    if(!product){ alert("Pick a product."); return; }
     if(!client){ alert("Enter a client name."); return; }
     if(isNaN(premium) || premium<=0){ alert("Enter a premium amount."); return; }
     const calc = lsCurrentCalc();
@@ -1543,19 +1556,17 @@
       });
       if(!json.ok){ alert("Couldn't submit — try again."); return; }
       // Drop it straight into the agent's own Production Tracker — same sale, same math.
+      // Comp comes from the shared carrier master at this agent's contract level, not from this form.
       if(window.PT){
         await window.PT.addSaleFromEntry(json.id, {
-          client, carrierName: carrier, date, effectiveDate,
-          premium, premType, comp, advanceCap, status, backendReceived,
+          client, carrierName: carrier, productName: product, date, effectiveDate,
+          premium, premType, status, backendReceived,
           referralSale, referralsCollected, reset, notes
         });
       }
       document.getElementById("ls_amount").value = "";
       document.getElementById("ls_note").value = "";
-      document.getElementById("ls_carrier").value = "";
       document.getElementById("ls_client").value = "";
-      document.getElementById("ls_comp").value = "";
-      document.getElementById("ls_advance_cap").value = "";
       document.getElementById("ls_date").value = todayISO();
       document.getElementById("ls_effective_date").value = "";
       document.getElementById("ls_first_time").value = "No";
@@ -1906,12 +1917,12 @@
   }
   /* ---------------- Wiring ---------------- */
   document.getElementById("submitEntryBtn").addEventListener("click", submitEntry);
-  ["ls_amount","ls_premtype","ls_comp","ls_advance_cap"].forEach(id=>{
+  ["ls_amount","ls_premtype"].forEach(id=>{
     document.getElementById(id).addEventListener("input", lsRecalc);
     document.getElementById(id).addEventListener("change", lsRecalc);
   });
-  document.getElementById("ls_carrier").addEventListener("input", onLsCarrierChange);
-  document.getElementById("ls_carrier").addEventListener("change", onLsCarrierChange);
+  document.getElementById("ls_carrier").addEventListener("change", refreshLsProductOptions);
+  document.getElementById("ls_product").addEventListener("change", lsRecalc);
   document.getElementById("refreshBoardBtn").addEventListener("click", async ()=>{
     await refreshEntries(true);
     renderAll();
@@ -2030,16 +2041,38 @@
 <script>
 (function(){
   "use strict";
-  /* ============================================================
-     PRODUCTION TRACKER — lives inside the "My Production" tab.
-     Uses the SAME Chosen account/session (no separate login) and
-     the SAME Google Apps Script backend (SHEET_API_URL, declared
-     once above) — just a different action (getTrackerData /
-     saveTrackerData) that stores one private JSON blob per agent.
-     ============================================================ */
-  const ADVANCE_RATE = 75; // advance is fixed at 75% everywhere — not user-editable
+  const ADVANCE_RATE = 75; // legacy field, kept only so old sale records still compute; unused by the new deposit formula
+  const DEPOSIT_MONTHS = 9;  // Deposit Amount = monthly premium × 9 × comp%
+  const BACKEND_MONTHS = 3;  // Backend Amount = monthly premium × 3 × comp%
   const PALETTE = ["#9FB8DE","#4FAE7C","#D9A441","#D96363","#B7C1CB","#7A8FB0","#6FA8A0","#C99A5B"];
-  const EMPTY_STATE = {agentName:"", carriers:[], sales:[], deposits:[], leadSpend:[]};
+  const EMPTY_STATE = {agentName:"", contractLevel:100, carriers:[], sales:[], deposits:[], leadSpend:[]};
+  // Shared, admin-editable carrier / product / comp-by-contract-level table. Seeded from the
+  // FFG comp guide; kept in sync via the CarrierMaster sheet (getCarrierMaster / saveCarrierMaster
+  // actions — saveCarrierMaster is admin-only server-side, see the backend script below). Every
+  // agent reads this list; only ADMIN_EMAILS can write to it.
+  const DEFAULT_CARRIER_MASTER = {"levels":[145,140,135,130,125,120,115,110,105,100,95,90,85,80],"carriers":[{"name":"Banner Life","products":[{"name":"Term","comp":{"145":150,"140":145,"135":140,"130":135,"125":130,"120":125,"115":120,"110":115,"105":110,"100":105,"95":100,"90":95,"85":90,"80":85},"id":"c1p1"}],"id":"c1"},{"name":"United Home Life","products":[{"name":"Express Issue Premier WL","comp":{"145":135,"140":130,"135":125,"130":120,"125":115,"120":110,"115":105,"110":100,"105":95,"100":90,"95":85,"90":80,"85":75,"80":70},"id":"c2p1"},{"name":"Express Issue Deluxe WL","comp":{"145":135,"140":130,"135":125,"130":120,"125":115,"120":110,"115":105,"110":100,"105":95,"100":90,"95":85,"90":80,"85":75,"80":70},"id":"c2p2"},{"name":"Express Issue Graded WL","comp":{"145":135,"140":130,"135":125,"130":120,"125":115,"120":110,"115":105,"110":100,"105":95,"100":90,"95":85,"90":80,"85":75,"80":70},"id":"c2p3"},{"name":"Guaranteed Issue Whole Life","comp":{"145":85,"140":80,"135":75,"130":70,"125":65,"120":60,"115":55,"110":50,"105":45,"100":40,"95":35,"90":30,"85":25,"80":25},"id":"c2p4"},{"name":"Provider Whole Life","comp":{"145":120,"140":115,"135":110,"130":105,"125":100,"120":95,"115":90,"110":85,"105":80,"100":75,"95":70,"90":65,"85":60,"80":55},"id":"c2p5"},{"name":"Term","comp":{"145":120,"140":115,"135":110,"130":105,"125":100,"120":95,"115":90,"110":85,"105":80,"100":75,"95":70,"90":65,"85":60,"80":55},"id":"c2p6"},{"name":"Accidental","comp":{"145":110,"140":105,"135":100,"130":95,"125":90,"120":85,"115":80,"110":75,"105":70,"100":65,"95":60,"90":55,"85":50,"80":45},"id":"c2p7"}],"id":"c2"},{"name":"The Baltimore Life","products":[{"name":"Silver Guard FE","comp":{"145":115,"140":115,"135":110,"130":105,"125":100,"120":95,"115":90,"110":90,"105":85,"100":85,"95":80,"90":75,"85":70,"80":65},"id":"c3p1"},{"name":"Apriority Level Term (75K+)","comp":{"145":90,"140":90,"135":85,"130":85,"125":80,"120":80,"115":70,"110":70,"105":60,"100":55,"95":55,"90":50,"85":50,"80":45},"id":"c3p2"},{"name":"Apriority Whole Life","comp":{"145":115,"140":115,"135":110,"130":105,"125":100,"120":95,"115":90,"110":85,"105":80,"100":75,"95":70,"90":65,"85":60,"80":60},"id":"c3p3"},{"name":"Apriority Protector Term","comp":{"145":90,"140":90,"135":85,"130":85,"125":80,"120":80,"115":70,"110":70,"105":60,"100":55,"95":55,"90":50,"85":50,"80":45},"id":"c3p4"}],"id":"c3"},{"name":"American Home Life","products":[{"name":"FE","comp":{"145":135,"140":130,"135":125,"130":120,"125":115,"120":110,"115":105,"110":100,"105":90,"100":85,"95":80,"90":75,"85":70,"80":65},"id":"c4p1"}],"id":"c4"},{"name":"SBLI","products":[{"name":"Term","comp":{"145":150,"140":145,"135":140,"130":135,"125":130,"120":125,"115":120,"110":115,"105":110,"100":105,"95":100,"90":95,"85":90,"80":85},"id":"c5p1"}],"id":"c5"},{"name":"CICA Life of America","products":[{"name":"SIWL","comp":{"145":125,"140":120,"135":110,"130":95,"125":85,"120":75,"115":75,"110":75,"105":75,"100":75,"95":75,"90":75,"85":75,"80":75},"id":"c6p1"},{"name":"GIWL","comp":{"145":75,"140":70,"135":65,"130":60,"125":55,"120":50,"115":50,"110":50,"105":50,"100":50,"95":50,"90":50,"85":50,"80":50},"id":"c6p2"}],"id":"c6"},{"name":"Liberty Bankers","products":[{"name":"SI Market PermaLife Preferred","comp":{"145":130,"140":125,"135":120,"130":115,"125":110,"120":105,"115":100,"110":95,"105":90,"100":85,"95":80,"90":75,"85":70,"80":65},"id":"c7p1"},{"name":"SI Market PermaLife Standard","comp":{"145":125,"140":120,"135":115,"130":110,"125":105,"120":100,"115":95,"110":90,"105":85,"100":80,"95":75,"90":70,"85":65,"80":60},"id":"c7p2"},{"name":"Modified Whole Life","comp":{"145":88,"140":87.5,"135":85,"130":80,"125":77.5,"120":75,"115":70,"110":67.5,"105":65,"100":62.5,"95":60,"90":55,"85":50,"80":47.5},"id":"c7p3"},{"name":"Flex 4 Life Paid Up 100","comp":{"145":117,"140":115,"135":110,"130":105,"125":100,"120":95,"115":90,"110":85,"105":80,"100":75,"95":70,"90":65,"85":60,"80":55},"id":"c7p4"}],"id":"c7"},{"name":"F&G","products":[{"name":"Pathsetter","comp":{"145":135,"140":130,"135":125,"130":120,"125":115,"120":110,"115":105,"110":100,"105":95,"100":90,"95":85,"90":80,"85":75,"80":70},"id":"c8p1"},{"name":"Everlast","comp":{"145":130,"140":125,"135":120,"130":115,"125":110,"120":105,"115":100,"110":95,"105":90,"100":85,"95":80,"90":75,"85":70,"80":65},"id":"c8p2"},{"name":"Exccudex","comp":{"145":135,"140":130,"135":125,"130":120,"125":115,"120":110,"115":105,"110":100,"105":95,"100":90,"95":85,"90":80,"85":75,"80":70},"id":"c8p3"},{"name":"Planright","comp":{"145":127.5,"140":125,"135":122.5,"130":120,"125":115,"120":110,"115":105,"110":100,"105":95,"100":90,"95":85,"90":80,"85":75,"80":70},"id":"c8p4"},{"name":"Quantum","comp":{"145":135,"140":130,"135":125,"130":120,"125":115,"120":110,"115":105,"110":100,"105":95,"100":90,"95":85,"90":80,"85":75,"80":70},"id":"c8p5"}],"id":"c8"},{"name":"Royal Neighbors of America","products":[{"name":"FEX","comp":{"145":125,"140":120,"135":115,"130":110,"125":105,"120":100,"115":95,"110":90,"105":85,"100":80,"95":75,"90":70,"85":45,"80":45},"id":"c9p1"},{"name":"FEX Graded","comp":{"145":77.5,"140":75,"135":72.5,"130":70,"125":67.5,"120":65,"115":62.5,"110":60,"105":57.5,"100":55,"95":50,"90":47.5,"85":45,"80":45},"id":"c9p2"},{"name":"FEX Guaranteed Issue","comp":{"145":31,"140":29,"135":27,"130":25,"125":23,"120":21,"115":19,"110":17,"105":15,"100":13,"95":11,"90":9,"85":7,"80":7},"id":"c9p3"},{"name":"Jet Whole Life","comp":{"145":125,"140":120,"135":115,"130":110,"125":110,"120":100,"115":95,"110":90,"105":85,"100":80,"95":75,"90":70,"85":50,"80":50},"id":"c9p4"},{"name":"Jet Youth Whole Life","comp":{"145":100,"140":95,"135":90,"130":85,"125":85,"120":75,"115":70,"110":65,"105":60,"100":55,"95":50,"90":45,"85":25,"80":25},"id":"c9p5"},{"name":"Jet Term","comp":{"145":125,"140":120,"135":115,"130":110,"125":110,"120":100,"115":95,"110":90,"105":85,"100":80,"95":75,"90":70,"85":50,"80":50},"id":"c9p6"}],"id":"c9"},{"name":"Foresters","products":[{"name":"Strong Foundation","comp":{"145":145,"140":140,"135":135,"130":130,"125":125,"120":120,"115":115,"110":110,"105":105,"100":100,"95":95,"90":90,"85":85,"80":80},"id":"c10p1"},{"name":"Your Term","comp":{"145":130,"140":125,"135":120,"130":115,"125":110,"120":105,"115":100,"110":95,"105":90,"100":85,"95":80,"90":75,"85":70,"80":65},"id":"c10p2"},{"name":"SmartUL","comp":{"145":115,"140":110,"135":105,"130":100,"125":95,"120":90,"115":87.5,"110":85,"105":82.5,"100":80,"95":77.5,"90":75,"85":72.5,"80":70},"id":"c10p3"},{"name":"Accidental Death Term","comp":{"145":130,"140":125,"135":120,"130":115,"125":110,"120":105,"115":100,"110":95,"105":90,"100":85,"95":80,"90":75,"85":70,"80":65},"id":"c10p4"},{"name":"Advantage Plus","comp":{"145":110,"140":105,"135":100,"130":95,"125":90,"120":85,"115":80,"110":75,"105":70,"100":65,"95":60,"90":57.5,"85":55,"80":52.5},"id":"c10p5"},{"name":"Plan Right","comp":{"145":127.5,"140":125,"135":122.5,"130":120,"125":115,"120":110,"115":105,"110":100,"105":95,"100":90,"95":85,"90":80,"85":75,"80":70},"id":"c10p6"},{"name":"Live Well","comp":{"145":115,"140":110,"135":105,"130":100,"125":95,"120":90,"115":85,"110":80,"105":75,"100":70,"95":65,"90":62.5,"85":60,"80":57.5},"id":"c10p7"}],"id":"c10"},{"name":"Kansas City Life","products":[{"name":"Signature Term Simplified Issue","comp":{"145":135,"140":130,"135":125,"130":120,"125":115,"120":110,"115":105,"110":100,"105":95,"100":90,"95":85,"90":80,"85":75,"80":70},"id":"c11p1"},{"name":"IUL (All) Fully Underwritten","comp":{"145":105,"140":100,"135":95,"130":90,"125":85,"120":80,"115":75,"110":70,"105":65,"100":65,"95":60,"90":60,"85":60,"80":55},"id":"c11p2"},{"name":"Signature Term","comp":{"145":105,"140":100,"135":95,"130":90,"125":85,"120":80,"115":75,"110":70,"105":65,"100":65,"95":60,"90":60,"85":60,"80":55},"id":"c11p3"},{"name":"Cashback Life (UW)","comp":{"145":105,"140":100,"135":95,"130":90,"125":85,"120":80,"115":75,"110":70,"105":65,"100":65,"95":60,"90":60,"85":60,"80":55},"id":"c11p4"},{"name":"Level 30 A (UW)","comp":{"145":105,"140":100,"135":95,"130":90,"125":85,"120":80,"115":75,"110":70,"105":65,"100":65,"95":60,"90":60,"85":60,"80":55},"id":"c11p5"},{"name":"Signature Term 30 (UW)","comp":{"145":105,"140":100,"135":95,"130":90,"125":85,"120":80,"115":75,"110":70,"105":65,"100":65,"95":60,"90":60,"85":60,"80":55},"id":"c11p6"},{"name":"Longevity Term 85 (UW)","comp":{"145":105,"140":100,"135":95,"130":90,"125":85,"120":80,"115":75,"110":70,"105":65,"100":65,"95":60,"90":60,"85":60,"80":55},"id":"c11p7"}],"id":"c11"}]};
+  let carrierMaster = DEFAULT_CARRIER_MASTER; // replaced once getCarrierMaster resolves (falls back to this seed if the sheet is empty)
+  let carrierMasterLoaded = false;
+  function carrierMasterCarrier(name){
+    const n = (name||"").trim().toLowerCase();
+    return (carrierMaster.carriers||[]).find(c=>c.name.trim().toLowerCase()===n) || null;
+  }
+  function carrierMasterProduct(carrierName, productName){
+    const c = carrierMasterCarrier(carrierName);
+    if(!c) return null;
+    const n = (productName||"").trim().toLowerCase();
+    return (c.products||[]).find(p=>p.name.trim().toLowerCase()===n) || null;
+  }
+  function compForLevel(product, level){
+    if(!product || !product.comp) return 0;
+    const key = String(level);
+    if(product.comp[key] !== undefined) return product.comp[key];
+    // fall back to the nearest level at or below the agent's (levels are always in descending order)
+    const levels = (carrierMaster.levels||[]).slice().sort((a,b)=>b-a);
+    for(const lvl of levels){ if(lvl <= level && product.comp[String(lvl)] !== undefined) return product.comp[String(lvl)]; }
+    const vals = Object.values(product.comp);
+    return vals.length ? vals[0] : 0;
+  }
   let currentAuth = null; // {token, email, displayName}
   let state = Object.assign({}, EMPTY_STATE, {carriers:[], sales:[], deposits:[], leadSpend:[]});
   let ptCurrentPeriod = "month";
@@ -2139,22 +2172,76 @@
     saveLocal();
     pushToCloud();
   }
+  /* ---------------- Shared carrier master (admin-editable) ---------------- */
+  async function pullCarrierMaster(){
+    if(!currentAuth || !currentAuth.token) return false;
+    try{
+      const res = await fetch(SHEET_API_URL + "?action=getCarrierMaster&token=" + encodeURIComponent(currentAuth.token), {cache:"no-store"});
+      const json = await res.json();
+      if(!json.ok) throw new Error(json.error || "load_failed");
+      if(json.data && json.data.carriers && json.data.carriers.length){
+        carrierMaster = json.data;
+      } else {
+        carrierMaster = DEFAULT_CARRIER_MASTER;
+        // First person to ever load this sheet seeds it from the built-in table, so the
+        // whole team (and future admin edits) has somewhere to start from.
+        if(window.__chosenIsAdmin && window.__chosenIsAdmin()) pushCarrierMaster();
+      }
+      carrierMasterLoaded = true;
+      return true;
+    }catch(e){
+      console.warn("PT: carrier master pull failed, using built-in seed", e);
+      carrierMaster = carrierMaster || DEFAULT_CARRIER_MASTER;
+      return false;
+    }
+  }
+  async function pushCarrierMaster(){
+    if(!currentAuth || !currentAuth.token) return {ok:false, error:"not_signed_in"};
+    try{
+      const res = await fetch(SHEET_API_URL, {
+        method:"POST",
+        headers:{"Content-Type":"text/plain;charset=utf-8"},
+        body: JSON.stringify({action:"saveCarrierMaster", token: currentAuth.token, data: carrierMaster})
+      });
+      const json = await res.json();
+      return json;
+    }catch(e){
+      return {ok:false, error:String(e)};
+    }
+  }
   function carrierById(id){ return state.carriers.find(c=>c.id===id); }
+  // Display helper: new sales carry a plain-text carrier name (from the shared master list);
+  // legacy sales (pre-master-list) fall back to the old per-agent carrierId lookup. Color is a
+  // stable hash of the name so the same carrier always renders the same dot color.
+  function hashColor(name){
+    let h = 0;
+    for(let i=0;i<name.length;i++){ h = (h*31 + name.charCodeAt(i)) & 0xffffffff; }
+    return PALETTE[Math.abs(h) % PALETTE.length];
+  }
+  function saleCarrierDisplay(s){
+    if(s.carrier) return {name: s.carrier + (s.product ? " — " + s.product : ""), color: hashColor(s.carrier)};
+    const legacy = carrierById(s.carrierId);
+    return legacy ? {name: legacy.name, color: legacy.color} : {name: "—", color: "#999"};
+  }
   function carrierByName(name){
     const n = (name||"").trim().toLowerCase();
     if(!n) return null;
     return state.carriers.find(c=>c.name.trim().toLowerCase()===n) || null;
   }
-  function computeCalc(premium, premType, comp, adv, cap){
+  // New calc model (locked in by Kian): Deposit Amount = monthly premium × 9 × comp%,
+  // Backend Amount = monthly premium × 3 × comp%. Together they equal the full annualized
+  // commission (12 months' worth), split into what's paid up front vs. released later.
+  // NOTE: `advanceAmt` is kept as the field/property name everywhere in this file (sale
+  // records, tables, CSV exports, etc.) to avoid touching dozens of call sites — but it now
+  // means "Deposit Amount" and every visible label in the UI says "Deposit Amount", not "Advance".
+  function computeCalc(premium, premType, comp){
     const isMonthly = premType !== "annual";
     const ap = isMonthly ? premium*12 : premium;
     const monthlyPremium = isMonthly ? premium : premium/12;
-    const commission = ap * (comp/100);
-    let advanceAmt = commission * (ADVANCE_RATE/100);
-    let capped = false;
-    if(cap > 0 && advanceAmt > cap){ advanceAmt = cap; capped = true; }
-    const backendAmt = monthlyPremium * (comp/100) * 3;
-    return {ap, commission, advanceAmt, backendAmt, capped};
+    const commission = ap * (comp/100); // full annualized commission (deposit + backend)
+    const advanceAmt = monthlyPremium * DEPOSIT_MONTHS * (comp/100); // "Deposit Amount"
+    const backendAmt = monthlyPremium * BACKEND_MONTHS * (comp/100);
+    return {ap, commission, advanceAmt, backendAmt, capped:false};
   }
   /* ---------------- Sub-nav ---------------- */
   document.querySelectorAll(".pt-subtab-btn").forEach(btn=>{
@@ -2297,7 +2384,7 @@
     const backendPending = issued.filter(s=>!s.backendReceived).reduce((a,s)=>a+s.backendAmt,0);
     const backendPendingCount = issued.filter(s=>!s.backendReceived).length;
     const backendReceived = issued.filter(s=>s.backendReceived).reduce((a,s)=>a+s.backendAmt,0);
-    const lapsedAmt = lapsed.reduce((a,s)=>a+s.commission,0);
+    const lapsedAmt = lapsed.reduce((a,s)=>a+(s.advanceAmt||0),0);
     document.getElementById("pt_tileSubmittedAP").textContent = fmtMoney(totalAP);
     document.getElementById("pt_tileSubmittedCount").textContent = submitted.length + " application" + (submitted.length===1?"":"s");
     document.getElementById("pt_tileIssuedCount").textContent = issued.length;
@@ -2328,7 +2415,7 @@
     } else {
       list.innerHTML = `<table class="data-table"><thead><tr><th>Date</th><th>Client</th><th>Carrier</th><th>AP</th><th>Status</th></tr></thead><tbody>` +
         recent.map(s=>{
-          const c = carrierById(s.carrierId);
+          const c = saleCarrierDisplay(s);
           return `<tr>
             <td class="num">${s.date}</td>
             <td>${escapeHtml(s.client)}</td>
@@ -2339,209 +2426,164 @@
         }).join("") + `</tbody></table>`;
     }
   }
-  /* ---------------- Carriers ---------------- */
+  /* ---------------- Carriers (shared, admin-editable master list) ---------------- */
   function populatePtCarrierSelects(){
     const filt = document.getElementById("pt_filterCarrier");
     const prevFilt = filt.value;
     filt.innerHTML = '<option value="">All carriers</option>';
-    state.carriers.forEach(c=>{
-      const o = document.createElement("option"); o.value=c.id; o.textContent=c.name; filt.appendChild(o);
+    const names = Array.from(new Set(state.sales.map(s=>s.carrier).filter(Boolean))).sort((a,b)=>a.localeCompare(b));
+    names.forEach(n=>{
+      const o = document.createElement("option"); o.value=n; o.textContent=n; filt.appendChild(o);
     });
-    if(state.carriers.some(c=>c.id===prevFilt)) filt.value = prevFilt;
+    if(names.includes(prevFilt)) filt.value = prevFilt;
     if(window.__onPtCarriersChanged) window.__onPtCarriersChanged();
   }
-  function finalizeCarrierSave(applyCascade){
-    const p = pendingCarrierUpdate;
-    if(!p) return;
-    const carrier = state.carriers.find(c=>c.id===editingCarrierId);
-    if(carrier){
-      carrier.name = p.name; carrier.comp = p.comp; carrier.advance = p.advance; carrier.cap = p.cap; carrier.months = p.months;
-      if(applyCascade){
-        p.linkedSales.forEach(s=>{
-          const calc = computeCalc(s.premium, s.premType, p.comp, p.advance, p.cap);
-          s.comp = p.comp; s.advance = p.advance; s.advanceCap = p.cap;
-          s.ap = calc.ap; s.commission = calc.commission; s.advanceAmt = calc.advanceAmt; s.backendAmt = calc.backendAmt; s.capped = calc.capped;
-        });
-      }
-    }
-    pendingCarrierUpdate = null;
-    document.getElementById("pt_cascadeConfirmPanel").classList.add("hidden");
-    cancelCarrierEdit();
-    saveState();
-    renderPtCarriers();
-    populatePtCarrierSelects();
-    renderPtSalesTable();
-    renderPtDashboard();
-  }
-  document.getElementById("pt_cascadeApplyBtn").addEventListener("click", ()=> finalizeCarrierSave(true));
-  document.getElementById("pt_cascadeSkipBtn").addEventListener("click", ()=> finalizeCarrierSave(false));
-  function mergeDuplicateCarriers(){
-    const groups = {};
-    state.carriers.forEach(c=>{
-      const key = c.name.trim().toLowerCase();
-      if(!groups[key]) groups[key] = [];
-      groups[key].push(c);
-    });
-    let mergedGroups = 0, salesReassigned = 0, carriersRemoved = 0;
-    const survivors = [];
-    Object.values(groups).forEach(group=>{
-      if(group.length === 1){ survivors.push(group[0]); return; }
-      const canonical = group.slice().sort((a,b)=> (b.comp||0) - (a.comp||0))[0];
-      const duplicateIds = group.filter(c=>c.id!==canonical.id).map(c=>c.id);
-      state.sales.forEach(s=>{
-        if(duplicateIds.includes(s.carrierId)){ s.carrierId = canonical.id; salesReassigned++; }
-      });
-      survivors.push(canonical);
-      mergedGroups++;
-      carriersRemoved += duplicateIds.length;
-    });
-    state.carriers = survivors;
-    return {mergedGroups, salesReassigned, carriersRemoved};
-  }
+  // "Sync my sales to current rates" — recomputes comp/deposit/backend for every sale using the
+  // CURRENT shared master rates at the agent's OWN contract level. Matches sales by their stored
+  // carrier + product name, so it stays correct even as an admin updates comp rates over time.
   document.getElementById("pt_syncAllSalesBtn").addEventListener("click", ()=>{
     const resultEl = document.getElementById("pt_syncAllSalesResult");
-    const {mergedGroups, salesReassigned, carriersRemoved} = mergeDuplicateCarriers();
-    let updated = 0, skippedNoCarrier = 0, alreadyMatched = 0;
+    let updated = 0, skippedNoMatch = 0, alreadyMatched = 0;
     state.sales.forEach(s=>{
-      const carrier = carrierById(s.carrierId);
-      if(!carrier){ skippedNoCarrier++; return; }
-      const cap = carrier.cap || 0;
-      if(s.comp===carrier.comp && s.advance===ADVANCE_RATE && s.advanceCap===cap){ alreadyMatched++; return; }
-      const calc = computeCalc(s.premium, s.premType, carrier.comp, ADVANCE_RATE, cap);
-      s.comp = carrier.comp; s.advance = ADVANCE_RATE; s.advanceCap = cap;
-      s.ap = calc.ap; s.commission = calc.commission; s.advanceAmt = calc.advanceAmt; s.backendAmt = calc.backendAmt; s.capped = calc.capped;
+      const product = carrierMasterProduct(s.carrier, s.product);
+      if(!product){ skippedNoMatch++; return; }
+      const newComp = compForLevel(product, state.contractLevel||100);
+      if(s.comp === newComp && s.contractLevel === (state.contractLevel||100)){ alreadyMatched++; return; }
+      const calc = computeCalc(s.premium || (s.ap||0)/ (s.premType==="annual"?1:12), s.premType||"annual", newComp);
+      s.comp = newComp; s.contractLevel = state.contractLevel||100;
+      s.commission = calc.commission; s.advanceAmt = calc.advanceAmt; s.backendAmt = calc.backendAmt;
       updated++;
     });
     saveState();
-    populatePtCarrierSelects();
     renderPtSalesTable();
-    renderPtCarriers();
     renderPtDashboard();
-    resultEl.style.color = (updated > 0 || mergedGroups > 0) ? "var(--ok)" : "var(--muted)";
-    resultEl.textContent =
-      (mergedGroups ? `Merged ${carriersRemoved} duplicate carrier${carriersRemoved===1?"":"s"} into ${mergedGroups} existing entr${mergedGroups===1?"y":"ies"}, reassigning ${salesReassigned} sale${salesReassigned===1?"":"s"}. ` : "") +
-      `Updated ${updated} sale${updated===1?"":"s"} to match their carrier's current rates.` +
+    resultEl.style.color = updated > 0 ? "var(--ok)" : "var(--muted)";
+    resultEl.textContent = `Updated ${updated} sale${updated===1?"":"s"} to match the current carrier rates at your contract level.` +
       (alreadyMatched ? ` ${alreadyMatched} already matched.` : "") +
-      (skippedNoCarrier ? ` ${skippedNoCarrier} skipped (no matching carrier found).` : "");
+      (skippedNoMatch ? ` ${skippedNoMatch} skipped (carrier/product no longer in the master list — pick a valid one when you edit that sale).` : "");
   });
-  document.getElementById("pt_addCarrierBtn").addEventListener("click", ()=>{
-    const name = document.getElementById("pt_c_name").value.trim();
-    const comp = parseFloat(document.getElementById("pt_c_comp").value);
-    const advance = ADVANCE_RATE;
-    const cap = parseFloat(document.getElementById("pt_c_cap").value) || 0;
-    const months = parseFloat(document.getElementById("pt_c_months").value) || 0;
+  // Contract level selector — shared by the Carriers page and Settings page (both call this).
+  function wireContractLevelSelect(id){
+    const sel = document.getElementById(id);
+    if(!sel) return;
+    sel.addEventListener("change", async ()=>{
+      await window.PT.setContractLevel(sel.value);
+      document.querySelectorAll(".pt-level-select").forEach(other=>{ if(other!==sel) other.value = sel.value; });
+      renderPtCarriers();
+      renderPtDashboard();
+    });
+  }
+  wireContractLevelSelect("pt_levelSelect");
+  wireContractLevelSelect("cl_select");
+  function populateLevelSelects(){
+    const levels = carrierMaster.levels || [];
+    document.querySelectorAll(".pt-level-select").forEach(sel=>{
+      const cur = state.contractLevel || 100;
+      sel.innerHTML = levels.map(l=>`<option value="${l}" ${l===cur?"selected":""}>${l}</option>`).join("");
+    });
+  }
+  const isPtAdmin = ()=> window.__chosenIsAdmin ? window.__chosenIsAdmin() : false;
+  document.getElementById("pt_admin_addCarrierBtn").addEventListener("click", ()=>{
+    const name = document.getElementById("pt_admin_newCarrierName").value.trim();
     if(!name){ alert("Enter a carrier name."); return; }
-    if(isNaN(comp)){ alert("Enter a comp rate."); return; }
-    if(editingCarrierId){
-      const carrier = state.carriers.find(c=>c.id===editingCarrierId);
-      if(carrier){
-        const ratesChanged = carrier.comp!==comp || carrier.advance!==advance || carrier.cap!==cap;
-        const linkedSales = state.sales.filter(s=>s.carrierId===carrier.id);
-        if(ratesChanged && linkedSales.length){
-          pendingCarrierUpdate = {name, comp, advance, cap, months, linkedSales};
-          const before = linkedSales.filter(s=>s.status==="Issued & Paid").reduce((a,s)=>a+s.advanceAmt+s.backendAmt,0);
-          let afterTotal = 0;
-          linkedSales.forEach(s=>{
-            if(s.status!=="Issued & Paid") return;
-            const calc = computeCalc(s.premium, s.premType, comp, advance, cap);
-            afterTotal += calc.advanceAmt + calc.backendAmt;
-          });
-          document.getElementById("pt_cascadeConfirmDesc").textContent =
-            `You changed ${name}'s rates. Apply the new comp/advance/cap to every existing sale logged under this carrier, and recalculate their commission, advance, and backend amounts?`;
-          document.getElementById("pt_cascadeSaleCount").textContent = linkedSales.length;
-          document.getElementById("pt_cascadeNewComp").textContent = comp + "%";
-          document.getElementById("pt_cascadeDepBefore").textContent = fmtMoney(before);
-          document.getElementById("pt_cascadeDepAfter").textContent = fmtMoney(afterTotal);
-          document.getElementById("pt_cascadeConfirmPanel").classList.remove("hidden");
-          document.getElementById("pt_cascadeConfirmPanel").scrollIntoView({behavior:"smooth", block:"center"});
-          return;
-        }
-        carrier.name = name; carrier.comp = comp; carrier.advance = advance; carrier.cap = cap; carrier.months = months;
-      }
-      cancelCarrierEdit();
-    } else {
-      state.carriers.push({ id:uid(), name, comp, advance, cap, months, color: PALETTE[state.carriers.length % PALETTE.length] });
-      document.getElementById("pt_c_name").value="";
-      document.getElementById("pt_c_comp").value="";
-      document.getElementById("pt_c_cap").value="";
-      document.getElementById("pt_c_months").value="";
-    }
-    saveState();
+    if(carrierMasterCarrier(name)){ alert("That carrier already exists."); return; }
+    const nextId = "c" + (carrierMaster.carriers.length + 1) + "_" + uid();
+    carrierMaster.carriers.push({ id: nextId, name, products: [] });
+    document.getElementById("pt_admin_newCarrierName").value = "";
     renderPtCarriers();
-    populatePtCarrierSelects();
-    renderPtSalesTable();
-    renderPtDashboard();
   });
-  function startEditCarrier(id){
-    const carrier = state.carriers.find(c=>c.id===id);
-    if(!carrier) return;
-    editingCarrierId = id;
-    document.getElementById("pt_c_name").value = carrier.name;
-    document.getElementById("pt_c_comp").value = carrier.comp;
-    document.getElementById("pt_c_cap").value = carrier.cap || "";
-    document.getElementById("pt_c_months").value = carrier.months || "";
-    document.getElementById("pt_carrierFormTitle").textContent = "Edit carrier";
-    document.getElementById("pt_addCarrierBtn").textContent = "Save changes";
-    document.getElementById("pt_cancelCarrierEditBtn").classList.remove("hidden");
-    document.getElementById("pt_c_name").scrollIntoView({behavior:"smooth", block:"center"});
+  const pt_admin_saveMasterBtnEl = document.getElementById("pt_admin_saveMasterBtn");
+  if(pt_admin_saveMasterBtnEl){
+    pt_admin_saveMasterBtnEl.addEventListener("click", ()=>{ saveMasterToCloud(pt_admin_saveMasterBtnEl); });
   }
-  function cancelCarrierEdit(){
-    editingCarrierId = null;
-    pendingCarrierUpdate = null;
-    document.getElementById("pt_cascadeConfirmPanel").classList.add("hidden");
-    document.getElementById("pt_c_name").value="";
-    document.getElementById("pt_c_comp").value="";
-    document.getElementById("pt_c_cap").value="";
-    document.getElementById("pt_c_months").value="";
-    document.getElementById("pt_carrierFormTitle").textContent = "Add a carrier";
-    document.getElementById("pt_addCarrierBtn").textContent = "Add carrier";
-    document.getElementById("pt_cancelCarrierEditBtn").classList.add("hidden");
+  async function saveMasterToCloud(btn){
+    if(btn){ btn.textContent = "Saving..."; btn.disabled = true; }
+    const res = await window.PT.saveCarrierMasterFromAdmin(carrierMaster);
+    if(btn){ btn.textContent = "Save changes for the whole team"; btn.disabled = false; }
+    if(res && res.ok){ showPtToast("Carrier rates saved for the whole team"); }
+    else { alert("Couldn't save — " + (res && res.error || "try again") + (res && res.error==="admin_only" ? " (admin only)" : "")); }
   }
-  document.getElementById("pt_cancelCarrierEditBtn").addEventListener("click", cancelCarrierEdit);
   function renderPtCarriers(){
+    populateLevelSelects();
     const grid = document.getElementById("pt_carrierGrid");
     const empty = document.getElementById("pt_carrierEmptyState");
+    const adminPanel = document.getElementById("pt_carrierAdminPanel");
+    if(adminPanel) adminPanel.classList.toggle("hidden", !isPtAdmin());
+    const carriers = carrierMaster.carriers || [];
     grid.innerHTML = "";
-    if(state.carriers.length===0){ empty.classList.remove("hidden"); return; }
+    if(carriers.length===0){ empty.classList.remove("hidden"); return; }
     empty.classList.add("hidden");
-    state.carriers.forEach(c=>{
-      const count = state.sales.filter(s=>s.carrierId===c.id).length;
+    const myLevel = state.contractLevel || 100;
+    const admin = isPtAdmin();
+    carriers.slice().sort((a,b)=>a.name.localeCompare(b.name)).forEach(c=>{
       const div = document.createElement("div");
       div.className = "carrier-card";
+      div.style.gridColumn = "1 / -1";
+      const rows = (c.products||[]).map(p=>{
+        const myComp = compForLevel(p, myLevel);
+        const cells = admin
+          ? (carrierMaster.levels||[]).map(lvl=>`<td class="num" style="${lvl===myLevel?'background:var(--accent-soft);':''}"><input type="number" step="0.5" data-carrier="${c.id}" data-product="${p.id}" data-level="${lvl}" value="${p.comp[String(lvl)] ?? ''}" style="width:56px;padding:4px 6px;font-size:11px;text-align:right;"></td>`).join("")
+          : (carrierMaster.levels||[]).map(lvl=>`<td class="num" style="${lvl===myLevel?'background:var(--accent-soft);font-weight:700;':''}">${p.comp[String(lvl)] ?? '—'}</td>`).join("");
+        return `<tr><td>${escapeHtml(p.name)}${admin?` <button class="icon-btn pt-product-del" data-carrier="${c.id}" data-product="${p.id}" title="Remove product" style="width:18px;height:18px;">✕</button>`:""}</td>${cells}</tr>`;
+      }).join("");
       div.innerHTML = `
         <div class="top">
-          <div class="name"><span class="dot" style="background:${c.color}"></span>${escapeHtml(c.name)}</div>
-          <div style="display:flex;gap:2px;">
-            <button class="icon-btn carrier-edit" title="Edit carrier" data-id="${c.id}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-            </button>
-            <button class="icon-btn carrier-del" title="Delete carrier" data-id="${c.id}">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"/></svg>
-            </button>
-          </div>
+          <div class="name"><span class="dot" style="background:${hashColor(c.name)}"></span>${escapeHtml(c.name)}</div>
+          ${admin?`<button class="icon-btn carrier-del" title="Delete carrier" data-id="${c.id}">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"/></svg>
+          </button>`:""}
         </div>
-        <div class="carrier-stats">
-          <div>Comp<span>${c.comp}%</span></div>
-          <div>Advance<span>${c.advance}%</span></div>
-          <div>Cap<span>${c.cap ? fmtMoney(c.cap).replace('.00','') : '—'}</span></div>
-          <div>Backend<span>${c.months||0} mo</span></div>
-          <div>Sales<span>${count}</span></div>
+        <div style="overflow-x:auto;margin-top:8px;">
+        <table class="data-table" style="font-size:11px;">
+          <thead><tr><th>Product</th>${(carrierMaster.levels||[]).map(l=>`<th class="num">${l}${l===myLevel?' ★':''}</th>`).join("")}</tr></thead>
+          <tbody>${rows || `<tr><td colspan="${(carrierMaster.levels||[]).length+1}" style="color:var(--muted);">No products yet.</td></tr>`}</tbody>
+        </table>
         </div>
+        ${admin?`<div style="display:flex;gap:8px;margin-top:10px;">
+          <input type="text" class="pt-new-product-name" data-carrier="${c.id}" placeholder="New product name" style="max-width:220px;padding:6px 10px;font-size:12px;">
+          <button class="btn btn-outline pt-add-product" data-carrier="${c.id}" style="padding:6px 12px;font-size:11px;">+ Add product</button>
+        </div>`:""}
       `;
       grid.appendChild(div);
     });
-    grid.querySelectorAll(".carrier-edit").forEach(btn=>{
-      btn.addEventListener("click", ()=>{ startEditCarrier(btn.dataset.id); });
-    });
-    grid.querySelectorAll(".carrier-del").forEach(btn=>{
-      btn.addEventListener("click", ()=>{
-        const inUse = state.sales.some(s=>s.carrierId===btn.dataset.id);
-        if(inUse && !confirm("This carrier has sales logged against it. Delete anyway? (Sales will keep their saved numbers.)")) return;
-        state.carriers = state.carriers.filter(c=>c.id!==btn.dataset.id);
-        if(editingCarrierId===btn.dataset.id) cancelCarrierEdit();
-        saveState(); renderPtCarriers(); populatePtCarrierSelects();
+    if(admin){
+      grid.querySelectorAll("input[data-carrier][data-product][data-level]").forEach(inp=>{
+        inp.addEventListener("change", ()=>{
+          const c = carrierMaster.carriers.find(c=>c.id===inp.dataset.carrier);
+          const p = c && c.products.find(p=>p.id===inp.dataset.product);
+          if(!p) return;
+          p.comp[inp.dataset.level] = parseFloat(inp.value) || 0;
+        });
       });
-    });
+      grid.querySelectorAll(".pt-add-product").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const input = grid.querySelector(`.pt-new-product-name[data-carrier="${btn.dataset.carrier}"]`);
+          const name = input.value.trim();
+          if(!name) return;
+          const c = carrierMaster.carriers.find(c=>c.id===btn.dataset.carrier);
+          if(!c) return;
+          const comp = {};
+          (carrierMaster.levels||[]).forEach(l=>{ comp[String(l)] = 0; });
+          c.products.push({ id: c.id+"p"+(c.products.length+1)+"_"+uid(), name, comp });
+          renderPtCarriers();
+        });
+      });
+      grid.querySelectorAll(".pt-product-del").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const c = carrierMaster.carriers.find(c=>c.id===btn.dataset.carrier);
+          if(!c) return;
+          c.products = c.products.filter(p=>p.id!==btn.dataset.product);
+          renderPtCarriers();
+        });
+      });
+      grid.querySelectorAll(".carrier-del").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          if(!confirm("Remove this carrier from the shared list? Existing sales keep their saved numbers.")) return;
+          carrierMaster.carriers = carrierMaster.carriers.filter(c=>c.id!==btn.dataset.id);
+          renderPtCarriers();
+        });
+      });
+    }
   }
   /* ---------------- Sales table + Edit panel ---------------- */
   document.getElementById("pt_searchClient").addEventListener("input", renderPtSalesTable);
@@ -2556,7 +2598,7 @@
     let rows = state.sales.slice().sort((a,b)=> b.date.localeCompare(a.date));
     rows = rows.filter(s=>{
       if(q && !(s.client||"").toLowerCase().includes(q)) return false;
-      if(fCarrier && s.carrierId!==fCarrier) return false;
+      if(fCarrier && s.carrier!==fCarrier) return false;
       if(fStatus && s.status!==fStatus) return false;
       return true;
     });
@@ -2564,7 +2606,7 @@
     if(rows.length===0){ empty.classList.remove("hidden"); return; }
     empty.classList.add("hidden");
     rows.forEach(s=>{
-      const c = carrierById(s.carrierId);
+      const c = saleCarrierDisplay(s);
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td class="num">${s.date}</td>
@@ -2615,23 +2657,30 @@
       });
     });
   }
+  function ptEditPopulateProducts(){
+    const carrierName = document.getElementById("pt_e_carrier").value;
+    const prodSel = document.getElementById("pt_e_product");
+    const products = window.PT ? window.PT.getMasterProductNames(carrierName) : [];
+    prodSel.innerHTML = products.map(p=>`<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join("");
+  }
   function ptEditCurrentCalc(){
     const premium = parseFloat(document.getElementById("pt_e_premium").value) || 0;
-    const comp = parseFloat(document.getElementById("pt_e_comp").value) || 0;
-    const cap = parseFloat(document.getElementById("pt_e_advanceCap").value) || 0;
-    return computeCalc(premium, document.getElementById("pt_e_premType").value, comp, ADVANCE_RATE, cap);
+    const carrierName = document.getElementById("pt_e_carrier").value;
+    const productName = document.getElementById("pt_e_product").value;
+    const sugg = window.PT ? window.PT.getCompForSelection(carrierName, productName) : null;
+    const comp = sugg ? sugg.comp : 0;
+    document.getElementById("pt_e_compDisplay").textContent = sugg ? (comp + "% (level " + sugg.level + ")") : "—";
+    return computeCalc(premium, document.getElementById("pt_e_premType").value, comp);
   }
   function ptEditRecalc(){
-    const {ap, commission, advanceAmt, backendAmt, capped} = ptEditCurrentCalc();
+    const {ap, commission, advanceAmt, backendAmt} = ptEditCurrentCalc();
     document.getElementById("pt_e_calcAP").textContent = fmtMoney(ap);
     document.getElementById("pt_e_calcComm").textContent = fmtMoney(commission);
     document.getElementById("pt_e_calcAdv").textContent = fmtMoney(advanceAmt);
     document.getElementById("pt_e_calcBack").textContent = fmtMoney(backendAmt);
-    const capNote = document.getElementById("pt_e_calcCapNote");
-    capNote.textContent = capped ? "Capped by carrier max" : "";
-    capNote.style.color = capped ? "var(--warn)" : "";
   }
-  ["pt_e_premium","pt_e_premType","pt_e_comp","pt_e_advanceCap"].forEach(id=>{
+  document.getElementById("pt_e_carrier").addEventListener("change", ()=>{ ptEditPopulateProducts(); ptEditRecalc(); });
+  ["pt_e_premium","pt_e_premType","pt_e_product"].forEach(id=>{
     document.getElementById(id).addEventListener("input", ptEditRecalc);
     document.getElementById(id).addEventListener("change", ptEditRecalc);
   });
@@ -2644,12 +2693,13 @@
     document.getElementById("pt_e_client").value = sale.client || "";
     document.getElementById("pt_e_date").value = sale.date || "";
     document.getElementById("pt_e_effectiveDate").value = sale.effectiveDate || "";
-    const c = carrierById(sale.carrierId);
-    document.getElementById("pt_e_carrier").value = c ? c.name : "";
+    const carrierSel = document.getElementById("pt_e_carrier");
+    carrierSel.innerHTML = (window.PT ? window.PT.getMasterCarrierNames() : []).map(n=>`<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join("");
+    if(sale.carrier) carrierSel.value = sale.carrier;
+    ptEditPopulateProducts();
+    if(sale.product) document.getElementById("pt_e_product").value = sale.product;
     document.getElementById("pt_e_premType").value = sale.premType || "monthly";
     document.getElementById("pt_e_premium").value = sale.premium || "";
-    document.getElementById("pt_e_comp").value = sale.comp || "";
-    document.getElementById("pt_e_advanceCap").value = sale.advanceCap || "";
     document.getElementById("pt_e_status").value = sale.status || "Submitted";
     document.getElementById("pt_e_backendReceived").checked = !!sale.backendReceived;
     document.getElementById("pt_e_referralSale").value = sale.referralSale || "No";
@@ -2668,26 +2718,22 @@
     const idx = state.sales.findIndex(s=>s.id===editingSaleId);
     if(idx===-1) return;
     const client = document.getElementById("pt_e_client").value.trim();
-    const carrierName = document.getElementById("pt_e_carrier").value.trim();
+    const carrierName = document.getElementById("pt_e_carrier").value;
+    const productName = document.getElementById("pt_e_product").value;
     if(!client){ alert("Enter a client name."); return; }
-    if(!carrierName){ alert("Enter a carrier name."); return; }
-    let carrier = carrierByName(carrierName);
-    if(!carrier){
-      carrier = { id: uid(), name: carrierName, comp: parseFloat(document.getElementById("pt_e_comp").value)||0, advance: ADVANCE_RATE, cap: parseFloat(document.getElementById("pt_e_advanceCap").value)||0, months:0, color: PALETTE[state.carriers.length % PALETTE.length] };
-      state.carriers.push(carrier);
-    }
-    const {ap, commission, advanceAmt, backendAmt, capped} = ptEditCurrentCalc();
+    if(!carrierName){ alert("Pick a carrier."); return; }
+    const sugg = window.PT.getCompForSelection(carrierName, productName);
+    const comp = sugg ? sugg.comp : 0;
+    const {ap, commission, advanceAmt, backendAmt} = ptEditCurrentCalc();
     const existing = state.sales[idx];
     state.sales[idx] = Object.assign({}, existing, {
-      client, carrierId: carrier.id,
+      client, carrier: carrierName, product: productName,
       date: document.getElementById("pt_e_date").value || existing.date,
       effectiveDate: document.getElementById("pt_e_effectiveDate").value || "",
       premType: document.getElementById("pt_e_premType").value,
       premium: parseFloat(document.getElementById("pt_e_premium").value)||0,
-      comp: parseFloat(document.getElementById("pt_e_comp").value)||0,
-      advance: ADVANCE_RATE,
-      advanceCap: parseFloat(document.getElementById("pt_e_advanceCap").value)||0,
-      capped, ap, commission, advanceAmt, backendAmt,
+      comp, contractLevel: sugg ? sugg.level : (state.contractLevel||100),
+      capped: false, ap, commission, advanceAmt, backendAmt,
       status: document.getElementById("pt_e_status").value,
       backendReceived: document.getElementById("pt_e_backendReceived").checked,
       referralSale: document.getElementById("pt_e_referralSale").value,
@@ -2698,7 +2744,6 @@
     cancelSaleEdit();
     saveState();
     populatePtCarrierSelects();
-    renderPtCarriers();
     renderPtSalesTable();
     renderPtDashboard();
     showPtToast("Sale updated");
@@ -2757,7 +2802,7 @@
     if(rows.length===0){ empty.classList.remove("hidden"); return; }
     empty.classList.add("hidden");
     rows.forEach(s=>{
-      const c = carrierById(s.carrierId);
+      const c = saleCarrierDisplay(s);
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td class="num">${s.date}</td>
@@ -2966,7 +3011,7 @@
   document.getElementById("pt_exportCsvBtn").addEventListener("click", ()=>{
     const header = ["Date","Effective Date","Client","Carrier","Premium Type","Premium","AP","Comp %","Advance %","Advance Cap","Commission","Advance $","Capped","Backend $","Backend Received","Referral Sale","Referrals Collected","Reset","Status","Notes"];
     const rows = state.sales.map(s=>{
-      const c = carrierById(s.carrierId);
+      const c = saleCarrierDisplay(s);
       return [s.date, s.effectiveDate||"", s.client||"", c?c.name:"", s.premType, s.premium, s.ap.toFixed(2), s.comp, s.advance, s.advanceCap||0, s.commission.toFixed(2), s.advanceAmt.toFixed(2), s.capped?"Yes":"No", s.backendAmt.toFixed(2), s.backendReceived?"Yes":"No", s.referralSale||"No", s.referralsCollected||"No", s.reset||"No", s.status, s.notes||""]
         .map(csvCell);
     });
@@ -3018,11 +3063,10 @@
     effectivedate:"effectiveDate", effdate:"effectiveDate",
     client:"client", clientname:"client", name:"client", insured:"client",
     carrier:"carrier", carriername:"carrier",
+    product:"product", productname:"product", plan:"product",
     premiumtype:"premiumType", premtype:"premiumType",
     premium:"premium", premiumamount:"premium", monthlypremium:"premium", amount:"premium",
     ap:"ap", annualpremium:"ap", annualizedpremium:"ap",
-    comp:"comp", comppercent:"comp", commissionpercent:"comp", comprate:"comp",
-    advancecap:"advanceCap", cap:"advanceCap",
     status:"status",
     backendreceived:"backendReceived", backendrecvd:"backendReceived",
     referralsale:"referralSale",
@@ -3062,24 +3106,21 @@
           if(!isNaN(apVal)){ premium = apVal; premType = "annual"; }
         }
         if(!carrierName || isNaN(premium)){ skipped++; continue; }
-        let carrier = carrierByName(carrierName);
-        if(!carrier){
-          carrier = { id: uid(), name: carrierName, comp: parseFloat(rec.comp)||0, advance: ADVANCE_RATE, cap: parseFloat(rec.advanceCap)||0, months: 0, color: PALETTE[state.carriers.length % PALETTE.length] };
-          state.carriers.push(carrier);
-          newCarriers++;
-        }
-        let comp = carrier.comp, cap = carrier.cap || 0;
-        if(rec.comp) comp = parseFloat(rec.comp)||comp;
-        if(rec.advanceCap) cap = parseFloat(rec.advanceCap)||cap;
-        const calc = computeCalc(premium, premType, comp, ADVANCE_RATE, cap);
+        // Comp comes from the shared master list (carrier + product, at this agent's contract
+        // level) — no more manual comp entry, even via CSV. Unmatched carrier/product imports at
+        // 0% until it's added to the master list, then "Sync my sales to current rates" fixes it.
+        const product = carrierMasterProduct(carrierName, rec.product);
+        if(!product) newCarriers++;
+        const comp = product ? compForLevel(product, state.contractLevel||100) : 0;
+        const calc = computeCalc(premium, premType, comp);
         const status = VALID_STATUSES.find(s=>s.toLowerCase()===((rec.status||"").toLowerCase())) || "Submitted";
         state.sales.push({
-          id: uid(), client: clientName, carrierId: carrier.id,
+          id: uid(), client: clientName, carrier: carrierName, product: rec.product || (product?product.name:""),
           date: normalizeDateString(rec.date) || todayISO(),
           effectiveDate: normalizeDateString(rec.effectiveDate) || "",
-          premType, premium, comp, advance: ADVANCE_RATE, advanceCap: cap,
-          capped: calc.capped, ap: calc.ap, commission: calc.commission, advanceAmt: calc.advanceAmt, backendAmt: calc.backendAmt,
-          status,
+          premType, premium, comp, contractLevel: state.contractLevel||100,
+          capped: false, ap: calc.ap, commission: calc.commission, advanceAmt: calc.advanceAmt, backendAmt: calc.backendAmt,
+          status, migratedV3: true,
           backendReceived: /^(y|yes|true|1)$/i.test(rec.backendReceived||""),
           referralSale: /^(y|yes|true|1)$/i.test(rec.referralSale||"") ? "Yes" : "No",
           referralsCollected: /^(y|yes|true|1)$/i.test(rec.referralsCollected||"") ? "Yes" : "No",
@@ -3095,7 +3136,7 @@
       renderPtDashboard();
       resultEl.style.color = imported > 0 ? "var(--ok)" : "var(--blood-bright)";
       resultEl.textContent = `Imported ${imported} sale${imported===1?"":"s"} into your tracker (not posted to the leaderboard).` +
-        (newCarriers ? ` Created ${newCarriers} new carrier${newCarriers===1?"":"s"}.` : "") +
+        (newCarriers ? ` ${newCarriers} row${newCarriers===1?"":"s"} didn't match a carrier/product in the master list — imported at 0% comp until an admin adds it.` : "") +
         (skipped ? ` Skipped ${skipped} row${skipped===1?"":"s"} (missing client/carrier/premium).` : "");
       fileInput.value = "";
     }catch(err){
@@ -3125,6 +3166,32 @@
     renderPtCalendar();
     renderPtCalendarDetail();
   }
+  /* ---------------- Migration: old sales → new 9mo/3mo deposit model ----------------
+     One-time, additive, idempotent (only touches sales missing `migratedV3`). Nothing is
+     deleted — legacy fields (carrierId, advance, advanceCap, capped) are left in place for
+     history, but advanceAmt/backendAmt are recomputed with the new formula, and a plain-text
+     `carrier` field is added so display no longer depends on the old per-agent carrier list. */
+  function migrateSaleFinancials(){
+    let changed = false;
+    state.sales.forEach(s=>{
+      if(s.migratedV3) return;
+      if(!s.carrier){
+        const legacy = carrierById(s.carrierId);
+        s.carrier = legacy ? legacy.name : (s.carrier || "Unknown");
+      }
+      if(!s.product) s.product = s.product || "";
+      const comp = s.comp || 0;
+      const calc = computeCalc(s.premium || (s.premType==="annual" ? s.ap : (s.ap||0)/12), s.premType || "annual", comp);
+      // Prefer the already-stored ap/premium when present so we don't drift historical AP.
+      const monthlyPremium = s.premType==="annual" ? (s.premium||s.ap||0)/12 : (s.premium || (s.ap||0)/12);
+      s.advanceAmt = monthlyPremium * DEPOSIT_MONTHS * (comp/100);
+      s.backendAmt = monthlyPremium * BACKEND_MONTHS * (comp/100);
+      s.migratedV3 = true;
+      changed = true;
+    });
+    if(changed) saveState();
+    return changed;
+  }
   /* ---------------- Backfill: pull this agent's leaderboard history into the tracker ----------------
      Runs automatically (see PT.setAuth and window.__onChosenEntriesRefreshed below) so entries
      logged before Production Tracker existed — or logged from another device/session — still
@@ -3139,23 +3206,21 @@
     myEntries.forEach(entry=>{
       if(linkedIds.has(entry.id)) return;
       const carrierName = (entry.carrier || "Unknown").trim() || "Unknown";
-      let carrier = carrierByName(carrierName);
-      if(!carrier){
-        // Comp rate isn't known for backfilled history — defaults to 0% until you set it on
-        // the carrier (Carriers tab), then "Sync all sales to current carrier rates" fixes
-        // the math for every sale under it in one click.
-        carrier = { id: uid(), name: carrierName, comp: 0, advance: ADVANCE_RATE, cap: 0, months: 0, color: PALETTE[state.carriers.length % PALETTE.length] };
-        state.carriers.push(carrier);
-      }
+      // Try to match the leaderboard's free-text carrier name to the shared master list so
+      // backfilled history gets a real comp rate automatically; otherwise defaults to 0%
+      // until an admin adds that carrier, then "Sync my sales to current rates" fixes the math.
+      const product = carrierMasterCarrier(carrierName) && carrierMasterCarrier(carrierName).products[0];
+      const comp = product ? compForLevel(product, state.contractLevel||100) : 0;
       const premium = Number(entry.amount) || 0;
-      const calc = computeCalc(premium, "annual", carrier.comp, ADVANCE_RATE, carrier.cap||0);
+      const calc = computeCalc(premium, "annual", comp);
       state.sales.push({
-        id: uid(), entryId: entry.id, client: "", carrierId: carrier.id,
+        id: uid(), entryId: entry.id, client: "",
+        carrier: carrierName, product: product ? product.name : "",
         date: entry.date || "", effectiveDate: entry.effectiveDate || entry.date || "",
         premType: "annual", premium,
-        comp: carrier.comp, advance: ADVANCE_RATE, advanceCap: carrier.cap||0,
-        capped: calc.capped, ap: calc.ap, commission: calc.commission, advanceAmt: calc.advanceAmt, backendAmt: calc.backendAmt,
-        status: "Submitted", backendReceived: false,
+        comp, contractLevel: state.contractLevel||100,
+        capped: false, ap: calc.ap, commission: calc.commission, advanceAmt: calc.advanceAmt, backendAmt: calc.backendAmt,
+        status: "Submitted", backendReceived: false, migratedV3: true,
         referralSale: entry.referralSale || "No", referralsCollected: entry.referrals || "No", reset: entry.reset || "No",
         notes: entry.notes ? ("Synced from leaderboard — " + entry.notes) : "Synced from leaderboard"
       });
@@ -3185,31 +3250,33 @@
       currentAuth = auth;
       loadLocal();
       renderPtAll();
-      await pullFromCloud(true);
+      await Promise.all([pullFromCloud(true), pullCarrierMaster()]);
+      migrateSaleFinancials();
       reconcileFromLeaderboard();
       renderPtAll();
+      if(window.__onPtCarriersChanged) window.__onPtCarriersChanged();
       if(ptPollTimer) clearInterval(ptPollTimer);
       ptPollTimer = setInterval(async ()=>{
         const ok = await pullFromCloud();
-        if(ok) renderPtAll();
+        const ok2 = await pullCarrierMaster();
+        if(ok || ok2) renderPtAll();
       }, 30000);
     },
+    // Carrier + product come from the shared master list now (no manual comp entry). `data.comp`
+    // is only used as a last-resort fallback for very old callers — normal calls always look the
+    // rate up from carrierMaster at the agent's own contract level.
     async addSaleFromEntry(entryId, data){
       if(!currentAuth) return;
-      let carrier = carrierByName(data.carrierName);
-      if(!carrier){
-        carrier = { id: uid(), name: data.carrierName, comp: data.comp||0, advance: ADVANCE_RATE, cap: data.advanceCap||0, months: 0, color: PALETTE[state.carriers.length % PALETTE.length] };
-        state.carriers.push(carrier);
-      }
-      const comp = data.comp || carrier.comp || 0;
-      const cap = data.advanceCap || carrier.cap || 0;
-      const calc = computeCalc(data.premium, data.premType, comp, ADVANCE_RATE, cap);
+      const product = carrierMasterProduct(data.carrierName, data.productName);
+      const comp = product ? compForLevel(product, state.contractLevel||100) : (data.comp || 0);
+      const calc = computeCalc(data.premium, data.premType, comp);
       state.sales.push({
-        id: uid(), entryId, client: data.client, carrierId: carrier.id,
+        id: uid(), entryId, client: data.client,
+        carrier: data.carrierName || "", product: data.productName || "",
         date: data.date, effectiveDate: data.effectiveDate,
         premType: data.premType, premium: data.premium,
-        comp, advance: ADVANCE_RATE, advanceCap: cap,
-        capped: calc.capped, ap: calc.ap, commission: calc.commission, advanceAmt: calc.advanceAmt, backendAmt: calc.backendAmt,
+        comp, contractLevel: state.contractLevel||100,
+        capped: false, ap: calc.ap, commission: calc.commission, advanceAmt: calc.advanceAmt, backendAmt: calc.backendAmt,
         status: data.status || "Submitted", backendReceived: !!data.backendReceived,
         referralSale: data.referralSale||"No", referralsCollected: data.referralsCollected||"No", reset: data.reset||"No",
         notes: data.notes||""
@@ -3218,12 +3285,32 @@
       renderPtAll();
     },
     onTabShown(){ renderPtAll(); },
-    getCarrierCompSuggestion(name){
-      const c = carrierByName(name);
-      return c ? {comp: c.comp, cap: c.cap} : null;
+    // ---- Carrier-master-backed helpers used by the Log a Sale / Sales Log edit dropdowns ----
+    getMasterCarrierNames(){ return (carrierMaster.carriers||[]).map(c=>c.name).sort((a,b)=>a.localeCompare(b)); },
+    getMasterProductNames(carrierName){
+      const c = carrierMasterCarrier(carrierName);
+      return c ? c.products.map(p=>p.name) : [];
     },
-    getCarrierNames(){ return state.carriers.map(c=>c.name); },
-    previewCalc(premium, premType, comp, cap){ return computeCalc(premium, premType, comp||0, ADVANCE_RATE, cap||0); }
+    getCompForSelection(carrierName, productName){
+      const product = carrierMasterProduct(carrierName, productName);
+      if(!product) return null;
+      return {comp: compForLevel(product, state.contractLevel||100), level: state.contractLevel||100};
+    },
+    getContractLevel(){ return state.contractLevel || 100; },
+    getContractLevels(){ return (carrierMaster.levels||[]).slice(); },
+    async setContractLevel(level){
+      state.contractLevel = Number(level) || 100;
+      saveState();
+    },
+    isAdmin(){ return window.__chosenIsAdmin ? window.__chosenIsAdmin() : false; },
+    getCarrierMaster(){ return carrierMaster; },
+    async saveCarrierMasterFromAdmin(newMaster){
+      carrierMaster = newMaster;
+      const res = await pushCarrierMaster();
+      renderPtAll();
+      return res;
+    },
+    previewCalc(premium, premType, comp){ return computeCalc(premium, premType, comp||0); }
   };
   /* ---------------- Fill the backend Apps Script textarea (Settings tab) ---------------- */
   (function(){
@@ -3234,6 +3321,7 @@ var USERS_SHEET = "Users";       // email | passwordHash | displayName | created
 var SESSIONS_SHEET = "Sessions"; // token | email | createdAt
 var ENTRIES_SHEET = "Entries";   // id | email | displayName | amount | date | notes | createdAt | carrier | effectiveDate | referrals | reset | firstTime | referralSale
 var TRACKER_SHEET = "TrackerData"; // email | jsonBlob | lastUpdated  (one private Production Tracker blob per agent)
+var CARRIER_MASTER_SHEET = "CarrierMaster"; // key | jsonBlob | lastUpdated  (ONE shared row — the whole team's carrier/product/comp list)
 var ADMIN_EMAILS = ["kian.dolezal1@gmail.com", "toddhenningjr@gmail.com"]; // must match ADMIN_EMAILS in the website file exactly (lowercase-insensitive)
 // Paste your Slack Bot User OAuth Token here (starts with xoxb-, see setup steps 3-4 above). Leave blank to skip Slack posting.
 var SLACK_BOT_TOKEN = "";
@@ -3253,6 +3341,13 @@ function doGet(e) {
       var email2 = emailForToken_(e.parameter.token);
       if (!email2) return json_({ok:false, error:"invalid_session"});
       return json_({ok:true, data: JSON.parse(getTrackerBlob_(email2) || "{}")});
+    }
+    if (action === "getCarrierMaster") {
+      // Open read — every signed-in agent needs the shared carrier/product/comp list to log sales.
+      var email3 = emailForToken_(e.parameter.token);
+      if (!email3) return json_({ok:false, error:"invalid_session"});
+      var blob = getCarrierMasterBlob_();
+      return json_({ok:true, data: blob ? JSON.parse(blob) : null});
     }
     return json_({ok:false, error:"unknown_action"});
   } catch (err) {
@@ -3357,6 +3452,14 @@ function doPost(e) {
       var email = emailForToken_(body.token);
       if (!email) return json_({ok:false, error:"invalid_session"});
       setTrackerBlob_(email, "{}");
+      return json_({ok:true});
+    }
+    if (action === "saveCarrierMaster") {
+      // Shared team-wide list — admin only, so one agent's typo can't wreck everyone else's comp calc.
+      var email4 = emailForToken_(body.token);
+      if (!email4) return json_({ok:false, error:"invalid_session"});
+      if (!isAdminEmail_(email4)) return json_({ok:false, error:"admin_only"});
+      setCarrierMasterBlob_(JSON.stringify(body.data));
       return json_({ok:true});
     }
     return json_({ok:false, error:"unknown_action"});
@@ -3491,6 +3594,23 @@ function setTrackerBlob_(email, json) {
   } else {
     sheet.getRange(row, 2).setValue(json);
     sheet.getRange(row, 3).setValue(new Date());
+  }
+}
+function getCarrierMasterBlob_() {
+  // Single shared row (key "shared") — the whole team reads/writes the same carrier/product/comp list.
+  var sheet = getSheet_(CARRIER_MASTER_SHEET);
+  var values = sheet.getDataRange().getValues();
+  if (values.length < 1 || !values[0][0]) return "";
+  return values[0][1] || "";
+}
+function setCarrierMasterBlob_(json) {
+  var sheet = getSheet_(CARRIER_MASTER_SHEET);
+  var values = sheet.getDataRange().getValues();
+  if (values.length < 1 || !values[0][0]) {
+    sheet.getRange(1, 1, 1, 3).setValues([["shared", json, new Date()]]);
+  } else {
+    sheet.getRange(1, 2).setValue(json);
+    sheet.getRange(1, 3).setValue(new Date());
   }
 }`;
   })();
