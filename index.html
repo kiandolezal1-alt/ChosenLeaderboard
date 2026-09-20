@@ -2666,17 +2666,37 @@
     if(names.includes(prevFilt)) filt.value = prevFilt;
     if(window.__onPtCarriersChanged) window.__onPtCarriersChanged();
   }
-  // "Fix unmatched sales" — fills in commission/Deposit/Backend ONLY for sales that currently have
-  // no comp on file (i.e. their carrier/product never matched the master — shorthand carrier names,
-  // a renamed product, etc.). Uses each sale's OWN saved contractLevel (never the agent's current
-  // level), so a contract-level change or a raise never rewrites what an already-recorded sale earned.
-  // A sale that already has a nonzero comp is left completely untouched, on purpose.
+  // "Fix & clean up my sales" — two things, in one pass:
+  //  1) Renames a sale's stored carrier/product to the master's canonical spelling whenever it
+  //     currently matches only via an alias (e.g. "TFM" -> "Transamerica", "GI" -> "GIWL Whole
+  //     Life"). Pure cosmetic cleanup — never touches comp/dollar amounts.
+  //  2) Fills in commission/Deposit/Backend ONLY for sales that currently have no comp on file
+  //     (i.e. never matched the master at all). Uses each sale's OWN saved contractLevel (never
+  //     the agent's current level), so a contract-level change or a raise never rewrites what an
+  //     already-recorded sale earned. A sale that already has a nonzero comp keeps its dollar
+  //     amounts untouched, even if its carrier/product name gets cleaned up.
+  // Special case (per Kian): sales saved under Mutual of Omaha's old "M" shorthand never recorded
+  // which product. Every one of those is Living Promises except two clients, who are IULE.
+  const MOO_IULE_CLIENTS = ["arturo lara", "jennifer sissel"];
   document.getElementById("pt_syncAllSalesBtn").addEventListener("click", ()=>{
     const resultEl = document.getElementById("pt_syncAllSalesResult");
-    let updated = 0, skippedNoMatch = 0, alreadyOk = 0;
+    let updated = 0, skippedNoMatch = 0, alreadyOk = 0, renamed = 0;
     state.sales.forEach(s=>{
-      if(s.comp){ alreadyOk++; return; } // already has a comp on file — never touch it
-      const product = carrierMasterProduct(s.carrier, s.product);
+      const carrierObj = carrierMasterCarrier(s.carrier); // resolves aliases like "TFM" -> Transamerica
+      const canonCarrier = carrierObj ? carrierObj.name : s.carrier;
+      let product = carrierMasterProduct(s.carrier, s.product);
+      if(!product && canonCarrier === "Mutual of Omaha"){
+        const clientKey = (s.client||"").trim().toLowerCase();
+        const inferredProduct = MOO_IULE_CLIENTS.includes(clientKey) ? "IULE" : "Living Promises";
+        product = carrierMasterProduct(canonCarrier, inferredProduct);
+      }
+      // Carrier and product are renamed independently — a carrier can resolve via alias even when
+      // the product text on the sale doesn't match anything yet (e.g. a typo, or blank).
+      let touched = false;
+      if(carrierObj && s.carrier !== carrierObj.name){ s.carrier = carrierObj.name; touched = true; }
+      if(product && s.product !== product.name){ s.product = product.name; touched = true; }
+      if(touched) renamed++;
+      if(s.comp){ alreadyOk++; return; } // already has a comp on file — never touch the dollar amounts
       if(!product){ skippedNoMatch++; return; }
       const level = s.contractLevel || state.contractLevel || 100;
       const newComp = compForLevel(product, level);
@@ -2688,8 +2708,9 @@
     saveState();
     renderPtSalesTable();
     renderPtDashboard();
-    resultEl.style.color = updated > 0 ? "var(--ok)" : "var(--muted)";
-    resultEl.textContent = `Filled in ${updated} previously-unmatched sale${updated===1?"":"s"} (at the contract level each was saved under).` +
+    populatePtCarrierSelects();
+    resultEl.style.color = (updated > 0 || renamed > 0) ? "var(--ok)" : "var(--muted)";
+    resultEl.textContent = `Cleaned up ${renamed} carrier/product name${renamed===1?"":"s"} and filled in ${updated} previously-unmatched sale${updated===1?"":"s"} (at the contract level each was saved under).` +
       (alreadyOk ? ` ${alreadyOk} already had a comp on file and were left as-is.` : "") +
       (skippedNoMatch ? ` ${skippedNoMatch} still skipped (carrier/product not in the master list — pick a valid one when you edit that sale).` : "");
   });
