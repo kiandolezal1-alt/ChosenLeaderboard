@@ -657,6 +657,10 @@
           <input type="checkbox" id="ls_backend_received">
           <label style="text-transform:none;font-weight:500;font-size:13px;">Backend already received</label>
         </div>
+        <div class="field backend-toggle" style="margin-top:22px;">
+          <input type="checkbox" id="ls_capped">
+          <label style="text-transform:none;font-weight:500;font-size:13px;">Advance capped by carrier <span class="hint">backend then pays as earned once client hits $1,500 in premium</span></label>
+        </div>
         <div class="field">
           <label>Referral Sale?</label>
           <select id="ls_referral_sale">
@@ -1035,6 +1039,10 @@
             <input type="checkbox" id="pt_e_backendReceived">
             <label style="text-transform:none;font-weight:500;font-size:13px;">Backend already received</label>
           </div>
+          <div class="field backend-toggle" style="margin-top:22px;">
+            <input type="checkbox" id="pt_e_capped">
+            <label style="text-transform:none;font-weight:500;font-size:13px;">Advance capped by carrier <span class="hint">backend then pays as earned once client hits $1,500 in premium</span></label>
+          </div>
           <div class="field">
             <label>Referral sale?</label>
             <select id="pt_e_referralSale"><option value="No">No</option><option value="Yes">Yes</option></select>
@@ -1167,14 +1175,16 @@
         <h2>Backend commission</h2>
         <p class="desc">
           The remaining 3-month piece of first-year comp on each Issued &amp; Paid sale, separate from the
-          9-month Deposit Amount paid at issue. Expected to land about 9 months after the effective date —
-          when the advance period ends. Estimates only.
+          9-month Deposit Amount paid at issue. Pays out as-earned — split into 3 separate monthly
+          installments (one for each of months 10, 11 and 12 after the effective date) instead of one lump sum.
+          For a policy the carrier advance-capped, those installments start as soon as the client's cumulative
+          premium into the policy reaches $1,500, instead of waiting for month 10. Estimates only.
         </p>
         <div class="calc-strip" style="margin-top:0;">
           <div class="calc-item"><div class="k">Pending (All-Time)</div><div class="v" id="pt_bk_pending">$0</div></div>
           <div class="calc-item"><div class="k">Received (All-Time)</div><div class="v" id="pt_bk_received">$0</div></div>
-          <div class="calc-item"><div class="k">Policies Pending</div><div class="v" id="pt_bk_pendingCount">0</div></div>
-          <div class="calc-item"><div class="k">Policies Received</div><div class="v" id="pt_bk_receivedCount">0</div></div>
+          <div class="calc-item"><div class="k">Installments Pending</div><div class="v" id="pt_bk_pendingCount">0</div></div>
+          <div class="calc-item"><div class="k">Installments Received</div><div class="v" id="pt_bk_receivedCount">0</div></div>
         </div>
       </div>
       <div class="panel">
@@ -1187,12 +1197,12 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
           </button>
         </div>
-        <p class="desc" style="margin-top:-6px;">Each tile is total Backend Amount expected to become due that month (effective date + 9 months), whether or not you've marked it received yet.</p>
+        <p class="desc" style="margin-top:-6px;">Each tile is total backend $ expected to be earned that month — one monthly installment per policy (months 10-12 after effective date, or starting once a capped policy hits $1,500 in cumulative premium), whether or not you've marked it received yet.</p>
         <div class="cal-month-grid" id="pt_bkCalMonthGrid"></div>
       </div>
       <div class="panel">
         <h2 id="pt_bkCalDetailTitle">Month backend</h2>
-        <p class="desc">Every policy whose 9-month advance period ends in the selected month.</p>
+        <p class="desc">Every backend installment earned in the selected month.</p>
         <div class="calc-strip" style="margin-top:0;">
           <div class="calc-item"><div class="k">Expected This Month</div><div class="v" id="pt_bkCalMonthTotal">$0</div></div>
           <div class="calc-item"><div class="k">Policies Due</div><div class="v" id="pt_bkCalMonthCount">0</div></div>
@@ -1685,6 +1695,7 @@
     const premium = parseFloat(document.getElementById("ls_amount").value);
     const status = document.getElementById("ls_status").value;
     const backendReceived = document.getElementById("ls_backend_received").checked;
+    const capped = document.getElementById("ls_capped").checked;
     const referralSale = document.getElementById("ls_referral_sale").value;
     const referralsCollected = document.getElementById("ls_referrals_collected").value;
     const reset = document.getElementById("ls_reset").value;
@@ -1706,7 +1717,7 @@
       if(window.PT){
         await window.PT.addSaleFromEntry(json.id, {
           client, carrierName: carrier, productName: product, date, effectiveDate,
-          premium, premType, status, backendReceived,
+          premium, premType, status, backendReceived, capped,
           referralSale, referralsCollected, reset, notes,
           compOverride: lsOverrideComp()
         });
@@ -1720,6 +1731,7 @@
       document.getElementById("ls_first_time").value = "No";
       document.getElementById("ls_status").value = "Submitted";
       document.getElementById("ls_backend_received").checked = false;
+      document.getElementById("ls_capped").checked = false;
       document.getElementById("ls_referral_sale").value = "No";
       document.getElementById("ls_referrals_collected").value = "No";
       document.getElementById("ls_reset").value = "No";
@@ -2191,7 +2203,8 @@
   "use strict";
   const ADVANCE_RATE = 75; // legacy field, kept only so old sale records still compute; unused by the new deposit formula
   const DEPOSIT_MONTHS = 9;  // Deposit Amount = monthly premium × 9 × comp%
-  const BACKEND_MONTHS = 3;  // Backend Amount = monthly premium × 3 × comp%
+  const BACKEND_MONTHS = 3;  // Backend Amount = monthly premium × 3 × comp%, paid as 3 monthly installments
+  const CAP_THRESHOLD = 1500; // advance-capped policies: backend starts paying out once the client has paid this much cumulative premium into the policy
   const PALETTE = ["#9FB8DE","#4FAE7C","#D9A441","#D96363","#B7C1CB","#7A8FB0","#6FA8A0","#C99A5B"];
   const EMPTY_STATE = {agentName:"", contractLevel:100, carriers:[], sales:[], deposits:[], leadSpend:[]};
   // Shared, admin-editable carrier / product / comp-by-contract-level table. Seeded from the
@@ -2875,7 +2888,7 @@
           <button class="icon-btn pt-sale-edit" data-id="${s.id}" title="Edit">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
           </button>
-          <button class="icon-btn pt-backend-toggle" data-id="${s.id}" title="Toggle backend received">
+          <button class="icon-btn pt-backend-toggle" data-id="${s.id}" title="Toggle all 3 backend installments received">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
           </button>
           <button class="icon-btn pt-sale-del" data-id="${s.id}" title="Delete">
@@ -2894,7 +2907,12 @@
     body.querySelectorAll(".pt-backend-toggle").forEach(btn=>{
       btn.addEventListener("click", ()=>{
         const sale = state.sales.find(s=>s.id===btn.dataset.id);
-        if(sale){ sale.backendReceived = !sale.backendReceived; saveState(); renderPtSalesTable(); renderPtDashboard(); }
+        if(sale){
+          const newVal = !sale.backendReceived;
+          sale.backendReceived = newVal;
+          sale.backendMonthsReceived = [newVal, newVal, newVal];
+          saveState(); renderPtSalesTable(); renderPtDashboard();
+        }
       });
     });
     body.querySelectorAll(".pt-sale-edit").forEach(btn=>{
@@ -2962,6 +2980,7 @@
     document.getElementById("pt_e_premium").value = sale.premium || "";
     document.getElementById("pt_e_status").value = sale.status || "Submitted";
     document.getElementById("pt_e_backendReceived").checked = !!sale.backendReceived;
+    document.getElementById("pt_e_capped").checked = !!sale.capped;
     document.getElementById("pt_e_referralSale").value = sale.referralSale || "No";
     document.getElementById("pt_e_referralsCollected").value = sale.referralsCollected || "No";
     document.getElementById("pt_e_reset").value = sale.reset || "No";
@@ -2999,6 +3018,12 @@
     const comp = override !== null ? override : (sugg ? sugg.comp : 0);
     const {ap, commission, advanceAmt, backendAmt} = ptEditCurrentCalc();
     const existing = state.sales[idx];
+    const newBackendReceived = document.getElementById("pt_e_backendReceived").checked;
+    // Only stomp the per-installment received tracking if the overall checkbox actually changed
+    // here — otherwise leave whatever granular month-by-month state the Backend tab has recorded.
+    const newBackendMonthsReceived = (newBackendReceived !== !!existing.backendReceived)
+      ? [newBackendReceived, newBackendReceived, newBackendReceived]
+      : (Array.isArray(existing.backendMonthsReceived) ? existing.backendMonthsReceived : [newBackendReceived, newBackendReceived, newBackendReceived]);
     state.sales[idx] = Object.assign({}, existing, {
       client, carrier: carrierName, product: productName,
       date: document.getElementById("pt_e_date").value || existing.date,
@@ -3007,9 +3032,10 @@
       premium: parseFloat(document.getElementById("pt_e_premium").value)||0,
       comp, contractLevel: override !== null ? (existing.contractLevel || state.contractLevel||100) : (sugg ? sugg.level : (state.contractLevel||100)),
       manualCompOverride: override,
-      capped: false, ap, commission, advanceAmt, backendAmt,
+      capped: document.getElementById("pt_e_capped").checked, ap, commission, advanceAmt, backendAmt,
       status: document.getElementById("pt_e_status").value,
-      backendReceived: document.getElementById("pt_e_backendReceived").checked,
+      backendReceived: newBackendReceived,
+      backendMonthsReceived: newBackendMonthsReceived,
       referralSale: document.getElementById("pt_e_referralSale").value,
       referralsCollected: document.getElementById("pt_e_referralsCollected").value,
       reset: document.getElementById("pt_e_reset").value,
@@ -3140,33 +3166,78 @@
   }
   /* ---------------- Backend ----------------
      The 3-month remainder of first-year comp, separate from the 9-month Deposit Amount paid at
-     issue. Modeled as landing in one lump around effectiveDate + 9 months (when the advance period
-     ends) — a single expected month per sale, not a recurring thing like renewals. */
-  function expectedBackendDate(sale){
+     issue. Pays out "as earned" — as 3 separate monthly installments (backendAmt/3 each), one for
+     each of months 10, 11 and 12 after the effective date, rather than one lump sum.
+     For policies the carrier advance-capped (sale.capped), the carrier doesn't wait for the
+     standard 9-month advance period — backend starts paying out (still as 3 monthly installments)
+     as soon as the client's cumulative premium paid into the policy reaches CAP_THRESHOLD. */
+  function monthlyPremiumOf(sale){
+    if(sale.premType === "annual") return (sale.ap || sale.premium || 0) / 12;
+    return sale.premium || 0;
+  }
+  function backendInstallmentDates(sale){
     const base = sale.effectiveDate || sale.date;
-    if(!base) return null;
+    if(!base) return [];
     const start = new Date(normalizeDateString(base)+"T00:00:00");
-    if(isNaN(start)) return null;
-    return new Date(start.getFullYear(), start.getMonth()+DEPOSIT_MONTHS, start.getDate());
+    if(isNaN(start)) return [];
+    let firstOffset;
+    if(sale.capped){
+      const mp = monthlyPremiumOf(sale);
+      firstOffset = mp > 0 ? Math.ceil(CAP_THRESHOLD / mp) : (DEPOSIT_MONTHS + 1);
+    } else {
+      firstOffset = DEPOSIT_MONTHS + 1; // month 10 — right after the 9-month deposit/advance period ends
+    }
+    const dates = [];
+    for(let i=0;i<BACKEND_MONTHS;i++){
+      dates.push(new Date(start.getFullYear(), start.getMonth()+firstOffset+i, start.getDate()));
+    }
+    return dates;
+  }
+  function backendInstallmentsForSale(sale){
+    const dates = backendInstallmentDates(sale);
+    const perAmt = (sale.backendAmt||0) / BACKEND_MONTHS;
+    const arr = Array.isArray(sale.backendMonthsReceived) ? sale.backendMonthsReceived : null;
+    return dates.map((d,i)=>({
+      n: i+1,
+      date: d,
+      amount: perAmt,
+      // legacy sales only have a single backendReceived boolean — treat that as applying to all 3 installments
+      received: arr ? !!arr[i] : !!sale.backendReceived
+    }));
+  }
+  function toggleBackendInstallment(sale, n){
+    const arr = Array.isArray(sale.backendMonthsReceived) ? sale.backendMonthsReceived.slice()
+      : [!!sale.backendReceived, !!sale.backendReceived, !!sale.backendReceived];
+    arr[n-1] = !arr[n-1];
+    sale.backendMonthsReceived = arr;
+    sale.backendReceived = arr.every(Boolean);
+    saveState();
   }
   function backendForCalMonth(year, month){
     const issued = state.sales.filter(s=>s.status==="Issued & Paid");
     const rows = [];
     issued.forEach(s=>{
-      const d = expectedBackendDate(s);
-      if(!d) return;
-      if(d.getFullYear()===year && d.getMonth()===month) rows.push({sale:s, expectedDate:d});
+      backendInstallmentsForSale(s).forEach(inst=>{
+        if(inst.date.getFullYear()===year && inst.date.getMonth()===month){
+          rows.push({sale:s, expectedDate:inst.date, installmentNum:inst.n, amount:inst.amount, received:inst.received});
+        }
+      });
     });
     return rows;
   }
   function renderPtBackend(){
     const issued = state.sales.filter(s=>s.status==="Issued & Paid");
-    const pending = issued.filter(s=>!s.backendReceived);
-    const received = issued.filter(s=>s.backendReceived);
-    document.getElementById("pt_bk_pending").textContent = fmtMoney(pending.reduce((a,s)=>a+(s.backendAmt||0),0));
-    document.getElementById("pt_bk_received").textContent = fmtMoney(received.reduce((a,s)=>a+(s.backendAmt||0),0));
-    document.getElementById("pt_bk_pendingCount").textContent = pending.length;
-    document.getElementById("pt_bk_receivedCount").textContent = received.length;
+    let pendingTotal=0, receivedTotal=0, pendingCount=0, receivedCount=0;
+    issued.forEach(s=>{
+      backendInstallmentsForSale(s).forEach(inst=>{
+        if(inst.received){ receivedTotal += inst.amount; receivedCount++; }
+        else { pendingTotal += inst.amount; pendingCount++; }
+      });
+    });
+    document.getElementById("pt_bk_pending").textContent = fmtMoney(pendingTotal);
+    document.getElementById("pt_bk_received").textContent = fmtMoney(receivedTotal);
+    document.getElementById("pt_bk_pendingCount").textContent = pendingCount;
+    document.getElementById("pt_bk_receivedCount").textContent = receivedCount;
     renderPtBkCalendar();
     renderPtBkCalendarDetail();
   }
@@ -3178,12 +3249,12 @@
     grid.innerHTML = "";
     for(let m=0; m<12; m++){
       const rows = backendForCalMonth(ptBkCalYear, m);
-      const total = rows.reduce((a,r)=>a+(r.sale.backendAmt||0),0);
+      const total = rows.reduce((a,r)=>a+(r.amount||0),0);
       const div = document.createElement("div");
       div.className = "cal-month" + (m===ptBkCalSelectedMonth ? " active" : "");
       div.innerHTML = `
         <div class="cal-month-name">${MONTH_NAMES[m]}</div>
-        <div class="cal-month-count">${rows.length} polic${rows.length===1?"y":"ies"}</div>
+        <div class="cal-month-count">${rows.length} installment${rows.length===1?"":"s"}</div>
         <div class="cal-month-ap">${fmtMoney(total)}</div>
       `;
       div.addEventListener("click", ()=>{ ptBkCalSelectedMonth = m; renderPtBkCalendar(); renderPtBkCalendarDetail(); });
@@ -3191,27 +3262,27 @@
     }
   }
   function renderPtBkCalendarDetail(){
-    const rows = backendForCalMonth(ptBkCalYear, ptBkCalSelectedMonth).sort((a,b)=> (b.sale.backendAmt||0) - (a.sale.backendAmt||0));
+    const rows = backendForCalMonth(ptBkCalYear, ptBkCalSelectedMonth).sort((a,b)=> (b.amount||0) - (a.amount||0));
     document.getElementById("pt_bkCalDetailTitle").textContent = MONTH_NAMES[ptBkCalSelectedMonth] + " " + ptBkCalYear + " backend";
-    document.getElementById("pt_bkCalMonthTotal").textContent = fmtMoney(rows.reduce((a,r)=>a+(r.sale.backendAmt||0),0));
+    document.getElementById("pt_bkCalMonthTotal").textContent = fmtMoney(rows.reduce((a,r)=>a+(r.amount||0),0));
     document.getElementById("pt_bkCalMonthCount").textContent = rows.length;
     const body = document.getElementById("pt_bkCalDetailBody");
     const empty = document.getElementById("pt_bkCalDetailEmpty");
     body.innerHTML = "";
     if(rows.length===0){ empty.classList.remove("hidden"); return; }
     empty.classList.add("hidden");
-    rows.forEach(({sale:s, expectedDate})=>{
+    rows.forEach(({sale:s, expectedDate, installmentNum, amount, received})=>{
       const disp = saleCarrierDisplay(s);
       const expStr = expectedDate.getFullYear()+"-"+String(expectedDate.getMonth()+1).padStart(2,"0")+"-"+String(expectedDate.getDate()).padStart(2,"0");
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${escapeHtml(s.client||"—")}</td>
+        <td>${escapeHtml(s.client||"—")}${s.capped?' <span style="color:var(--warn);font-size:10px;" title="Advance capped by carrier">CAP</span>':''}</td>
         <td><span class="dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${disp.color};margin-right:6px;"></span>${escapeHtml(disp.name)}</td>
         <td class="num">${escapeHtml(s.effectiveDate || s.date || "—")}</td>
-        <td class="num">${expStr}</td>
-        <td class="num">${fmtMoney(s.backendAmt)}</td>
-        <td>${s.backendReceived ? '<span class="status-pill status-Issued-Paid">Received</span>' : '<span class="status-pill status-Pending">Pending</span>'}</td>
-        <td class="row-actions"><button class="icon-btn pt-bk-toggle" data-id="${s.id}" title="Toggle backend received">
+        <td class="num">${expStr} <span class="hint">(mo ${installmentNum} of 3)</span></td>
+        <td class="num">${fmtMoney(amount)}</td>
+        <td>${received ? '<span class="status-pill status-Issued-Paid">Received</span>' : '<span class="status-pill status-Pending">Pending</span>'}</td>
+        <td class="row-actions"><button class="icon-btn pt-bk-toggle" data-id="${s.id}" data-n="${installmentNum}" title="Toggle this installment received">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
         </button></td>
       `;
@@ -3220,7 +3291,8 @@
     body.querySelectorAll(".pt-bk-toggle").forEach(btn=>{
       btn.addEventListener("click", ()=>{
         const sale = state.sales.find(s=>s.id===btn.dataset.id);
-        if(sale){ sale.backendReceived = !sale.backendReceived; saveState(); renderPtBackend(); renderPtDashboard(); renderPtSalesTable(); }
+        const n = parseInt(btn.dataset.n, 10);
+        if(sale){ toggleBackendInstallment(sale, n); renderPtBackend(); renderPtDashboard(); renderPtSalesTable(); }
       });
     });
   }
@@ -3534,6 +3606,7 @@
     ap:"ap", annualpremium:"ap", annualizedpremium:"ap",
     status:"status",
     backendreceived:"backendReceived", backendrecvd:"backendReceived",
+    capped:"capped", advancecapped:"capped", cap:"capped",
     referralsale:"referralSale",
     referralscollected:"referralsCollected", referralcollected:"referralsCollected",
     reset:"reset",
@@ -3579,14 +3652,16 @@
         const comp = product ? compForLevel(product, state.contractLevel||100) : 0;
         const calc = computeCalc(premium, premType, comp);
         const status = VALID_STATUSES.find(s=>s.toLowerCase()===((rec.status||"").toLowerCase())) || "Submitted";
+        const impBackendReceived = /^(y|yes|true|1)$/i.test(rec.backendReceived||"");
         state.sales.push({
           id: uid(), client: clientName, carrier: carrierName, product: rec.product || (product?product.name:""),
           date: normalizeDateString(rec.date) || todayISO(),
           effectiveDate: normalizeDateString(rec.effectiveDate) || "",
           premType, premium, comp, contractLevel: state.contractLevel||100,
-          capped: false, ap: calc.ap, commission: calc.commission, advanceAmt: calc.advanceAmt, backendAmt: calc.backendAmt,
+          capped: /^(y|yes|true|1)$/i.test(rec.capped||""), ap: calc.ap, commission: calc.commission, advanceAmt: calc.advanceAmt, backendAmt: calc.backendAmt,
           status, migratedV3: true,
-          backendReceived: /^(y|yes|true|1)$/i.test(rec.backendReceived||""),
+          backendReceived: impBackendReceived,
+          backendMonthsReceived: [impBackendReceived, impBackendReceived, impBackendReceived],
           referralSale: /^(y|yes|true|1)$/i.test(rec.referralSale||"") ? "Yes" : "No",
           referralsCollected: /^(y|yes|true|1)$/i.test(rec.referralsCollected||"") ? "Yes" : "No",
           reset: /^(y|yes|true|1)$/i.test(rec.reset||"") ? "Yes" : "No",
@@ -3745,8 +3820,9 @@
         premType: data.premType, premium: data.premium,
         comp, contractLevel: state.contractLevel||100,
         manualCompOverride: hasOverride ? data.compOverride : null,
-        capped: false, ap: calc.ap, commission: calc.commission, advanceAmt: calc.advanceAmt, backendAmt: calc.backendAmt,
+        capped: !!data.capped, ap: calc.ap, commission: calc.commission, advanceAmt: calc.advanceAmt, backendAmt: calc.backendAmt,
         status: data.status || "Submitted", backendReceived: !!data.backendReceived,
+        backendMonthsReceived: [!!data.backendReceived, !!data.backendReceived, !!data.backendReceived],
         referralSale: data.referralSale||"No", referralsCollected: data.referralsCollected||"No", reset: data.reset||"No",
         notes: data.notes||""
       });
